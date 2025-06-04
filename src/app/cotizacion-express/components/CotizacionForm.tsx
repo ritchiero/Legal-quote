@@ -421,7 +421,6 @@ const extractInfoFromContent = (content: string) => {
   }
 };
 
-// Agregar el tipo de cotización a las props del componente
 // Importar Quill dinámicamente para evitar errores de SSR
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -1137,46 +1136,128 @@ export default function CotizacionForm({
         />
 
         <div className="lg:col-span-3 border-t border-gray-200 pt-6 mt-6">
-          <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-900">
+          <div className="mb-6">
+            <h3 className="text-base font-semibold text-gray-900">
               Tipo de Cotización
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-600 mt-1">
               Seleccione el nivel de detalle para su cotización
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {tiposCotizacion.map((tipo) => (
               <div
                 key={tipo.id}
-                className={`relative flex flex-col p-4 border rounded-lg cursor-pointer transition-all ${
+                className={`group relative overflow-hidden rounded-xl border-2 cursor-pointer transition-all duration-300 ${
                   tipoCotizacion === tipo.id
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg scale-[1.02]"
+                    : "border-gray-200 bg-white hover:border-blue-300 hover:shadow-md hover:scale-[1.01]"
                 }`}
                 onClick={() => setTipoCotizacion(tipo.id)}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 flex-shrink-0">{tipo.icon}</div>
-                    <span className="text-sm font-medium text-gray-900">
-                      {tipo.label}
-                    </span>
-                  </div>
-                  <div
-                    className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ml-4 ${
-                      tipoCotizacion === tipo.id
-                        ? "border-blue-500 bg-blue-500"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {tipoCotizacion === tipo.id && (
-                      <div className="w-2 h-2 mx-auto mt-0.5 rounded-full bg-white" />
-                    )}
+                {/* Indicador de selección */}
+                <div
+                  className={`absolute top-4 right-4 w-5 h-5 rounded-full border-2 transition-all duration-200 ${
+                    tipoCotizacion === tipo.id
+                      ? "border-blue-500 bg-blue-500 shadow-md"
+                      : "border-gray-300 bg-white group-hover:border-blue-400"
+                  }`}
+                >
+                  {tipoCotizacion === tipo.id && (
+                    <div className="w-2 h-2 rounded-full bg-white mx-auto mt-1"></div>
+                  )}
+                </div>
+
+                {/* Contenido */}
+                <div className="p-6">
+                  <div className="flex items-start gap-4">
+                    {/* Icono destacado */}
+                    <div
+                      className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                        tipoCotizacion === tipo.id
+                          ? "bg-blue-500 text-white shadow-md"
+                          : "bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-600"
+                      }`}
+                    >
+                      <div className="w-6 h-6">{tipo.icon}</div>
+                    </div>
+
+                    {/* Contenido de texto */}
+                    <div className="flex-1 min-w-0">
+                      <h4
+                        className={`text-lg font-semibold transition-colors duration-200 ${
+                          tipoCotizacion === tipo.id
+                            ? "text-blue-900"
+                            : "text-gray-900 group-hover:text-blue-900"
+                        }`}
+                      >
+                        {tipo.label}
+                      </h4>
+                      <p
+                        className={`text-sm mt-2 transition-colors duration-200 ${
+                          tipoCotizacion === tipo.id
+                            ? "text-blue-700"
+                            : "text-gray-600 group-hover:text-gray-700"
+                        }`}
+                      >
+                        {tipo.description}
+                      </p>
+
+                      {/* Beneficios adicionales */}
+                      <div className="mt-3">
+                        <div className="flex flex-wrap gap-2">
+                          {tipo.id === "corta" ? (
+                            <>
+                              <span
+                                className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                                  tipoCotizacion === tipo.id
+                                    ? "bg-blue-200 text-blue-800"
+                                    : "bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-700"
+                                }`}
+                              >
+                                ⚡ Rápida
+                              </span>
+                              <span
+                                className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                                  tipoCotizacion === tipo.id
+                                    ? "bg-blue-200 text-blue-800"
+                                    : "bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-700"
+                                }`}
+                              >
+                                📄 Concisa
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span
+                                className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                                  tipoCotizacion === tipo.id
+                                    ? "bg-blue-200 text-blue-800"
+                                    : "bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-700"
+                                }`}
+                              >
+                                📋 Completa
+                              </span>
+                              <span
+                                className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium transition-colors ${
+                                  tipoCotizacion === tipo.id
+                                    ? "bg-blue-200 text-blue-800"
+                                    : "bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-700"
+                                }`}
+                              >
+                                🎯 Profesional
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">{tipo.description}</p>
+
+                {/* Efecto de brillo en hover */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-all duration-700"></div>
               </div>
             ))}
           </div>
