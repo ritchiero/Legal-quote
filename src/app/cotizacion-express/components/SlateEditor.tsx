@@ -5,7 +5,7 @@ import { createEditor, Descendant, Element as SlateElement, Transforms, Editor, 
 import { Slate, Editable, withReact, useSlate, ReactEditor } from 'slate-react';
 import { withHistory, HistoryEditor } from 'slate-history';
 import { Button } from "@/app/components/ui/button";
-import { Copy, Bold, Italic, Underline, List, Heading1, Settings, Plus } from "lucide-react";
+import { Copy, Bold, Italic, Underline, List, Heading1, Settings, Plus, Trash2 } from "lucide-react";
 import DynamicTools from "@/components/DynamicTools";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { db } from "@/lib/firebase/firebase";
@@ -62,6 +62,12 @@ interface ContactInfo {
   email?: string;
   web?: string;
   address?: string;
+}
+
+interface RequirementItem {
+  id: string;
+  text: string;
+  category: string;
 }
 
 const deserialize = (content: string): Descendant[] => {
@@ -1416,6 +1422,238 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
   );
 };
 
+const RequirementsWidget = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedRequirements, setGeneratedRequirements] = useState<string[]>([]);
+  const [selectedRequirements, setSelectedRequirements] = useState<boolean[]>([]);
+
+  const handleGenerateClick = async () => {
+    setShowModal(true);
+    setIsGenerating(true);
+    setGeneratedRequirements([]);
+    setSelectedRequirements([]);
+
+    try {
+      console.log('🚀 Generando requerimientos con IA...');
+      
+      const response = await fetch('/api/ai/generate-requirements', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentText: value
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const { requirements, success } = await response.json();
+      
+      if (!success || !Array.isArray(requirements)) {
+        throw new Error('Respuesta inválida de la API');
+      }
+      
+      console.log('✨ Requerimientos generados:', requirements);
+      
+      setGeneratedRequirements(requirements);
+      setSelectedRequirements(new Array(requirements.length).fill(true));
+      
+    } catch (error) {
+      console.error('❌ Error generando requerimientos:', error);
+      
+      // Fallback con requerimientos genéricos en caso de error
+      const fallbackRequirements = [
+        'Información completa',
+        'Documentos existentes', 
+        'Contacto designado',
+        'Accesos necesarios',
+        'Horarios disponibles',
+        'Criterios específicos',
+        'Material referencia',
+        'Reuniones programadas'
+      ];
+      
+      setGeneratedRequirements(fallbackRequirements);
+      setSelectedRequirements(new Array(fallbackRequirements.length).fill(true));
+      
+      // Mostrar mensaje de error temporal (opcional)
+      console.warn('🔄 Usando requerimientos de respaldo debido a error en IA');
+      
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleRequirementToggle = (index: number) => {
+    const newSelected = [...selectedRequirements];
+    newSelected[index] = !newSelected[index];
+    setSelectedRequirements(newSelected);
+  };
+
+  const handleInsertRequirements = () => {
+    const selectedReqs = generatedRequirements.filter((_, index) => selectedRequirements[index]);
+    
+    if (selectedReqs.length === 0) return;
+    
+    let reqText = "\n\nANEXO - LISTA DE REQUERIMIENTOS:\n\n";
+    reqText += "REQUERIMIENTOS DEL CLIENTE:\n";
+    selectedReqs.forEach((req, index) => {
+      reqText += `${index + 1}. ${req}\n`;
+    });
+    reqText += "\n";
+    
+    // Insertar al final del documento
+    const lines = value.split('\n');
+    let insertIndex = lines.length;
+    
+    // Buscar antes de la firma
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].toLowerCase().trim();
+      if (line.includes('firma') || line.includes('atentamente') || line.includes('cordialmente') || line.includes('saludos')) {
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() !== '') {
+          j++;
+        }
+        insertIndex = j;
+        break;
+      }
+    }
+    
+    const newLines = [...lines];
+    if (insertIndex < lines.length && lines[insertIndex].trim() === '') {
+      newLines.splice(insertIndex, 0, reqText, '');
+    } else {
+      newLines.splice(insertIndex, 0, '', reqText);
+    }
+    
+    onChange(newLines.join('\n'));
+    setShowModal(false);
+  };
+
+  return (
+    <>
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-sm text-gray-900">Anexo Lista de requerimientos</h4>
+        </div>
+
+        <div className="text-center py-4">
+          <p className="text-xs text-gray-500 mb-3">Genera automáticamente una lista de requerimientos</p>
+          <button 
+            onClick={handleGenerateClick}
+            className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors"
+          >
+            <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Generar con IA
+          </button>
+        </div>
+      </div>
+
+      {/* Modal para generar requerimientos con IA */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-lg w-full mx-4 p-6 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Generar Lista de Requerimientos</h3>
+              <button 
+                onClick={() => setShowModal(false)} 
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {isGenerating ? (
+              // Estado de carga
+              <div className="text-center py-12">
+                <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                </div>
+                <h4 className="text-lg font-medium text-gray-900 mb-2">
+                  Analizando tu cotización...
+                </h4>
+                <p className="text-sm text-gray-600">
+                  La IA está generando requerimientos personalizados basados en el contenido de tu proyecto.
+                </p>
+              </div>
+            ) : generatedRequirements.length === 0 ? (
+              // Estado inicial
+              <div className="text-center py-8">
+                <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                
+                <h4 className="text-lg font-medium text-gray-900 mb-2">
+                  IA para Lista de Requerimientos
+                </h4>
+                
+                <p className="text-sm text-gray-600 mb-6">
+                  La inteligencia artificial analizará tu cotización y generará automáticamente una lista de requerimientos personalizada.
+                </p>
+              </div>
+            ) : (
+              // Lista de requerimientos generados
+              <div>
+                <div className="mb-6">
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                    Requerimientos Sugeridos
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Selecciona los requerimientos que deseas incluir en tu cotización:
+                  </p>
+                </div>
+                
+                <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
+                  {generatedRequirements.map((requirement, index) => (
+                    <label key={index} className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedRequirements[index]}
+                        onChange={() => handleRequirementToggle(index)}
+                        className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                      />
+                      <span className="text-sm text-gray-900 flex-1">
+                        {requirement}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+                
+                <div className="flex gap-3 pt-4 border-t">
+                  <button 
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  
+                  <button 
+                    onClick={handleInsertRequirements}
+                    disabled={!selectedRequirements.some(Boolean)}
+                    className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Insertar Requerimientos Seleccionados ({selectedRequirements.filter(Boolean).length})
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 const SlateEditor: React.FC<SlateEditorProps> = ({ value, onChange }) => {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const [copyNotification, setCopyNotification] = useState<string | null>(null);
@@ -1609,9 +1847,14 @@ const SlateEditor: React.FC<SlateEditorProps> = ({ value, onChange }) => {
           <ContactDataWidget value={currentText} onChange={onChange} />
         </div>
 
-        {/* Placeholder for future tools */}
-        <div className="border border-dashed border-gray-300 rounded-md p-4 min-h-[200px] flex items-center justify-center">
-          <p className="text-gray-500 text-sm">Próximamente: Más herramientas interactivas</p>
+        {/* Lista de requerimientos */}
+        <div className="mb-6">
+          <RequirementsWidget value={currentText} onChange={onChange} />
+        </div>
+
+        {/* Espacio para futuras herramientas */}
+        <div className="border border-dashed border-gray-200 rounded-md p-3 text-center">
+          <p className="text-gray-400 text-xs">Próximamente más herramientas</p>
         </div>
       </div>
 

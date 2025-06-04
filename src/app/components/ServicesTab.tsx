@@ -777,7 +777,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                   <div>
                     {getFilteredAndSortedServices().length} de {servicios.length} {servicios.length === 1 ? 'servicio' : 'servicios'}
                     {searchTerm && (
-                      <span> • Búsqueda: <strong>"{searchTerm}"</strong></span>
+                      <span> • Búsqueda: <strong>&quot;{searchTerm}&quot;</strong></span>
                     )}
                   </div>
                 </div>
@@ -1020,7 +1020,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                         placeholder="ej: 2-3 semanas"
                       />
                     ) : (
-                      <span>{selectedService.tiempo}</span>
+                      <span>{selectedService?.tiempo}</span>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
@@ -1037,7 +1037,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                         placeholder="$0.00"
                       />
                     ) : (
-                      <span>{selectedService.precio}</span>
+                      <span>{selectedService?.precio}</span>
                     )}
                   </div>
                 </div>
@@ -1046,7 +1046,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                   <h4 className="font-medium text-gray-900 mb-2">Incluye</h4>
                   {isEditing ? (
                     <div className="space-y-2">
-                      {editedService?.incluye.map((item: string, index: number) => (
+                      {editedService?.incluye?.map((item: string, index: number) => (
                         <div key={index} className="flex gap-2">
                           <input
                             type="text"
@@ -1076,7 +1076,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                     </div>
                   ) : (
                     <ul className="space-y-2">
-                      {selectedService.incluye.map((item: string, index: number) => (
+                      {selectedService?.incluye?.map((item: string, index: number) => (
                         <li key={index} className="flex items-center gap-2 text-sm text-gray-600">
                           <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -1109,7 +1109,9 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                   <button
                     onClick={() => {
                       setIsModalOpen(false); // Primero cerramos el modal
-                      handleSolicitarServicio(selectedService); // Luego redirigimos
+                      if (selectedService) {
+                        handleSolicitarServicio(selectedService); // Luego redirigimos
+                      }
                     }}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
                   >
@@ -1336,7 +1338,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                   <input
                     type="text"
                     name="nombre"
-                    value={editedService.nombre}
+                    value={editedService?.nombre || ''}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="ej: Constitución de Sociedades"
@@ -1350,7 +1352,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                   <input
                     type="text"
                     name="descripcion"
-                    value={editedService.descripcion}
+                    value={editedService?.descripcion || ''}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                     placeholder="Breve descripción del servicio"
@@ -1363,7 +1365,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                   </label>
                   <textarea
                     name="detalles"
-                    value={editedService.detalles}
+                    value={editedService?.detalles || ''}
                     onChange={handleInputChange}
                     rows={4}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
@@ -1379,7 +1381,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                     <input
                       type="text"
                       name="tiempo"
-                      value={editedService.tiempo}
+                      value={editedService?.tiempo || ''}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="ej: 2-3 semanas"
@@ -1392,7 +1394,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                     <input
                       type="text"
                       name="precio"
-                      value={editedService.precio}
+                      value={editedService?.precio || ''}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                       placeholder="$0.00"
@@ -1405,7 +1407,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                     Incluye
                   </label>
                   <div className="space-y-2">
-                    {editedService.incluye.map((item, index) => (
+                    {editedService?.incluye?.map((item, index) => (
                       <div key={index} className="flex gap-2">
                         <input
                           type="text"
