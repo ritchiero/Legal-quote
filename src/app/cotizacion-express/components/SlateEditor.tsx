@@ -55,6 +55,15 @@ interface PaymentMethod {
   updatedAt: any;
 }
 
+interface ContactInfo {
+  name?: string;
+  phone?: string;
+  mobile?: string;
+  email?: string;
+  web?: string;
+  address?: string;
+}
+
 const deserialize = (content: string): Descendant[] => {
   // Convertir el texto plano a estructura de Slate
   const lines = content.split('\n');
@@ -939,6 +948,146 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
   );
 };
 
+const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
+  const { user } = useAuth();
+  const [contact, setContact] = useState<ContactInfo>({ name: '', phone: '', mobile: '', email: '', web: '', address: '' });
+  const [isLoading, setIsLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState<ContactInfo>({ name: '', phone: '', mobile: '', email: '', web: '', address: '' });
+
+  useEffect(() => {
+    if (!user?.uid) { setIsLoading(false); return; }
+    const unsubscribe = onSnapshot(doc(db, 'DatosContacto', user.uid), snap => {
+      if (snap.exists()) {
+        const data = snap.data() as ContactInfo;
+        setContact({
+          name: data.name || '',
+          phone: data.phone || '',
+          mobile: data.mobile || '',
+          email: data.email || '',
+          web: data.web || '',
+          address: data.address || ''
+        });
+      }
+      setIsLoading(false);
+    });
+    return () => unsubscribe();
+  }, [user?.uid]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user?.uid) return;
+    await setDoc(doc(db, 'DatosContacto', user.uid), {
+      name: formData.name,
+      phone: formData.phone,
+      mobile: formData.mobile,
+      email: formData.email,
+      web: formData.web,
+      address: formData.address,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+    setContact(formData);
+    setShowModal(false);
+  };
+
+  const insertContact = () => {
+    const lines: string[] = [];
+    if (contact.name) lines.push(`Nombre: ${contact.name}`);
+    if (contact.phone) lines.push(`Tel\u00e9fono: ${contact.phone}`);
+    if (contact.mobile) lines.push(`M\u00f3vil: ${contact.mobile}`);
+    if (contact.email) lines.push(`Email: ${contact.email}`);
+    if (contact.web) lines.push(`Web: ${contact.web}`);
+    if (contact.address) lines.push(`Domicilio: ${contact.address}`);
+    const contactText = `\n\nContacto:\n${lines.join('\n')}`;
+    onChange(value + contactText);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-sm text-gray-900">Datos de contacto</h4>
+          <button onClick={() => { setShowModal(true); setFormData(contact); }} className="p-1 text-gray-400 hover:text-gray-600" title="Editar datos">
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+
+        {!(contact.name || contact.phone || contact.mobile || contact.email || contact.web || contact.address) ? (
+          <div className="text-center py-4">
+            <p className="text-xs text-gray-500 mb-3">No hay datos configurados</p>
+            <button onClick={() => setShowModal(true)} className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+              <Plus className="h-4 w-4 mr-1" /> Configurar datos de contacto
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-1 text-sm">
+            {contact.name && <p className="text-gray-900">👤 {contact.name}</p>}
+            {contact.phone && <p className="text-gray-900">☎️ {contact.phone}</p>}
+            {contact.mobile && <p className="text-gray-900">📱 {contact.mobile}</p>}
+            {contact.email && <p className="text-gray-900">📧 {contact.email}</p>}
+            {contact.web && <p className="text-gray-900">🌐 {contact.web}</p>}
+            {contact.address && <p className="text-gray-900">🏠 {contact.address}</p>}
+            <button onClick={insertContact} className="mt-2 w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md">Insertar en texto</button>
+          </div>
+        )}
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-sm w-full mx-4 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Configurar Contacto</h3>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <input type="text" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Móvil</label>
+                <input type="text" value={formData.mobile} onChange={e => setFormData({ ...formData, mobile: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Sitio Web</label>
+                <input type="text" value={formData.web} onChange={e => setFormData({ ...formData, web: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Domicilio</label>
+                <textarea value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" rows={2} />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">Cancelar</button>
+                <button type="submit" className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 const SlateEditor: React.FC<SlateEditorProps> = ({ value, onChange }) => {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
@@ -1096,6 +1245,11 @@ const SlateEditor: React.FC<SlateEditorProps> = ({ value, onChange }) => {
         {/* Datos de pago */}
         <div className="mb-6">
           <PaymentDataWidget value={currentText} onChange={onChange} />
+        </div>
+
+        {/* Datos de contacto */}
+        <div className="mb-6">
+          <ContactDataWidget value={currentText} onChange={onChange} />
         </div>
 
         {/* Placeholder for future tools */}
