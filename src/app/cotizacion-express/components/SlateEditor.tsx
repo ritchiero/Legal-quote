@@ -954,57 +954,108 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState<ContactInfo>({ name: '', phone: '', mobile: '', email: '', web: '', address: '' });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user?.uid) { setIsLoading(false); return; }
-    const unsubscribe = onSnapshot(doc(db, 'DatosContacto', user.uid), snap => {
-      if (snap.exists()) {
-        const data = snap.data() as ContactInfo;
-        setContact({
-          name: data.name || '',
-          phone: data.phone || '',
-          mobile: data.mobile || '',
-          email: data.email || '',
-          web: data.web || '',
-          address: data.address || ''
-        });
-      }
+    console.log('🔧 ContactDataWidget mounted, user:', user?.uid);
+    
+    if (!user?.uid) { 
+      console.log('❌ No user found, setting loading to false');
       setIsLoading(false);
-    });
-    return () => unsubscribe();
+      return;
+    }
+    
+    try {
+      console.log('📡 Setting up Firebase listener for contact data');
+      const unsubscribe = onSnapshot(
+        doc(db, 'DatosContacto', user.uid), 
+        (snap) => {
+          console.log('📬 Firebase snapshot received:', snap.exists(), snap.data());
+          if (snap.exists()) {
+            const data = snap.data() as ContactInfo;
+            setContact({
+              name: data.name || '',
+              phone: data.phone || '',
+              mobile: data.mobile || '',
+              email: data.email || '',
+              web: data.web || '',
+              address: data.address || ''
+            });
+          }
+          setIsLoading(false);
+        },
+        (err) => {
+          console.error('❌ Firebase error:', err);
+          setError(err.message);
+          setIsLoading(false);
+        }
+      );
+      return () => unsubscribe();
+    } catch (err) {
+      console.error('❌ Error setting up Firebase listener:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      setIsLoading(false);
+    }
   }, [user?.uid]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.uid) return;
-    await setDoc(doc(db, 'DatosContacto', user.uid), {
-      name: formData.name,
-      phone: formData.phone,
-      mobile: formData.mobile,
-      email: formData.email,
-      web: formData.web,
-      address: formData.address,
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
-    setContact(formData);
-    setShowModal(false);
+    
+    try {
+      console.log('💾 Saving contact data:', formData);
+      await setDoc(doc(db, 'DatosContacto', user.uid), {
+        name: formData.name,
+        phone: formData.phone,
+        mobile: formData.mobile,
+        email: formData.email,
+        web: formData.web,
+        address: formData.address,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      setContact(formData);
+      setShowModal(false);
+      console.log('✅ Contact data saved successfully');
+    } catch (err) {
+      console.error('❌ Error saving contact data:', err);
+      setError(err instanceof Error ? err.message : 'Error saving data');
+    }
   };
 
   const insertContact = () => {
     const lines: string[] = [];
     if (contact.name) lines.push(`Nombre: ${contact.name}`);
-    if (contact.phone) lines.push(`Tel\u00e9fono: ${contact.phone}`);
-    if (contact.mobile) lines.push(`M\u00f3vil: ${contact.mobile}`);
+    if (contact.phone) lines.push(`Teléfono: ${contact.phone}`);
+    if (contact.mobile) lines.push(`Móvil: ${contact.mobile}`);
     if (contact.email) lines.push(`Email: ${contact.email}`);
     if (contact.web) lines.push(`Web: ${contact.web}`);
     if (contact.address) lines.push(`Domicilio: ${contact.address}`);
     const contactText = `\n\nContacto:\n${lines.join('\n')}`;
     onChange(value + contactText);
+    console.log('📝 Contact text inserted:', contactText);
   };
+
+  console.log('🎨 ContactDataWidget rendering - isLoading:', isLoading, 'error:', error, 'user:', !!user);
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <h4 className="font-medium text-sm text-red-800">Error en Datos de Contacto</h4>
+        <p className="text-xs text-red-600 mt-1">{error}</p>
+        <button 
+          onClick={() => setError(null)} 
+          className="mt-2 text-xs bg-red-600 text-white px-2 py-1 rounded"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
       <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h4 className="font-medium text-sm text-gray-900 mb-2">Datos de contacto</h4>
         <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4" />
       </div>
     );
@@ -1054,27 +1105,27 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+                <input type="text" value={formData.name || ''} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-                <input type="text" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+                <input type="text" value={formData.phone || ''} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Móvil</label>
-                <input type="text" value={formData.mobile} onChange={e => setFormData({ ...formData, mobile: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+                <input type="text" value={formData.mobile || ''} onChange={e => setFormData({ ...formData, mobile: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+                <input type="email" value={formData.email || ''} onChange={e => setFormData({ ...formData, email: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Sitio Web</label>
-                <input type="text" value={formData.web} onChange={e => setFormData({ ...formData, web: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
+                <input type="text" value={formData.web || ''} onChange={e => setFormData({ ...formData, web: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Domicilio</label>
-                <textarea value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" rows={2} />
+                <textarea value={formData.address || ''} onChange={e => setFormData({ ...formData, address: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-900" rows={2} />
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">Cancelar</button>
