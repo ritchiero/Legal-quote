@@ -89,6 +89,16 @@ Responde ÚNICAMENTE con un array JSON de strings, sin explicaciones adicionales
         throw new Error('Invalid format');
       }
       
+      // Limpiar caracteres especiales de cada requerimiento
+      requirements = requirements.map((req) => 
+        req.replace(/[«»""'']/g, '"')
+           .replace(/[–—]/g, '-')
+           .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
+           .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
+           .replace(/^["'\-\s]+|["'\-\s]+$/g, '')
+           .trim()
+      );
+      
       // Asegurar que tengamos entre 8-10 elementos
       if (requirements.length < 8) {
         // Agregar algunos requerimientos genéricos si hay muy pocos
@@ -107,6 +117,16 @@ Responde ÚNICAMENTE con un array JSON de strings, sin explicaciones adicionales
         .map(line => line.replace(/^[\s\-"]*/, '').replace(/["]*$/, '').trim())
         .filter(req => req.length > 0 && req.length < 50)
         .slice(0, 10);
+      
+      // Limpiar caracteres especiales también en el fallback
+      requirements = requirements.map((req) => 
+        req.replace(/[«»""'']/g, '"')
+           .replace(/[–—]/g, '-')
+           .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")
+           .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')
+           .replace(/^["'\-\s]+|["'\-\s]+$/g, '')
+           .trim()
+      );
       
       // Si aún no tenemos suficientes, usar un set mínimo
       if (requirements.length < 8) {

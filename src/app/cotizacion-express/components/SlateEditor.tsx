@@ -689,7 +689,7 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
               <button
                 onClick={() => setShowAIOptions(!showAIOptions)}
                 disabled={isGeneratingAI}
-                className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
+                className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
               >
                 {isGeneratingAI ? (
                   <>
@@ -1306,7 +1306,7 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
                 <button
                   onClick={() => setShowAIOptions(!showAIOptions)}
                   disabled={isGeneratingAI}
-                  className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
+                  className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
                 >
                   {isGeneratingAI ? (
                     <>
@@ -1545,7 +1545,7 @@ const RequirementsWidget = ({ value, onChange }: { value: string; onChange: (val
           <p className="text-xs text-gray-500 mb-3">Genera automáticamente una lista de requerimientos</p>
           <button 
             onClick={handleGenerateClick}
-            className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 transform hover:scale-105"
+            className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 transform hover:scale-105"
           >
             <span className="mr-2">✨</span>
             Agregar con IA
@@ -1556,7 +1556,7 @@ const RequirementsWidget = ({ value, onChange }: { value: string; onChange: (val
       {/* Modal para generar requerimientos con IA */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg max-w-lg w-full mx-4 p-6 max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-2xl w-full mx-4 p-6 max-h-[95vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Generar Lista de Requerimientos</h3>
               <button 
@@ -1572,8 +1572,8 @@ const RequirementsWidget = ({ value, onChange }: { value: string; onChange: (val
             {isGenerating ? (
               // Estado de carga
               <div className="text-center py-12">
-                <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 </div>
                 <h4 className="text-lg font-medium text-gray-900 mb-2">
                   Analizando tu cotización...
@@ -1585,8 +1585,8 @@ const RequirementsWidget = ({ value, onChange }: { value: string; onChange: (val
             ) : generatedRequirements.length === 0 ? (
               // Estado inicial
               <div className="text-center py-8">
-                <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                  <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
@@ -1611,14 +1611,14 @@ const RequirementsWidget = ({ value, onChange }: { value: string; onChange: (val
                   </p>
                 </div>
                 
-                <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
+                <div className="mb-6 max-h-80 overflow-y-auto divide-y divide-gray-200">
                   {generatedRequirements.map((requirement, index) => (
-                    <label key={index} className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <label key={index} className="flex items-center gap-4 py-3 px-4 hover:bg-gray-50 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedRequirements[index]}
                         onChange={() => handleRequirementToggle(index)}
-                        className="mt-1 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                       <span className="text-sm text-gray-900 flex-1">
                         {requirement}
@@ -1638,7 +1638,7 @@ const RequirementsWidget = ({ value, onChange }: { value: string; onChange: (val
                   <button 
                     onClick={handleInsertRequirements}
                     disabled={!selectedRequirements.some(Boolean)}
-                    className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
                   >
                     Insertar Requerimientos Seleccionados ({selectedRequirements.filter(Boolean).length})
                   </button>
