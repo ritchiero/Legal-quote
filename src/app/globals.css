@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "~@fortawesome/fontawesome-free/css/all.css";
+
+html,
+body {
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-typing::after {
+    content: '...';
+    animation: typing 1.5s infinite;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes typing {
+    0% { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+  }
+
+  @keyframes gradient-xy {
+    0% {
+      background-position: 0% 50%;
+      transform: rotate(0deg);
+    }
+    50% {
+      background-position: 100% 50%;
+      transform: rotate(180deg);
+    }
+    100% {
+      background-position: 0% 50%;
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-gradient-xy {
+    animation: gradient-xy 15s ease infinite;
+    background-size: 400% 400%;
+  }
+
+  @keyframes border-flow {
+    0% {
+      background-position: 0% 50%;
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      background-position: 100% 50%;
+      transform: rotate(1deg) scale(1.04);
+    }
+    100% {
+      background-position: 0% 50%;
+      transform: rotate(0deg) scale(1);
+    }
+  }
+
+  @keyframes border-flow-reverse {
+    0% {
+      background-position: 100% 50%;
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      background-position: 0% 50%;
+      transform: rotate(-1deg) scale(1.03);
+    }
+    100% {
+      background-position: 100% 50%;
+      transform: rotate(0deg) scale(1);
+    }
+  }
+
+  .animate-border-flow {
+    animation: border-flow 2.5s ease infinite;
+    background-size: 200% 200%;
+  }
+
+  .animate-border-flow-reverse {
+    animation: border-flow-reverse 2.5s ease infinite;
+    background-size: 200% 200%;
+  }
+}
+
+@keyframes progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.animate-progress {
+  animation: progress 2s ease-in-out infinite;
+}
+@layer components {
+  .step-tab {
+    @apply flex items-center justify-center px-2 py-3 transition-all;
+  }
+  .step-tab.inactive .tab-label {
+    @apply sr-only;
+  }
+  .step-tab.active .tab-label {
+    @apply inline-block ml-1;
+  }
+  @screen md {
+    .step-tab .tab-label {
+      @apply inline-block ml-1;
+    }
+  }
+
+  .input-base {
+    @apply w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none;
+  }
+
+  .chip-item {
+    @apply flex justify-between items-center rounded-lg bg-gray-50 px-3 py-2 text-sm;
+  }
+}
