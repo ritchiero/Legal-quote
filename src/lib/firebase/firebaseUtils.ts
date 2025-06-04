@@ -102,6 +102,61 @@ export const signInWithGoogle = async () => {
   }
 };
 
+// Función específica para guardar datos de contacto
+export const saveContactData = async (data: any) => {
+  try {
+    if (!auth.currentUser?.uid) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    const documentData = {
+      ...data,
+      userId: auth.currentUser.uid,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    // Usar setDoc con el UID como ID del documento para que coincida con las reglas
+    const docRef = doc(db, 'DatosContacto', auth.currentUser.uid);
+    await setDoc(docRef, documentData);
+    
+    return {
+      id: auth.currentUser.uid,
+      ...documentData
+    };
+  } catch (error) {
+    console.error('Error saving contact data:', error);
+    throw error;
+  }
+};
+
+// Función para obtener datos de contacto del usuario
+export const getContactData = async () => {
+  try {
+    if (!auth.currentUser?.uid) {
+      throw new Error('Usuario no autenticado');
+    }
+
+    const docRef = doc(db, 'DatosContacto', auth.currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        ...data,
+        createdAt: data.createdAt?.toDate(),
+        updatedAt: data.updatedAt?.toDate(),
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error getting contact data:', error);
+    throw error;
+  }
+};
+
 // Firestore functions
 export const addDocument = async (collectionName: string, data: any) => {
   try {
