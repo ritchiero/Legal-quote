@@ -134,6 +134,24 @@ body {
     }
   }
 
+  @keyframes conic-flow {
+    0% {
+      background: conic-gradient(from 0deg, #1ecbe1, #2563eb, #60a5fa, #1ecbe1);
+    }
+    25% {
+      background: conic-gradient(from 90deg, #1ecbe1, #2563eb, #60a5fa, #1ecbe1);
+    }
+    50% {
+      background: conic-gradient(from 180deg, #1ecbe1, #2563eb, #60a5fa, #1ecbe1);
+    }
+    75% {
+      background: conic-gradient(from 270deg, #1ecbe1, #2563eb, #60a5fa, #1ecbe1);
+    }
+    100% {
+      background: conic-gradient(from 360deg, #1ecbe1, #2563eb, #60a5fa, #1ecbe1);
+    }
+  }
+
   .animate-border-flow {
     animation: border-flow 2.5s ease infinite;
     background-size: 200% 200%;
@@ -142,6 +160,35 @@ body {
   .animate-border-flow-reverse {
     animation: border-flow-reverse 2.5s ease infinite;
     background-size: 200% 200%;
+  }
+
+  .animate-conic-flow {
+    animation: conic-flow 3s linear infinite;
+  }
+
+  /* Delays para animaciones mágicas del AI Button */
+  .delay-150 {
+    animation-delay: 150ms;
+  }
+  
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
   }
 }
 

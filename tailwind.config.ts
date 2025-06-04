@@ -31,6 +31,32 @@ const config: Config = {
         bold: "700",
         extrabold: "800",
       },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+        'reverse-spin': 'reverse-spin 2s linear infinite',
+        'twinkle': 'twinkle 1.5s ease-in-out infinite',
+        'border-flow': 'border-flow 2s ease-in-out infinite',
+      },
+      keyframes: {
+        'reverse-spin': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(-360deg)' },
+        },
+        'twinkle': {
+          '0%, 100%': { opacity: '0', transform: 'scale(0.5)' },
+          '50%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'border-flow': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+      },
+      animationDelay: {
+        '150': '150ms',
+        '200': '200ms',
+        '300': '300ms',
+        '400': '400ms',
+      },
     },
   },
   plugins: [],

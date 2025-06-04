@@ -69,6 +69,14 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
   const [requirementsOptions, setRequirementsOptions] = useState<string[]>([]);
   const [requirementsLoading, setRequirementsLoading] = useState(false);
   const [selectedRequirements, setSelectedRequirements] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  
+  // Estados para búsqueda y filtros
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<'nombre' | 'precio' | 'tiempo' | 'fecha'>('nombre');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
+  const [showFilters, setShowFilters] = useState(false);
 
   const { complete, isLoading: isAILoading } = useCompletion({
     api: '/api/openai/chat',
@@ -87,6 +95,135 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Función para filtrar y ordenar servicios
+  const getFilteredAndSortedServices = () => {
+    let filtered = servicios.filter(servicio => {
+      // Filtro por búsqueda
+      const matchesSearch = servicio.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           servicio.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // Filtro por rango de precio
+      let matchesPrice = true;
+      if (priceRange.min || priceRange.max) {
+        const precio = parseFloat(servicio.precio.replace(/[^\d.]/g, ''));
+        const min = priceRange.min ? parseFloat(priceRange.min) : 0;
+        const max = priceRange.max ? parseFloat(priceRange.max) : Infinity;
+        matchesPrice = precio >= min && precio <= max;
+      }
+      
+      return matchesSearch && matchesPrice;
+    });
+
+    // Ordenar
+    filtered.sort((a, b) => {
+      let valueA, valueB;
+      
+      switch (sortBy) {
+        case 'nombre':
+          valueA = a.nombre.toLowerCase();
+          valueB = b.nombre.toLowerCase();
+          break;
+        case 'precio':
+          valueA = parseFloat(a.precio.replace(/[^\d.]/g, ''));
+          valueB = parseFloat(b.precio.replace(/[^\d.]/g, ''));
+          break;
+        case 'tiempo':
+          valueA = a.tiempo.toLowerCase();
+          valueB = b.tiempo.toLowerCase();
+          break;
+        case 'fecha':
+          valueA = a.createdAt?.seconds || 0;
+          valueB = b.createdAt?.seconds || 0;
+          break;
+        default:
+          valueA = a.nombre.toLowerCase();
+          valueB = b.nombre.toLowerCase();
+      }
+
+      if (sortOrder === 'asc') {
+        return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
+      } else {
+        return valueA > valueB ? -1 : valueA < valueB ? 1 : 0;
+      }
+    });
+
+    return filtered;
+  };
+
+  // Función para limpiar filtros
+  const clearFilters = () => {
+    setSearchTerm('');
+    setPriceRange({ min: '', max: '' });
+    setSortBy('nombre');
+    setSortOrder('asc');
+  };
+
+  // Función para estandarizar servicios con IA
+  const [isStandardizing, setIsStandardizing] = useState(false);
+  
+  const standardizeServices = async () => {
+    if (!user?.uid) {
+      toast.error('Usuario no autenticado');
+      return;
+    }
+
+    try {
+      setIsStandardizing(true);
+      toast.success('Iniciando estandarización de servicios...');
+
+      for (const servicio of servicios) {
+        try {
+          const response = await fetch('/api/ai/standardize-service', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              nombre: servicio.nombre,
+              descripcion: servicio.descripcion,
+              detalles: servicio.detalles,
+              tiempo: servicio.tiempo,
+              precio: servicio.precio,
+              incluye: servicio.incluye
+            })
+          });
+
+          if (!response.ok) {
+            console.error(`Error estandarizando servicio ${servicio.id}`);
+            continue;
+          }
+
+          const standardizedData = await response.json();
+          
+          // Actualizar en Firestore
+          const serviceRef = doc(db, 'servicios', servicio.id);
+          await updateDoc(serviceRef, {
+            nombre: standardizedData.nombre || servicio.nombre,
+            descripcion: standardizedData.descripcion || servicio.descripcion,
+            detalles: standardizedData.detalles || servicio.detalles,
+            tiempo: standardizedData.tiempo || servicio.tiempo,
+            incluye: standardizedData.incluye || servicio.incluye,
+            updatedAt: serverTimestamp(),
+          });
+
+          // Pequeña pausa para evitar rate limiting
+          await new Promise(resolve => setTimeout(resolve, 1000));
+
+        } catch (error) {
+          console.error(`Error procesando servicio ${servicio.id}:`, error);
+        }
+      }
+
+      toast.success('Servicios estandarizados exitosamente');
+      
+    } catch (error) {
+      console.error('Error en estandarización:', error);
+      toast.error('Error al estandarizar servicios');
+    } finally {
+      setIsStandardizing(false);
+    }
+  };
 
   const handleNewServiceChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -465,7 +602,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                 Crear con IA
               </button>
               {/* Botones desktop */}
-              <div className="hidden md:grid grid-cols-2 gap-2">
+              <div className="hidden md:grid grid-cols-3 gap-2">
                 <button
                   onClick={() => setIsCreateModalOpen(true)}
                   className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -480,6 +617,25 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
                   <SparklesIcon className="w-4 h-4 mr-2" />
                   Crear con IA
                 </button>
+                <button
+                  onClick={standardizeServices}
+                  disabled={isStandardizing || servicios.length === 0}
+                  className="inline-flex items-center px-4 py-2 rounded-lg border border-purple-600 text-purple-600 text-sm font-medium hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isStandardizing ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600 mr-2"></div>
+                      Estandarizando...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+                      </svg>
+                      Estandarizar IA
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </div>
@@ -488,59 +644,280 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
         {/* Grid de Servicios */}
         <div className="p-4 md:p-8">
           {servicios.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {servicios.map((servicio) => (
-                <div
-                  key={servicio.id}
-                  onClick={() => handleServiceClick(servicio)}
-                  className="group relative bg-background-card rounded-2xl border border-border p-5 shadow transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1"
-                >
-                  {/* Botón de eliminar */}
-                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <>
+              {/* Barra de búsqueda y controles */}
+              <div className="space-y-4 mb-6">
+                {/* Fila superior: Búsqueda y controles principales */}
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                  {/* Barra de búsqueda */}
+                  <div className="relative flex-1 max-w-md">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Buscar servicios..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={() => setSearchTerm('')}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      >
+                        <svg className="h-4 w-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Controles de ordenamiento y vista */}
+                  <div className="flex items-center gap-2">
+                    {/* Ordenamiento */}
+                    <div className="flex items-center gap-1">
+                      <select
+                        value={`${sortBy}-${sortOrder}`}
+                        onChange={(e) => {
+                          const [field, order] = e.target.value.split('-');
+                          setSortBy(field as 'nombre' | 'precio' | 'tiempo' | 'fecha');
+                          setSortOrder(order as 'asc' | 'desc');
+                        }}
+                        className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="nombre-asc">Nombre A-Z</option>
+                        <option value="nombre-desc">Nombre Z-A</option>
+                        <option value="precio-asc">Precio menor</option>
+                        <option value="precio-desc">Precio mayor</option>
+                        <option value="fecha-desc">Más reciente</option>
+                        <option value="fecha-asc">Más antiguo</option>
+                      </select>
+                    </div>
+
+                    {/* Botón de filtros */}
                     <button
-                      onClick={(e) => handleDeleteService(servicio.id, e)}
-                      className="p-2 rounded-full bg-white shadow border border-border text-text-secondary hover:text-accent hover:border-accent"
+                      onClick={() => setShowFilters(!showFilters)}
+                      className={`p-2 rounded-lg transition-colors ${showFilters ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+                      title="Filtros"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
+                      </svg>
+                    </button>
+
+                    {/* Divider */}
+                    <div className="w-px h-6 bg-gray-300"></div>
+
+                    {/* Toggle de vista */}
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+                      title="Vista en cuadrícula"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+                      title="Vista en lista"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                       </svg>
                     </button>
                   </div>
+                </div>
 
-                  <div className="space-y-3">
-                    {/* Título del servicio */}
-                    <h3 className="text-base font-semibold text-text-main group-hover:text-primary transition-colors line-clamp-2 font-jakarta">
-                      {servicio.nombre}
-                    </h3>
-                    {/* Descripción */}
-                    <details className="text-xs text-text-secondary font-jakarta">
-                      <summary className="cursor-pointer line-clamp-3">
-                        {servicio.descripcion}
-                      </summary>
-                      <p className="mt-1">{servicio.descripcion}</p>
-                    </details>
-                    {/* Precio y tiempo */}
-                    <div className="pt-3 border-t border-border">
-                      <div className="flex flex-col gap-2">
-                        {/* Precio */}
-                        <span className="text-base font-bold text-primary font-jakarta">
-                          {formatPrice(servicio.precio)}
-                        </span>
-                        {/* Tiempo de entrega */}
-                        <div className="flex items-center text-xs text-text-secondary font-jakarta">
-                          <svg className="w-4 h-4 mr-1 flex-shrink-0 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                {/* Panel de filtros expandible */}
+                {showFilters && (
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                      {/* Filtro de precio */}
+                      <div className="flex-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Rango de precio
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            placeholder="Mín"
+                            value={priceRange.min}
+                            onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
+                            className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                          <span className="text-gray-500">-</span>
+                          <input
+                            type="number"
+                            placeholder="Máx"
+                            value={priceRange.max}
+                            onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
+                            className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Botón limpiar filtros */}
+                      <button
+                        onClick={clearFilters}
+                        className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 underline"
+                      >
+                        Limpiar filtros
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Contador de resultados */}
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                  <div>
+                    {getFilteredAndSortedServices().length} de {servicios.length} {servicios.length === 1 ? 'servicio' : 'servicios'}
+                    {searchTerm && (
+                      <span> • Búsqueda: <strong>"{searchTerm}"</strong></span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Vista en cuadrícula mejorada */}
+              {viewMode === 'grid' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                  {getFilteredAndSortedServices().map((servicio) => (
+                    <div
+                      key={servicio.id}
+                      onClick={() => handleServiceClick(servicio)}
+                      className="group relative bg-background-card rounded-2xl border border-border p-5 shadow transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-1"
+                    >
+                      {/* Botón de eliminar */}
+                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button
+                          onClick={(e) => handleDeleteService(servicio.id, e)}
+                          className="p-2 rounded-full bg-white shadow border border-border text-text-secondary hover:text-accent hover:border-accent"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
-                          <span className="truncate">
-                            {servicio.tiempo}
-                          </span>
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {/* Título del servicio */}
+                        <h3 className="text-base font-semibold text-text-main group-hover:text-primary transition-colors line-clamp-2 font-jakarta">
+                          {servicio.nombre}
+                        </h3>
+                        {/* Descripción */}
+                        <details className="text-xs text-text-secondary font-jakarta">
+                          <summary className="cursor-pointer line-clamp-3">
+                            {servicio.descripcion}
+                          </summary>
+                          <p className="mt-1">{servicio.descripcion}</p>
+                        </details>
+                        {/* Precio y tiempo */}
+                        <div className="pt-3 border-t border-border">
+                          <div className="flex flex-col gap-2">
+                            {/* Precio */}
+                            <span className="text-base font-bold text-primary font-jakarta">
+                              {formatPrice(servicio.precio)}
+                            </span>
+                            {/* Tiempo de entrega */}
+                            <div className="flex items-center text-xs text-text-secondary font-jakarta">
+                              <svg className="w-4 h-4 mr-1 flex-shrink-0 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span className="truncate">
+                                {servicio.tiempo}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+
+              {/* Vista en lista compacta */}
+              {viewMode === 'list' && (
+                <div className="space-y-3">
+                  {getFilteredAndSortedServices().map((servicio) => (
+                    <div
+                      key={servicio.id}
+                      onClick={() => handleServiceClick(servicio)}
+                      className="group relative bg-background-card rounded-xl border border-border p-4 shadow transition-all duration-200 cursor-pointer hover:shadow-md hover:bg-gray-50"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start gap-4">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-sm font-semibold text-text-main group-hover:text-primary transition-colors truncate font-jakarta">
+                                {servicio.nombre}
+                              </h3>
+                              <p className="text-xs text-text-secondary font-jakarta line-clamp-2 mt-1">
+                                {servicio.descripcion}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-4 text-xs text-text-secondary shrink-0">
+                              <div className="flex items-center gap-1">
+                                <svg className="w-3 h-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{servicio.tiempo}</span>
+                              </div>
+                              <span className="text-sm font-bold text-primary">
+                                {formatPrice(servicio.precio)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Botón de eliminar */}
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                          <button
+                            onClick={(e) => handleDeleteService(servicio.id, e)}
+                            className="p-1.5 rounded-full bg-white shadow border border-border text-text-secondary hover:text-accent hover:border-accent"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Estado cuando no hay resultados de búsqueda/filtros */}
+              {getFilteredAndSortedServices().length === 0 && (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-base font-medium text-gray-900 mb-2">
+                    No se encontraron servicios
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    {searchTerm || priceRange.min || priceRange.max 
+                      ? 'No hay servicios que coincidan con los filtros aplicados.' 
+                      : 'No hay servicios para mostrar.'}
+                  </p>
+                  {(searchTerm || priceRange.min || priceRange.max) && (
+                    <button
+                      onClick={clearFilters}
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium underline"
+                    >
+                      Limpiar filtros
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
           ) : (
             // Empty state para cuando no hay servicios
             <div className="text-center py-12">
