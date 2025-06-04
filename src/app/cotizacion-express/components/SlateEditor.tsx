@@ -170,7 +170,7 @@ const Toolbar = ({ onCopy }: { onCopy: () => void }) => {
         variant="ghost" 
         size="sm" 
         onClick={onCopy}
-        className="h-8 px-3 flex items-center gap-1.5"
+        className="h-8 px-3 flex items-center gap-1.5 hover:bg-blue-100 hover:text-blue-700 transition-colors"
         title="Copiar contenido"
       >
         <Copy className="h-4 w-4" />
@@ -1300,9 +1300,19 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
                 <button
                   onClick={() => setShowAIOptions(!showAIOptions)}
                   disabled={isGeneratingAI}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-md"
+                  className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-md transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
                 >
-                  {isGeneratingAI ? 'Generando con IA...' : '✨ Agregar con IA'}
+                  {isGeneratingAI ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Generando con IA...
+                    </>
+                  ) : (
+                    <>
+                      <span className="mr-2">✨</span>
+                      Agregar con IA
+                    </>
+                  )}
                 </button>
 
                 {/* Dropdown igual que en PaymentDataWidget */}
@@ -1408,6 +1418,7 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
 
 const SlateEditor: React.FC<SlateEditorProps> = ({ value, onChange }) => {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const [copyNotification, setCopyNotification] = useState<string | null>(null);
 
   const getInitialValue = (): Descendant[] => {
     if (!value || value.trim() === '') {
@@ -1508,10 +1519,38 @@ const SlateEditor: React.FC<SlateEditorProps> = ({ value, onChange }) => {
   // Funciones para los botones
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(currentText);
-      console.log('Contenido copiado al portapapeles');
+      // Intentar usar la API moderna del portapapeles
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(currentText);
+        setCopyNotification('¡Contenido copiado exitosamente!');
+      } else {
+        // Fallback para navegadores más antiguos
+        const textArea = document.createElement('textarea');
+        textArea.value = currentText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const result = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (result) {
+          setCopyNotification('¡Contenido copiado exitosamente!');
+        } else {
+          throw new Error('No se pudo copiar el contenido');
+        }
+      }
+      
+      // Limpiar notificación después de 3 segundos
+      setTimeout(() => setCopyNotification(null), 3000);
+      
     } catch (err) {
       console.error('Error al copiar:', err);
+      setCopyNotification('Error al copiar el contenido');
+      setTimeout(() => setCopyNotification(null), 3000);
     }
   };
 
@@ -1575,6 +1614,24 @@ const SlateEditor: React.FC<SlateEditorProps> = ({ value, onChange }) => {
           <p className="text-gray-500 text-sm">Próximamente: Más herramientas interactivas</p>
         </div>
       </div>
+
+      {/* Notificación de copiado */}
+      {copyNotification && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+          <div className={`p-3 rounded-lg border shadow-lg ${
+            copyNotification.includes('Error') 
+              ? 'bg-red-50 border-red-200 text-red-800' 
+              : 'bg-green-50 border-green-200 text-green-800'
+          }`}>
+            <div className="flex items-center">
+              <span className="mr-2">
+                {copyNotification.includes('Error') ? '❌' : '✅'}
+              </span>
+              {copyNotification}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
