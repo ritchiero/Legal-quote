@@ -181,6 +181,7 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
   const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
   const [showAIOptions, setShowAIOptions] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [lastGeneratedText, setLastGeneratedText] = useState('');
   const [formData, setFormData] = useState({
     bank: '',
     clabe: '',
@@ -463,6 +464,23 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
     return newLines.join('\n');
   };
 
+  const removePreviousAIText = (text: string) => {
+    if (!lastGeneratedText) return text;
+    const cleaned = text.replace(lastGeneratedText, '').replace(/\n{3,}/g, '\n\n');
+    return cleaned.trim();
+  };
+
+  const insertWithCleanup = (
+    currentText: string,
+    newText: string,
+    type: 'end' | 'harmonic'
+  ): string => {
+    const cleaned = removePreviousAIText(currentText);
+    return type === 'end'
+      ? insertAtEndProperly(cleaned, newText)
+      : insertHarmonically(cleaned, newText);
+  };
+
   const generateAIContent = async (insertionType: 'end' | 'harmonic') => {
     const currentSelectedMethodId = paymentMethods.length === 1 ? paymentMethods[0].id : selectedMethodId;
     
@@ -500,6 +518,7 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
         body: JSON.stringify({
           methodInfo,
           insertionType,
+          replaceExisting: Boolean(lastGeneratedText),
           currentText: value // Texto actual del editor
         }),
       });
@@ -512,12 +531,8 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
       console.log('✨ Texto generado por IA:', generatedText);
       
       // Insertar el texto generado según el tipo con lógica mejorada
-      let newValue: string;
-      if (insertionType === 'end') {
-        newValue = insertAtEndProperly(value, generatedText);
-      } else {
-        newValue = insertHarmonically(value, generatedText);
-      }
+      const newValue = insertWithCleanup(value, generatedText, insertionType);
+      setLastGeneratedText(generatedText.trim());
       
       console.log('📝 Aplicando nuevo valor:', { 
         originalLength: value.length,

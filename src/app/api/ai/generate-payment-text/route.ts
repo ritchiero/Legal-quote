@@ -9,7 +9,8 @@ export async function POST(req: NextRequest) {
     }
 
     const openai = new OpenAI({ apiKey });
-    const { methodInfo, insertionType, currentText } = await req.json();
+    const { methodInfo, insertionType, currentText, replaceExisting } = await req.json();
+    const mode = replaceExisting ? 'replace' : insertionType;
 
     // Analizar el contenido actual para dar contexto mejor
     const hasPaymentInfo = currentText.toLowerCase().includes('pago') || 
@@ -30,21 +31,31 @@ Método de pago seleccionado:
 Contexto del documento:
 ${hasPaymentInfo ? 'El documento ya contiene información de pagos/costos' : 'El documento no tiene información de pagos aún'}
 ${hasProcessInfo ? 'El documento incluye información de procesos' : ''}
+${replaceExisting ? 'El usuario desea reemplazar la información previa generada por IA.' : ''}
 
-Instrucciones para ${insertionType === 'end' ? 'inserción al final' : 'inserción armónica'}:
+Instrucciones para ${
+  mode === 'end'
+    ? 'inserción al final'
+    : mode === 'harmonic'
+      ? 'inserción armónica'
+      : 'reemplazo'
+}:
 
-${insertionType === 'end' 
+${mode === 'end'
   ? `- Genera un párrafo final profesional con los datos de pago
 - Debe ir después de la firma/despedida como información adicional
 - Incluye instrucciones claras sobre cómo realizar el pago
 - Usa un tono cordial pero ejecutivo
-- Incluye una frase de agradecimiento` 
-  : `- Genera texto que complemente la sección de contraprestación/forma de pago
+- Incluye una frase de agradecimiento`
+  : mode === 'harmonic'
+    ? `- Genera texto que complemente la sección de contraprestación/forma de pago
 - Debe integrarse naturalmente con el contenido existente
 - Proporciona detalles específicos del método de pago seleccionado
 - Mantén la coherencia con el tono del documento
 - Incluye términos y condiciones de pago si es apropiado`
-}
+    : `- Reemplaza la información de pago existente por un nuevo texto coherente
+- Mantén el estilo profesional y directo
+- Incluye los detalles actualizados del método de pago`}
 
 Formato requerido:
 - MÁXIMO 1-2 párrafos cortos (50-80 palabras total)
@@ -57,9 +68,11 @@ IMPORTANTE: Genera SOLO la información de pago necesaria, máximo 80 palabras.
 
 Genera ÚNICAMENTE el texto para insertar:`;
 
-    const userPrompt = insertionType === 'end' 
+    const userPrompt = mode === 'end'
       ? `Genera información de pago para agregar al final del documento después de la firma. Incluye los datos específicos del método de pago y instrucciones claras para el cliente.`
-      : `Genera información de pago para integrar armónicamente en la sección de contraprestación. El texto debe fluir naturalmente con el contenido existente y proporcionar detalles específicos del método de pago.`;
+      : mode === 'harmonic'
+        ? `Genera información de pago para integrar armónicamente en la sección de contraprestación. El texto debe fluir naturalmente con el contenido existente y proporcionar detalles específicos del método de pago.`
+        : `Reemplaza la sección de información de pago actual por un texto nuevo que incluya los detalles indicados del método seleccionado.`;
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
