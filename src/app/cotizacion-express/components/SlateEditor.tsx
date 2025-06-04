@@ -1079,14 +1079,61 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
             </button>
           </div>
         ) : (
-          <div className="space-y-1 text-sm">
-            {contact.name && <p className="text-gray-900">👤 {contact.name}</p>}
-            {contact.phone && <p className="text-gray-900">☎️ {contact.phone}</p>}
-            {contact.mobile && <p className="text-gray-900">📱 {contact.mobile}</p>}
-            {contact.email && <p className="text-gray-900">📧 {contact.email}</p>}
-            {contact.web && <p className="text-gray-900">🌐 {contact.web}</p>}
-            {contact.address && <p className="text-gray-900">🏠 {contact.address}</p>}
-            <button onClick={insertContact} className="mt-2 w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md">Insertar en texto</button>
+          <div className="space-y-3">
+            {/* Información principal */}
+            <div className="space-y-2">
+              {contact.name && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-4">👤</span>
+                  <span className="text-sm font-medium text-gray-900">{contact.name}</span>
+                </div>
+              )}
+              
+              {contact.phone && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-4">☎️</span>
+                  <span className="text-sm text-gray-700">{contact.phone}</span>
+                </div>
+              )}
+              
+              {contact.mobile && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-4">📱</span>
+                  <span className="text-sm text-gray-700">{contact.mobile}</span>
+                </div>
+              )}
+              
+              {contact.email && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-4">📧</span>
+                  <span className="text-sm text-gray-700 break-all">{contact.email}</span>
+                </div>
+              )}
+              
+              {contact.web && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-4">🌐</span>
+                  <span className="text-sm text-gray-700">{contact.web}</span>
+                </div>
+              )}
+              
+              {contact.address && (
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-400 text-xs w-4 mt-0.5">🏠</span>
+                  <span className="text-sm text-gray-700 leading-tight">{contact.address}</span>
+                </div>
+              )}
+            </div>
+            
+            {/* Botón de insertar */}
+            <div className="pt-3 border-t border-gray-100">
+              <button 
+                onClick={insertContact} 
+                className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+              >
+                Insertar en texto
+              </button>
+            </div>
           </div>
         )}
       </div>
