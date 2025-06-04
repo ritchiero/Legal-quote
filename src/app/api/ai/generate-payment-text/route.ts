@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     }
 
     const openai = new OpenAI({ apiKey });
-    const { methodInfo, insertionType, currentText, isReplacement } = await req.json();
+    const { methodInfo, insertionType, currentText } = await req.json();
 
     // Analizar el contenido actual para dar contexto mejor
     const hasPaymentInfo = currentText.toLowerCase().includes('pago') || 
@@ -21,8 +21,6 @@ export async function POST(req: NextRequest) {
                           currentText.toLowerCase().includes('evaluación');
     
     const systemPrompt = `Eres un asistente especializado en generar información de pago profesional para cotizaciones empresariales de servicios legales.
-
-${isReplacement ? '🔄 MODO REEMPLAZO: Estás actualizando información de pago existente.' : '✨ MODO NUEVA INSERCIÓN: Estás agregando información de pago nueva.'}
 
 Método de pago seleccionado:
 - Tipo: ${methodInfo.type}
@@ -55,10 +53,7 @@ Formato requerido:
 - En español mexicano formal
 - Sin explicaciones adicionales
 
-IMPORTANTE: ${isReplacement ? 
-  'Como estás reemplazando contenido existente, asegúrate de que el nuevo texto sea completo y autosuficiente.' 
-  : 'Este es contenido nuevo que se agregará al documento existente.'
-}
+IMPORTANTE: Genera SOLO la información de pago necesaria, máximo 80 palabras.
 
 Genera ÚNICAMENTE el texto para insertar:`;
 

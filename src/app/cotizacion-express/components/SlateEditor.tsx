@@ -360,90 +360,107 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
     }
   };
 
-  // Función para detectar si ya existe contenido de pago generado por IA
-  const detectExistingPaymentContent = (text: string) => {
-    const lines = text.split('\n');
-    let paymentSections = [];
+  // Función mejorada para insertar al final después de la firma
+  const insertAtEndProperly = (currentText: string, newText: string): string => {
+    const lines = currentText.split('\n');
+    let insertIndex = lines.length;
     
-    // Patrones que indican contenido de pago generado por IA
-    const paymentPatterns = [
-      /clabe/i,
-      /transferencia.*bancaria/i,
-      /datos.*pago/i,
-      /información.*pago/i,
-      /realizar.*pago/i,
-      /beneficiario/i,
-      /cuenta.*banco/i,
-      /instrucciones.*pago/i,
-      /forma.*pago/i
-    ];
-    
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].toLowerCase();
-      
-      // Si encuentra patrones de pago, marcar la sección
-      if (paymentPatterns.some(pattern => pattern.test(line))) {
-        let startIndex = i;
-        let endIndex = i;
-        
-        // Expandir hacia atrás para encontrar el inicio de la sección
-        while (startIndex > 0 && lines[startIndex - 1].trim() !== '') {
-          startIndex--;
+    // Buscar la firma para insertar después
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].toLowerCase().trim();
+      if (line.includes('firma') || 
+          line.includes('atentamente') || 
+          line.includes('cordialmente') ||
+          line.includes('saludos') ||
+          line.includes('lawgic')) {
+        // Buscar el final del párrafo de firma
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() !== '') {
+          j++;
         }
-        
-        // Expandir hacia adelante para encontrar el final de la sección
-        while (endIndex < lines.length - 1 && lines[endIndex + 1].trim() !== '') {
-          endIndex++;
-        }
-        
-        paymentSections.push({
-          start: startIndex,
-          end: endIndex,
-          content: lines.slice(startIndex, endIndex + 1).join('\n')
-        });
-        
-        i = endIndex; // Saltar a después de esta sección
+        insertIndex = j;
+        break;
       }
     }
     
-    return paymentSections;
-  };
-
-  // Función para limpiar contenido de pago existente
-  const removeExistingPaymentContent = (text: string): string => {
-    const existingSections = detectExistingPaymentContent(text);
-    
-    if (existingSections.length === 0) {
-      return text; // No hay contenido de pago existente
+    // Insertar después de la firma con espaciado apropiado
+    const newLines = [...lines];
+    if (insertIndex < lines.length && lines[insertIndex].trim() === '') {
+      // Ya hay una línea vacía, insertar ahí
+      newLines.splice(insertIndex, 0, newText, '');
+    } else {
+      // Agregar con espaciado apropiado
+      newLines.splice(insertIndex, 0, '', newText);
     }
     
-    const lines = text.split('\n');
-    let cleanedLines = [...lines];
+    return newLines.join('\n');
+  };
+
+  // Función mejorada para insertar armónicamente
+  const insertHarmonically = (currentText: string, newText: string): string => {
+    const lines = currentText.split('\n');
+    let insertIndex = -1;
     
-    // Remover secciones desde el final hacia el principio para mantener índices
-    for (let i = existingSections.length - 1; i >= 0; i--) {
-      const section = existingSections[i];
-      cleanedLines.splice(section.start, section.end - section.start + 1);
+    // 1. Buscar después de "Contraprestación" o "Forma de Pago"
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].toLowerCase().trim();
+      if (line.includes('contraprestación') || 
+          line.includes('forma de pago') || 
+          line.includes('costo total') ||
+          line.includes('precio') ||
+          line.includes('el pago debe realizarse')) {
+        // Buscar el final de este párrafo
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() !== '') {
+          j++;
+        }
+        insertIndex = j;
+        break;
+      }
     }
     
-    return cleanedLines.join('\n');
-  };
-
-  // Función mejorada para insertar con detección de duplicados
-  const insertAtEndProperlyWithReplace = (currentText: string, newText: string): string => {
-    // Primero limpiar contenido de pago existente
-    const cleanedText = removeExistingPaymentContent(currentText);
+    // 2. Si no encontramos la sección de pago, buscar antes de "Proceso" o similar
+    if (insertIndex === -1) {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].toLowerCase().trim();
+        if (line.includes('proceso') || 
+            line.includes('evaluación inicial') ||
+            line.includes('presentación formal')) {
+          insertIndex = i;
+          break;
+        }
+      }
+    }
     
-    // Luego insertar en la posición correcta
-    return insertAtEndProperly(cleanedText, newText);
-  };
-
-  const insertHarmonicallyWithReplace = (currentText: string, newText: string): string => {
-    // Primero limpiar contenido de pago existente
-    const cleanedText = removeExistingPaymentContent(currentText);
+    // 3. Si no encontramos nada específico, buscar antes de "Firma" o similar
+    if (insertIndex === -1) {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].toLowerCase().trim();
+        if (line.includes('firma') || 
+            line.includes('atentamente') || 
+            line.includes('cordialmente') ||
+            line.includes('saludos')) {
+          insertIndex = i;
+          break;
+        }
+      }
+    }
     
-    // Luego insertar armónicamente
-    return insertHarmonically(cleanedText, newText);
+    // 4. Como último recurso, insertar en el 75% del documento
+    if (insertIndex === -1) {
+      insertIndex = Math.floor(lines.length * 0.75);
+    }
+    
+    // Insertar el texto con espaciado apropiado
+    const newLines = [...lines];
+    if (insertIndex > 0 && newLines[insertIndex - 1].trim() !== '') {
+      // Agregar línea vacía antes si es necesario
+      newLines.splice(insertIndex, 0, '', newText, '');
+    } else {
+      newLines.splice(insertIndex, 0, newText, '');
+    }
+    
+    return newLines.join('\n');
   };
 
   const generateAIContent = async (insertionType: 'end' | 'harmonic') => {
@@ -461,16 +478,10 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
       const selectedMethod = paymentMethods.find(m => m.id === currentSelectedMethodId);
       if (!selectedMethod) return;
 
-      // Detectar si ya existe contenido de pago
-      const existingPaymentSections = detectExistingPaymentContent(value);
-      const hasExistingPayment = existingPaymentSections.length > 0;
-      
       console.log('🚀 Iniciando generación de IA:', { 
         insertionType, 
         method: selectedMethod.type,
-        currentTextLength: value.length,
-        hasExistingPayment,
-        existingSections: existingPaymentSections.length
+        currentTextLength: value.length 
       });
 
       // Preparar datos del método de pago para el prompt
@@ -489,8 +500,7 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
         body: JSON.stringify({
           methodInfo,
           insertionType,
-          currentText: value,
-          isReplacement: hasExistingPayment // Nuevo parámetro
+          currentText: value // Texto actual del editor
         }),
       });
 
@@ -501,27 +511,23 @@ const PaymentDataWidget = ({ value, onChange }: { value: string; onChange: (valu
       const { generatedText } = await response.json();
       console.log('✨ Texto generado por IA:', generatedText);
       
-      // Usar funciones con reemplazo inteligente
+      // Insertar el texto generado según el tipo con lógica mejorada
       let newValue: string;
       if (insertionType === 'end') {
-        newValue = insertAtEndProperlyWithReplace(value, generatedText);
+        newValue = insertAtEndProperly(value, generatedText);
       } else {
-        newValue = insertHarmonicallyWithReplace(value, generatedText);
+        newValue = insertHarmonically(value, generatedText);
       }
       
       console.log('📝 Aplicando nuevo valor:', { 
         originalLength: value.length,
         newLength: newValue.length,
         difference: newValue.length - value.length,
-        replacedExisting: hasExistingPayment
+        preview: newValue.substring(value.length - 50, value.length + 100)
       });
       
       onChange(newValue);
-      
-      const message = hasExistingPayment 
-        ? 'Información de pago actualizada exitosamente'
-        : 'Contenido agregado con IA exitosamente';
-      showNotification('success', message);
+      showNotification('success', 'Contenido agregado con IA exitosamente');
       
     } catch (error) {
       console.error('Error generating AI content:', error);
