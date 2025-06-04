@@ -955,6 +955,10 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState<ContactInfo>({ name: '', phone: '', mobile: '', email: '', web: '', address: '' });
   const [error, setError] = useState<string | null>(null);
+  const [showAIOptions, setShowAIOptions] = useState(false);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [lastGeneratedText, setLastGeneratedText] = useState('');
+  const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
 
   useEffect(() => {
     console.log('🔧 ContactDataWidget mounted, user:', user?.uid);
@@ -1033,6 +1037,171 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
     const contactText = `\n\nContacto:\n${lines.join('\n')}`;
     onChange(value + contactText);
     console.log('📝 Contact text inserted:', contactText);
+  };
+
+  const showNotification = (type: 'success' | 'error', message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const insertAtEndProperly = (currentText: string, newText: string): string => {
+    const lines = currentText.split('\n');
+    let insertIndex = lines.length;
+
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].toLowerCase().trim();
+      if (line.includes('firma') ||
+          line.includes('atentamente') ||
+          line.includes('cordialmente') ||
+          line.includes('saludos') ||
+          line.includes('lawgic')) {
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() !== '') {
+          j++;
+        }
+        insertIndex = j;
+        break;
+      }
+    }
+
+    const newLines = [...lines];
+    if (insertIndex < lines.length && lines[insertIndex].trim() === '') {
+      newLines.splice(insertIndex, 0, newText, '');
+    } else {
+      newLines.splice(insertIndex, 0, '', newText);
+    }
+
+    return newLines.join('\n');
+  };
+
+  const insertHarmonically = (currentText: string, newText: string): string => {
+    const lines = currentText.split('\n');
+    let insertIndex = -1;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].toLowerCase().trim();
+      if (line.includes('contraprestación') ||
+          line.includes('forma de pago') ||
+          line.includes('costo total') ||
+          line.includes('precio') ||
+          line.includes('el pago debe realizarse')) {
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() !== '') {
+          j++;
+        }
+        insertIndex = j;
+        break;
+      }
+    }
+
+    if (insertIndex === -1) {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].toLowerCase().trim();
+        if (line.includes('proceso') ||
+            line.includes('evaluación inicial') ||
+            line.includes('presentación formal')) {
+          insertIndex = i;
+          break;
+        }
+      }
+    }
+
+    if (insertIndex === -1) {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].toLowerCase().trim();
+        if (line.includes('firma') ||
+            line.includes('atentamente') ||
+            line.includes('cordialmente') ||
+            line.includes('saludos')) {
+          insertIndex = i;
+          break;
+        }
+      }
+    }
+
+    if (insertIndex === -1) {
+      insertIndex = Math.floor(lines.length * 0.75);
+    }
+
+    const newLines = [...lines];
+    if (insertIndex > 0 && newLines[insertIndex - 1].trim() !== '') {
+      newLines.splice(insertIndex, 0, '', newText, '');
+    } else {
+      newLines.splice(insertIndex, 0, newText, '');
+    }
+
+    return newLines.join('\n');
+  };
+
+  const removePreviousAIText = (text: string) => {
+    if (!lastGeneratedText) return text;
+    const cleaned = text.replace(lastGeneratedText, '').replace(/\n{3,}/g, '\n\n');
+    return cleaned.trim();
+  };
+
+  const insertWithCleanup = (
+    currentText: string,
+    newText: string,
+    type: 'end' | 'harmonic'
+  ): string => {
+    const cleaned = removePreviousAIText(currentText);
+    return type === 'end'
+      ? insertAtEndProperly(cleaned, newText)
+      : insertHarmonically(cleaned, newText);
+  };
+
+  const generateAIContent = async (insertionType: 'end' | 'harmonic') => {
+    const hasData = contact.name || contact.phone || contact.mobile || contact.email || contact.web || contact.address;
+
+    if (!hasData) {
+      showNotification('error', 'Agrega datos de contacto primero');
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    setShowAIOptions(false);
+
+    try {
+      const contactInfo = { ...contact };
+
+      console.log('🚀 Iniciando generación de IA (contact):', {
+        insertionType,
+        currentTextLength: value.length,
+        contactInfo,
+      });
+
+      const response = await fetch('/api/ai/generate-contact-text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contactInfo,
+          insertionType,
+          replaceExisting: Boolean(lastGeneratedText),
+          currentText: value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al generar contenido con IA');
+      }
+
+      const { generatedText } = await response.json();
+      console.log('✨ Texto generado por IA (contact):', generatedText);
+
+      const newValue = insertWithCleanup(value, generatedText, insertionType);
+      setLastGeneratedText(generatedText.trim());
+
+      onChange(newValue);
+      showNotification('success', 'Contenido agregado con IA exitosamente');
+
+    } catch (error) {
+      console.error('Error generating AI contact content:', error);
+      showNotification('error', 'Error al generar contenido con IA');
+    } finally {
+      setIsGeneratingAI(false);
+    }
   };
 
   console.log('🎨 ContactDataWidget rendering - isLoading:', isLoading, 'error:', error, 'user:', !!user);
@@ -1127,16 +1296,77 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
             
             {/* Botón de insertar */}
             <div className="pt-3 border-t border-gray-100">
-              <button 
-                onClick={insertContact} 
+              <button
+                onClick={insertContact}
                 className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
               >
                 Insertar en texto
               </button>
             </div>
+
+            {/* Botón de IA */}
+            <div className="pt-2">
+              <div className="relative">
+                <button
+                  onClick={() => setShowAIOptions(!showAIOptions)}
+                  disabled={isGeneratingAI}
+                  className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-md"
+                >
+                  {isGeneratingAI ? 'Generando con IA...' : '✨ Agregar con IA'}
+                </button>
+
+                {/* Dropdown igual que en PaymentDataWidget */}
+                {showAIOptions && !isGeneratingAI && (
+                  <div className="absolute bottom-full mb-2 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                    <button
+                      onClick={() => generateAIContent('end')}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 rounded-t-lg border-b border-gray-100"
+                    >
+                      <div className="flex items-center">
+                        <span className="mr-3">📝</span>
+                        <div>
+                          <p className="font-medium text-gray-900">Al final del texto</p>
+                          <p className="text-xs text-gray-500">Agregar información de contacto al final</p>
+                        </div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => generateAIContent('harmonic')}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 rounded-b-lg"
+                    >
+                      <div className="flex items-center">
+                        <span className="mr-3">🎯</span>
+                        <div>
+                          <p className="font-medium text-gray-900">Armónicamente dentro del texto</p>
+                          <p className="text-xs text-gray-500">Integrar naturalmente en el contenido</p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Notificación flotante */}
+      {notification && (
+        <div className="fixed top-4 right-4 z-50">
+          <div className={`p-3 rounded-lg border shadow-lg ${
+            notification.type === 'success'
+              ? 'bg-green-50 border-green-200 text-green-800'
+              : 'bg-red-50 border-red-200 text-red-800'
+          }`}>
+            <div className="flex items-center">
+              <span className="mr-2">
+                {notification.type === 'success' ? '✅' : '❌'}
+              </span>
+              {notification.message}
+            </div>
+          </div>
+        </div>
+      )}
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
