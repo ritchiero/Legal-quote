@@ -12,21 +12,8 @@ import { useRouter } from 'next/navigation';
 import { PlusIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import CreateServiceModal from '@/components/modals/CreateServiceModal';
 import RequirementsAIModal from "@/components/modals/RequirementsAIModal";
-
-interface Service {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  detalles: string;
-  tiempo: string;
-  precio: string;
-  incluye: string[];
-  userId: string;
-  userEmail: string;
-  createdAt: any;
-  updatedAt: any;
-  status: string;
-}
+import { useServiceFilters } from '@/lib/hooks/useServiceFilters';
+import type { Service } from '@/lib/types/service';
 
 interface ServicesTabProps {
   userId: string;
@@ -72,10 +59,18 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
   // Estados para búsqueda y filtros
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'nombre' | 'precio' | 'tiempo' | 'fecha'>('nombre');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [priceRange, setPriceRange] = useState<{ min: string; max: string }>({ min: '', max: '' });
+  const {
+    searchTerm,
+    setSearchTerm,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    priceRange,
+    setPriceRange,
+    getFilteredAndSortedServices,
+    clearFilters,
+  } = useServiceFilters(servicios);
   const [showFilters, setShowFilters] = useState(false);
 
   const { complete, isLoading: isAILoading } = useCompletion({
@@ -96,68 +91,7 @@ export default function ServicesTab({ userId, servicios, onServiciosUpdate }: Se
     setMounted(true);
   }, []);
 
-  // Función para filtrar y ordenar servicios
-  const getFilteredAndSortedServices = () => {
-    let filtered = servicios.filter(servicio => {
-      // Filtro por búsqueda
-      const matchesSearch = servicio.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           servicio.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      // Filtro por rango de precio
-      let matchesPrice = true;
-      if (priceRange.min || priceRange.max) {
-        const precio = parseFloat(servicio.precio.replace(/[^\d.]/g, ''));
-        const min = priceRange.min ? parseFloat(priceRange.min) : 0;
-        const max = priceRange.max ? parseFloat(priceRange.max) : Infinity;
-        matchesPrice = precio >= min && precio <= max;
-      }
-      
-      return matchesSearch && matchesPrice;
-    });
 
-    // Ordenar
-    filtered.sort((a, b) => {
-      let valueA, valueB;
-      
-      switch (sortBy) {
-        case 'nombre':
-          valueA = a.nombre.toLowerCase();
-          valueB = b.nombre.toLowerCase();
-          break;
-        case 'precio':
-          valueA = parseFloat(a.precio.replace(/[^\d.]/g, ''));
-          valueB = parseFloat(b.precio.replace(/[^\d.]/g, ''));
-          break;
-        case 'tiempo':
-          valueA = a.tiempo.toLowerCase();
-          valueB = b.tiempo.toLowerCase();
-          break;
-        case 'fecha':
-          valueA = a.createdAt?.seconds || 0;
-          valueB = b.createdAt?.seconds || 0;
-          break;
-        default:
-          valueA = a.nombre.toLowerCase();
-          valueB = b.nombre.toLowerCase();
-      }
-
-      if (sortOrder === 'asc') {
-        return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
-      } else {
-        return valueA > valueB ? -1 : valueA < valueB ? 1 : 0;
-      }
-    });
-
-    return filtered;
-  };
-
-  // Función para limpiar filtros
-  const clearFilters = () => {
-    setSearchTerm('');
-    setPriceRange({ min: '', max: '' });
-    setSortBy('nombre');
-    setSortOrder('asc');
-  };
 
   // Función para estandarizar servicios con IA
   const [isStandardizing, setIsStandardizing] = useState(false);
