@@ -62,6 +62,15 @@ interface Servicio {
   userId: string;
 }
 
+interface ContactInfo {
+  name?: string;
+  phone?: string;
+  mobile?: string;
+  email?: string;
+  web?: string;
+  address?: string;
+}
+
 
 const ServicioInput = ({
   onManualChange,
@@ -309,14 +318,15 @@ const formatList = (items: string[]): string => {
     .join("");
 };
 
-const formatContactInfo = (contact: {
-  email: string;
-  phone: string;
-}): string => {
-  return `
-    <div style="margin-bottom: 8px;">📧 ${contact.email}</div>
-    <div>📱 ${contact.phone}</div>
-  `;
+const formatContactInfo = (contact: ContactInfo): string => {
+  const parts = [] as string[];
+  if (contact.name) parts.push(`👤 ${contact.name}`);
+  if (contact.phone) parts.push(`☎️ ${contact.phone}`);
+  if (contact.mobile) parts.push(`📱 ${contact.mobile}`);
+  if (contact.email) parts.push(`📧 ${contact.email}`);
+  if (contact.web) parts.push(`🌐 ${contact.web}`);
+  if (contact.address) parts.push(`🏠 ${contact.address}`);
+  return parts.map(p => `<div style="margin-bottom: 8px;">${p}</div>`).join('');
 };
 
 const extractInfoFromContent = (content: string) => {
@@ -336,8 +346,12 @@ const extractInfoFromContent = (content: string) => {
       servicios: [] as string[],
       requisitos: [] as string[],
       contacto: {
-        email: "",
+        name: "",
         phone: "",
+        mobile: "",
+        email: "",
+        web: "",
+        address: "",
       },
       vigencia: "",
       remitente: "",
@@ -394,8 +408,12 @@ const extractInfoFromContent = (content: string) => {
       servicios: ["Servicio básico"],
       requisitos: ["Documentación necesaria"],
       contacto: {
-        email: "contacto@despacho.com",
+        name: "Contacto",
         phone: "(123) 456-7890",
+        mobile: "",
+        email: "contacto@despacho.com",
+        web: "",
+        address: "",
       },
       vigencia: "30 días",
       remitente: "Despacho Legal",
