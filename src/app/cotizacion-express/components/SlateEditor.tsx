@@ -1294,23 +1294,13 @@ const ContactDataWidget = ({ value, onChange }: { value: string; onChange: (valu
               )}
             </div>
             
-            {/* Botón de insertar */}
-            <div className="pt-3 border-t border-gray-100">
-              <button
-                onClick={insertContact}
-                className="w-full inline-flex items-center justify-center px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-              >
-                Insertar en texto
-              </button>
-            </div>
-
             {/* Botón de IA */}
-            <div className="pt-2">
+            <div className="pt-3 border-t border-gray-100">
               <div className="relative">
                 <button
                   onClick={() => setShowAIOptions(!showAIOptions)}
                   disabled={isGeneratingAI}
-                  className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-md"
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-md"
                 >
                   {isGeneratingAI ? 'Generando con IA...' : '✨ Agregar con IA'}
                 </button>
