@@ -4,7 +4,8 @@ import { doc, updateDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/firebase';
 import { toast } from 'react-hot-toast';
 
-import { BillingData } from '../settings/profile/types';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type BillingData = Record<string, any>;
 
 interface BillingTabProps {
   userId: string;
