@@ -214,7 +214,8 @@ export default function CotizacionEstructuradaForm() {
     contactPhone: '',
     includeSignature: false,
     includeAttachments: false,
-    attachments: [] as File[] // Store actual files
+        attachments: [] as File[], // Store actual files
+        customLanguage: ''
   });
 
   // Format & Tone State - Defaults Inteligentes
