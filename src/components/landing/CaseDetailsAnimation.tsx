@@ -32,41 +32,66 @@ export default function CaseDetailsAnimation() {
   }, [step])
 
   return (
-    <div className="relative w-full max-w-[32rem] mx-auto">
-      {/* Efecto de brillo */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-75 animate-pulse transition duration-1000" />
+    <div className="relative w-full max-w-[28rem] mx-auto">
+      {/* Glow sutil */}
+      <div
+        className="absolute -inset-3 rounded-[28px] opacity-30 blur-2xl"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 40%, rgba(60,101,226,0.35) 0%, transparent 70%)',
+        }}
+      />
 
-      {/* Tarjeta principal */}
-      <div className="relative w-full bg-blue-600/95 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20 overflow-hidden">
-        <div className="p-8 space-y-6">
-          {/* Indicador de estado */}
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_0_rgba(34,197,94,0.6)] animate-pulse" />
-            <span className="text-sm font-medium text-white">IA Procesando</span>
+      {/* Card principal — glass sobre navy */}
+      <div
+        className="relative w-full rounded-[24px] overflow-hidden"
+        style={{
+          background: 'rgba(255,255,255,0.06)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06)',
+        }}
+      >
+        <div className="p-7 space-y-5">
+          {/* Status indicator */}
+          <div className="flex items-center space-x-2.5">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)] animate-pulse" />
+            <span className="text-[13px] font-medium text-white/60 tracking-wide">
+              IA Procesando
+            </span>
           </div>
 
           <AnimatePresence mode="wait">
             {step === 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex items-start space-x-5"
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex items-start space-x-4"
                 key="input"
               >
-                <div className="min-w-12 h-12 rounded-xl bg-blue-500/30 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                  <FileText className="h-6 w-6 text-white" />
+                <div
+                  className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'rgba(60,101,226,0.12)',
+                    border: '1px solid rgba(60,101,226,0.2)',
+                  }}
+                >
+                  <FileText className="h-5 w-5 text-[#7BA3F7]" />
                 </div>
                 <div className="flex-1 space-y-3">
-                  <p className="text-base font-semibold text-white">Detalles del Caso</p>
-                  <div className="space-y-3">
+                  <p className="text-[15px] font-semibold text-white/90">
+                    Detalles del Caso
+                  </p>
+                  <div className="space-y-2">
                     {messages.map((msg, idx) => (
                       <motion.div
                         key={idx}
-                        initial={{ opacity: 0, x: -10 }}
+                        initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.2 }}
-                        className="text-[15px] text-white font-medium"
+                        transition={{ delay: idx * 0.15, duration: 0.3 }}
+                        className="text-[13px] text-white/50 leading-relaxed"
                       >
                         {msg}
                       </motion.div>
@@ -78,27 +103,44 @@ export default function CaseDetailsAnimation() {
 
             {step === 1 && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex items-start space-x-5"
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex items-start space-x-4"
                 key="processing"
               >
-                <div className="min-w-12 h-12 rounded-xl bg-blue-500/30 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                  <Bot className="h-6 w-6 text-white" />
+                <div
+                  className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'rgba(60,101,226,0.12)',
+                    border: '1px solid rgba(60,101,226,0.2)',
+                  }}
+                >
+                  <Bot className="h-5 w-5 text-[#7BA3F7]" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-base font-semibold mb-4 text-white">Análisis de IA</p>
-                  <div className="space-y-3">
-                    <div className="h-2.5 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+                <div className="flex-1 space-y-3">
+                  <p className="text-[15px] font-semibold text-white/90">
+                    Análisis de IA
+                  </p>
+                  <div className="space-y-2.5">
+                    <div
+                      className="h-1.5 rounded-full overflow-hidden"
+                      style={{ background: 'rgba(255,255,255,0.08)' }}
+                    >
                       <motion.div
-                        className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
+                        className="h-full rounded-full"
+                        style={{
+                          background: 'linear-gradient(90deg, #3C65E2, #7BA3F7)',
+                        }}
                         initial={{ width: "0%" }}
                         animate={{ width: "100%" }}
-                        transition={{ duration: 2 }}
+                        transition={{ duration: 2, ease: "easeInOut" }}
                       />
                     </div>
-                    <div className="text-sm text-white/90 font-medium">Procesando datos...</div>
+                    <p className="text-[13px] text-white/40">
+                      Procesando datos...
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -106,33 +148,38 @@ export default function CaseDetailsAnimation() {
 
             {step === 2 && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex items-start space-x-5"
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex items-start space-x-4"
                 key="thinking"
               >
-                <div className="min-w-12 h-12 rounded-xl bg-blue-500/30 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                  <Sparkles className="h-6 w-6 text-white" />
+                <div
+                  className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'rgba(60,101,226,0.12)',
+                    border: '1px solid rgba(60,101,226,0.2)',
+                  }}
+                >
+                  <Sparkles className="h-5 w-5 text-[#7BA3F7]" />
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_0_rgba(74,222,128,0.6)]" />
-                    <p className="text-base font-medium text-white">IA Procesando</p>
-                  </div>
-                  <p className="text-lg font-semibold mb-3 text-white">Generando Cotización</p>
-                  <div className="flex space-x-2">
+                <div className="flex-1 space-y-3">
+                  <p className="text-[15px] font-semibold text-white/90">
+                    Generando Cotización
+                  </p>
+                  <div className="flex space-x-1.5">
                     {[0, 1, 2].map((i) => (
                       <motion.span
                         key={i}
-                        className="w-2.5 h-2.5 bg-blue-400 rounded-full"
+                        className="w-1.5 h-1.5 rounded-full bg-[#7BA3F7]"
                         animate={{
-                          scale: [1, 1.2, 1],
-                          opacity: [0.3, 1, 0.3],
+                          scale: [1, 1.4, 1],
+                          opacity: [0.3, 0.9, 0.3],
                         }}
                         transition={{
-                          duration: 1.2,
-                          repeat: Number.POSITIVE_INFINITY,
+                          duration: 1,
+                          repeat: Infinity,
                           delay: i * 0.2,
                         }}
                       />
@@ -144,35 +191,53 @@ export default function CaseDetailsAnimation() {
 
             {step === 3 && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex items-start space-x-5"
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex items-start space-x-4"
                 key="result"
               >
-                <div className="min-w-12 h-12 rounded-xl bg-blue-500/30 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                  <Send className="h-6 w-6 text-white" />
+                <div
+                  className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'rgba(60,101,226,0.12)',
+                    border: '1px solid rgba(60,101,226,0.2)',
+                  }}
+                >
+                  <Send className="h-5 w-5 text-[#7BA3F7]" />
                 </div>
                 <div className="flex-1 space-y-3">
-                  <p className="text-base font-semibold text-white">Cotización Lista</p>
-                  <div className="p-6 bg-blue-500/30 rounded-xl border border-white/20 backdrop-blur-md">
-                    <div className="space-y-4">
+                  <p className="text-[15px] font-semibold text-white/90">
+                    Cotización Lista
+                  </p>
+                  <div
+                    className="p-4 rounded-xl"
+                    style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                    }}
+                  >
+                    <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-[15px] text-white/80 min-w-[140px]">Honorarios Base</span>
-                        <span className="text-[15px] font-semibold text-white">$3,500</span>
+                        <span className="text-[13px] text-white/40">Honorarios Base</span>
+                        <span className="text-[13px] font-semibold text-white/80">$3,500</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-[15px] text-white/80 min-w-[140px]">Gastos Estimados</span>
-                        <span className="text-[15px] font-semibold text-white">$500</span>
+                        <span className="text-[13px] text-white/40">Gastos Estimados</span>
+                        <span className="text-[13px] font-semibold text-white/80">$500</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-[15px] text-white/80 min-w-[140px]">Tiempo Estimado</span>
-                        <span className="text-[15px] font-semibold text-white">4 meses</span>
+                        <span className="text-[13px] text-white/40">Tiempo Estimado</span>
+                        <span className="text-[13px] font-semibold text-white/80">4 meses</span>
                       </div>
-                      <div className="pt-4 border-t border-white/20">
+                      <div
+                        className="pt-3"
+                        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+                      >
                         <div className="flex justify-between items-center">
-                          <span className="text-[15px] font-semibold text-white min-w-[140px]">Total</span>
-                          <span className="text-[15px] font-semibold text-white">$4,000</span>
+                          <span className="text-[14px] font-bold text-white/80">Total</span>
+                          <span className="text-[14px] font-bold text-white">$4,000</span>
                         </div>
                       </div>
                     </div>
@@ -185,4 +250,4 @@ export default function CaseDetailsAnimation() {
       </div>
     </div>
   )
-} 
+}
