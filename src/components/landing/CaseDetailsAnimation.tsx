@@ -35,28 +35,28 @@ export default function CaseDetailsAnimation() {
     <div className="relative w-full max-w-[28rem] mx-auto">
       {/* Glow sutil */}
       <div
-        className="absolute -inset-3 rounded-[28px] opacity-30 blur-2xl"
+        className="absolute -inset-3 rounded-[28px] opacity-40 blur-2xl"
         style={{
-          background: 'radial-gradient(ellipse at 50% 40%, rgba(60,101,226,0.35) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 40%, rgba(60,101,226,0.4) 0%, transparent 70%)',
         }}
       />
 
-      {/* Card principal — glass sobre navy */}
+      {/* Card principal — glass elegante sobre navy */}
       <div
         className="relative w-full rounded-[24px] overflow-hidden"
         style={{
-          background: 'rgba(255,255,255,0.06)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06)',
+          background: 'rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)',
         }}
       >
         <div className="p-7 space-y-5">
           {/* Status indicator */}
           <div className="flex items-center space-x-2.5">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)] animate-pulse" />
-            <span className="text-[13px] font-medium text-white/60 tracking-wide">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse" />
+            <span className="text-[13px] font-medium text-white/70 tracking-wide">
               IA Procesando
             </span>
           </div>
@@ -74,14 +74,14 @@ export default function CaseDetailsAnimation() {
                 <div
                   className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                   style={{
-                    background: 'rgba(60,101,226,0.12)',
-                    border: '1px solid rgba(60,101,226,0.2)',
+                    background: 'rgba(60,101,226,0.2)',
+                    border: '1px solid rgba(60,101,226,0.35)',
                   }}
                 >
-                  <FileText className="h-5 w-5 text-[#7BA3F7]" />
+                  <FileText className="h-5 w-5 text-[#93B4FC]" />
                 </div>
                 <div className="flex-1 space-y-3">
-                  <p className="text-[15px] font-semibold text-white/90">
+                  <p className="text-[15px] font-semibold text-white">
                     Detalles del Caso
                   </p>
                   <div className="space-y-2">
@@ -91,7 +91,7 @@ export default function CaseDetailsAnimation() {
                         initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.15, duration: 0.3 }}
-                        className="text-[13px] text-white/50 leading-relaxed"
+                        className="text-[13px] text-white/70 leading-relaxed"
                       >
                         {msg}
                       </motion.div>
@@ -113,32 +113,32 @@ export default function CaseDetailsAnimation() {
                 <div
                   className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                   style={{
-                    background: 'rgba(60,101,226,0.12)',
-                    border: '1px solid rgba(60,101,226,0.2)',
+                    background: 'rgba(60,101,226,0.2)',
+                    border: '1px solid rgba(60,101,226,0.35)',
                   }}
                 >
-                  <Bot className="h-5 w-5 text-[#7BA3F7]" />
+                  <Bot className="h-5 w-5 text-[#93B4FC]" />
                 </div>
                 <div className="flex-1 space-y-3">
-                  <p className="text-[15px] font-semibold text-white/90">
+                  <p className="text-[15px] font-semibold text-white">
                     Análisis de IA
                   </p>
                   <div className="space-y-2.5">
                     <div
-                      className="h-1.5 rounded-full overflow-hidden"
-                      style={{ background: 'rgba(255,255,255,0.08)' }}
+                      className="h-2 rounded-full overflow-hidden"
+                      style={{ background: 'rgba(255,255,255,0.1)' }}
                     >
                       <motion.div
                         className="h-full rounded-full"
                         style={{
-                          background: 'linear-gradient(90deg, #3C65E2, #7BA3F7)',
+                          background: 'linear-gradient(90deg, #3C65E2, #93B4FC)',
                         }}
                         initial={{ width: "0%" }}
                         animate={{ width: "100%" }}
                         transition={{ duration: 2, ease: "easeInOut" }}
                       />
                     </div>
-                    <p className="text-[13px] text-white/40">
+                    <p className="text-[13px] text-white/60">
                       Procesando datos...
                     </p>
                   </div>
@@ -158,24 +158,24 @@ export default function CaseDetailsAnimation() {
                 <div
                   className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                   style={{
-                    background: 'rgba(60,101,226,0.12)',
-                    border: '1px solid rgba(60,101,226,0.2)',
+                    background: 'rgba(60,101,226,0.2)',
+                    border: '1px solid rgba(60,101,226,0.35)',
                   }}
                 >
-                  <Sparkles className="h-5 w-5 text-[#7BA3F7]" />
+                  <Sparkles className="h-5 w-5 text-[#93B4FC]" />
                 </div>
                 <div className="flex-1 space-y-3">
-                  <p className="text-[15px] font-semibold text-white/90">
+                  <p className="text-[15px] font-semibold text-white">
                     Generando Cotización
                   </p>
-                  <div className="flex space-x-1.5">
+                  <div className="flex space-x-2">
                     {[0, 1, 2].map((i) => (
                       <motion.span
                         key={i}
-                        className="w-1.5 h-1.5 rounded-full bg-[#7BA3F7]"
+                        className="w-2 h-2 rounded-full bg-[#93B4FC]"
                         animate={{
                           scale: [1, 1.4, 1],
-                          opacity: [0.3, 0.9, 0.3],
+                          opacity: [0.4, 1, 0.4],
                         }}
                         transition={{
                           duration: 1,
@@ -201,42 +201,42 @@ export default function CaseDetailsAnimation() {
                 <div
                   className="min-w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                   style={{
-                    background: 'rgba(60,101,226,0.12)',
-                    border: '1px solid rgba(60,101,226,0.2)',
+                    background: 'rgba(60,101,226,0.2)',
+                    border: '1px solid rgba(60,101,226,0.35)',
                   }}
                 >
-                  <Send className="h-5 w-5 text-[#7BA3F7]" />
+                  <Send className="h-5 w-5 text-[#93B4FC]" />
                 </div>
                 <div className="flex-1 space-y-3">
-                  <p className="text-[15px] font-semibold text-white/90">
+                  <p className="text-[15px] font-semibold text-white">
                     Cotización Lista
                   </p>
                   <div
                     className="p-4 rounded-xl"
                     style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.06)',
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.1)',
                     }}
                   >
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-[13px] text-white/40">Honorarios Base</span>
-                        <span className="text-[13px] font-semibold text-white/80">$3,500</span>
+                        <span className="text-[13px] text-white/60">Honorarios Base</span>
+                        <span className="text-[13px] font-semibold text-white">$3,500</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-[13px] text-white/40">Gastos Estimados</span>
-                        <span className="text-[13px] font-semibold text-white/80">$500</span>
+                        <span className="text-[13px] text-white/60">Gastos Estimados</span>
+                        <span className="text-[13px] font-semibold text-white">$500</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-[13px] text-white/40">Tiempo Estimado</span>
-                        <span className="text-[13px] font-semibold text-white/80">4 meses</span>
+                        <span className="text-[13px] text-white/60">Tiempo Estimado</span>
+                        <span className="text-[13px] font-semibold text-white">4 meses</span>
                       </div>
                       <div
                         className="pt-3"
-                        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+                        style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}
                       >
                         <div className="flex justify-between items-center">
-                          <span className="text-[14px] font-bold text-white/80">Total</span>
+                          <span className="text-[14px] font-bold text-white">Total</span>
                           <span className="text-[14px] font-bold text-white">$4,000</span>
                         </div>
                       </div>
