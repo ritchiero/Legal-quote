@@ -2,16 +2,23 @@ import { Sparkles, Settings2, BarChart3 } from "lucide-react"
 
 export default function FeaturesSection() {
   return (
-    <section id="features" aria-label="Características principales" className="w-full py-16 md:py-24 bg-white scroll-mt-20">
-      <div className="container px-4 md:px-6 mx-auto overflow-x-hidden">
-        <div className="flex flex-col items-center justify-center space-y-12 text-center">
+    <section
+      id="features"
+      aria-label="Características principales"
+      className="w-full py-[72px] md:py-[96px] bg-white scroll-mt-20"
+    >
+      <div className="container px-6 md:px-6 mx-auto overflow-x-hidden">
+        <div className="flex flex-col items-center justify-center space-y-10 text-center">
           <div className="space-y-4 max-w-3xl">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">Características Principales</h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600">
+            <h2 className="text-2xl sm:text-3xl md:text-[40px] lg:text-[48px] font-extrabold tracking-[-0.02em] leading-[1.15] text-[#0B0F1A]">
+              Características Principales
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl text-[#7C86A4] leading-[1.7]">
               Descubre cómo Legal AI Quote revoluciona el proceso de cotización legal
             </p>
           </div>
-          <div className="grid gap-12 lg:grid-cols-3 w-full max-w-6xl">
+
+          <div className="grid gap-8 lg:grid-cols-3 w-full max-w-6xl mt-10">
             {[
               {
                 icon: Sparkles,
@@ -29,14 +36,17 @@ export default function FeaturesSection() {
                 description: "¿No sabes cuánto cobrar? Mercado IA te da consideraciones importantes para tu cobro",
               },
             ].map((item, i) => (
-              <div key={i} className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-50 to-transparent rounded-3xl transform group-hover:scale-[1.02] transition-transform duration-300" />
-                <div className="relative flex flex-col items-center space-y-4 p-8">
-                  <div className="p-4 bg-blue-600/5 rounded-2xl group-hover:bg-blue-600/10 transition-colors">
-                    <item.icon className="h-8 w-8 text-blue-600" />
+              <div
+                key={i}
+                className="group bg-white border border-[#E9EEF5] rounded-[16px] p-8 transition-all duration-200 hover:border-[#DDE8FD] hover:shadow-[0_8px_24px_rgba(16,24,40,0.08)]"
+                style={{ boxShadow: '0 1px 2px rgba(16,24,40,0.06)' }}
+              >
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="p-4 bg-[#F2F8FF] rounded-[12px] group-hover:bg-[#E8F2FC] transition-colors">
+                    <item.icon className="h-8 w-8 text-[#3C65E2]" />
                   </div>
-                  <h3 className="text-xl font-bold">{item.title}</h3>
-                  <p className="text-gray-600 text-center">{item.description}</p>
+                  <h3 className="text-lg font-bold text-[#0B0F1A] leading-[1.3]">{item.title}</h3>
+                  <p className="text-[#7C86A4] text-center leading-[1.7]">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -45,4 +55,4 @@ export default function FeaturesSection() {
       </div>
     </section>
   )
-} 
+}
