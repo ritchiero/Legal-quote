@@ -1,16 +1,14 @@
 "use client"
 
-import BackgroundPattern from "@/components/landing/backgroundPattern"
-import QuoteAnimation from "@/components/landing/quoteAnimation"
 import QuoteFormAnimation from "@/components/landing/quoteFormAnimation"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Sparkles, BarChart3, Settings2, Menu, X } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import HeroSection from "@/components/landing/HeroSection"
 import FeaturesSection from "@/components/landing/FeaturesSection"
 import CaseDetailsAnimation from "@/components/landing/CaseDetailsAnimation"
 import SignInModal from "@/components/SignInModal"
 import { useState } from "react"
+import { Menu, X } from "lucide-react"
 
 export default function LandingPage() {
   const [showSignInDialog, setShowSignInDialog] = useState(false)
@@ -25,9 +23,9 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen font-sans bg-white scroll-smooth">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-white/10">
+    <div className="flex flex-col min-h-screen font-jakarta bg-white scroll-smooth">
+      {/* Navbar — bg Navy-900, white text, pill CTA */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#101836]/95 backdrop-blur-sm border-b border-white/10">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-16">
             <button onClick={() => scrollToSection('hero')} className="flex items-center gap-2">
@@ -40,32 +38,21 @@ export default function LandingPage() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              <button
-                onClick={() => scrollToSection('features')}
-                className="text-sm text-gray-300 hover:text-white transition-colors"
-              >
+              <button onClick={() => scrollToSection('features')} className="text-sm text-white/70 hover:text-white transition-colors font-medium">
                 Características
               </button>
-              <button
-                onClick={() => scrollToSection('how-it-works')}
-                className="text-sm text-gray-300 hover:text-white transition-colors"
-              >
+              <button onClick={() => scrollToSection('how-it-works')} className="text-sm text-white/70 hover:text-white transition-colors font-medium">
                 Cómo Funciona
               </button>
-              <button
-                onClick={() => scrollToSection('pricing')}
-                className="text-sm text-gray-300 hover:text-white transition-colors"
-              >
+              <button onClick={() => scrollToSection('pricing')} className="text-sm text-white/70 hover:text-white transition-colors font-medium">
                 Precios
               </button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white"
+              <button
+                className="border border-[#3C65E2] text-[#3C65E2] hover:bg-[#3C65E2] hover:text-white px-5 py-2 rounded-full text-sm font-semibold transition-all"
                 onClick={() => setShowSignInDialog(true)}
               >
                 Iniciar Sesión
-              </Button>
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -82,35 +69,21 @@ export default function LandingPage() {
           {mobileMenuOpen && (
             <div className="md:hidden py-4 border-t border-white/10">
               <div className="flex flex-col gap-4">
-                <button
-                  onClick={() => scrollToSection('features')}
-                  className="text-sm text-gray-300 hover:text-white transition-colors text-left"
-                >
+                <button onClick={() => scrollToSection('features')} className="text-sm text-white/70 hover:text-white transition-colors text-left font-medium">
                   Características
                 </button>
-                <button
-                  onClick={() => scrollToSection('how-it-works')}
-                  className="text-sm text-gray-300 hover:text-white transition-colors text-left"
-                >
+                <button onClick={() => scrollToSection('how-it-works')} className="text-sm text-white/70 hover:text-white transition-colors text-left font-medium">
                   Cómo Funciona
                 </button>
-                <button
-                  onClick={() => scrollToSection('pricing')}
-                  className="text-sm text-gray-300 hover:text-white transition-colors text-left"
-                >
+                <button onClick={() => scrollToSection('pricing')} className="text-sm text-white/70 hover:text-white transition-colors text-left font-medium">
                   Precios
                 </button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white w-fit"
-                  onClick={() => {
-                    setShowSignInDialog(true)
-                    setMobileMenuOpen(false)
-                  }}
+                <button
+                  className="border border-[#3C65E2] text-[#3C65E2] hover:bg-[#3C65E2] hover:text-white px-5 py-2 rounded-full text-sm font-semibold transition-all w-fit"
+                  onClick={() => { setShowSignInDialog(true); setMobileMenuOpen(false); }}
                 >
                   Iniciar Sesión
-                </Button>
+                </button>
               </div>
             </div>
           )}
@@ -121,176 +94,139 @@ export default function LandingPage() {
         <HeroSection />
         <FeaturesSection />
 
-        <section id="how-it-works" aria-label="Cómo funciona" className="w-full py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white scroll-mt-20">
+        {/* How it Works — Fondo 3 (Soft Blue) */}
+        <section id="how-it-works" aria-label="Cómo funciona" className="w-full py-[72px] md:py-[96px] bg-[#F2F8FF] scroll-mt-20">
           <div className="container px-4 md:px-6 mx-auto space-y-12">
             <div className="text-center mb-16 space-y-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">¿Cómo Funciona?</h2>
-              <p className="text-base sm:text-lg md:text-xl text-gray-600">Solo completa 9 campos y obtén tu cotización al instante</p>
+              <h2 className="text-2xl sm:text-3xl md:text-[40px] lg:text-[48px] font-extrabold tracking-[-0.02em] leading-[1.15] text-[#0B0F1A]">
+                ¿Cómo Funciona?
+              </h2>
+              <p className="text-base sm:text-lg md:text-xl text-[#7C86A4] leading-[1.7]">
+                Solo completa 9 campos y obtén tu cotización al instante
+              </p>
             </div>
             <QuoteFormAnimation />
           </div>
         </section>
 
-        <section id="pricing" aria-label="Precios" className="w-full py-16 md:py-32 bg-gradient-to-b from-white to-gray-50 scroll-mt-20">
+        {/* Pricing — Fondo 5 (Contact Mist) gradient */}
+        <section id="pricing" aria-label="Precios" className="w-full py-[72px] md:py-[96px] bg-gradient-to-b from-white to-[#F2F8FF] scroll-mt-20">
           <div className="container px-4 md:px-6 mx-auto overflow-x-hidden">
             <div className="flex flex-col items-center justify-center space-y-8 text-center max-w-4xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight text-blue-600">
+              <h2 className="text-2xl sm:text-3xl md:text-[40px] lg:text-[48px] font-extrabold tracking-[-0.02em] leading-[1.15] text-[#3C65E2]">
                 ¿En serio quieres seguir haciendo tus cotizaciones sin IA?
               </h2>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mt-4">
+              <p className="text-base sm:text-lg md:text-xl text-[#7C86A4] mt-4 leading-[1.7]">
                 Una sola licencia incluye todo lo que necesitas para transformar tu despacho
               </p>
 
-              {/* Product Pills */}
+              {/* Product Pills — chip style */}
               <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-8">
-                <div className="px-3 sm:px-4 py-2 bg-blue-50 rounded-lg">
-                  <p className="text-blue-600 font-medium text-sm sm:text-base">Legal AI Tools</p>
+                <div className="px-3 sm:px-4 py-2 bg-[#E8F2FC] rounded-full">
+                  <p className="text-[#3C65E2] font-semibold text-sm sm:text-base">Legal AI Tools</p>
                 </div>
-                <span className="text-blue-600">+</span>
-                <div className="px-3 sm:px-4 py-2 bg-blue-50 rounded-lg">
-                  <p className="text-blue-600 font-medium text-sm sm:text-base">Educación Legal</p>
+                <span className="text-[#3C65E2]">+</span>
+                <div className="px-3 sm:px-4 py-2 bg-[#E8F2FC] rounded-full">
+                  <p className="text-[#3C65E2] font-semibold text-sm sm:text-base">Educación Legal</p>
                 </div>
-                <span className="text-blue-600">+</span>
-                <div className="px-3 sm:px-4 py-2 bg-blue-50 rounded-lg">
-                  <p className="text-blue-600 font-medium text-sm sm:text-base">Legal Track</p>
+                <span className="text-[#3C65E2]">+</span>
+                <div className="px-3 sm:px-4 py-2 bg-[#E8F2FC] rounded-full">
+                  <p className="text-[#3C65E2] font-semibold text-sm sm:text-base">Legal Track</p>
                 </div>
               </div>
 
               {/* Price */}
               <div className="text-center space-y-4">
-                <p className="text-4xl font-bold text-blue-600">
-                  $450<span className="text-xl font-normal text-gray-600"> pesos/mes</span>
+                <p className="text-4xl font-extrabold text-[#3C65E2]">
+                  $450<span className="text-xl font-normal text-[#7C86A4]"> pesos/mes</span>
                 </p>
-                <p className="text-lg text-gray-800 font-medium">Una sola licencia incluye:</p>
+                <p className="text-lg text-[#0B0F1A] font-bold">Una sola licencia incluye:</p>
               </div>
 
-              {/* Product Cards */}
+              {/* Product Cards — DS card style */}
               <div className="space-y-6 w-full">
                 {/* Cursos Card */}
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition duration-200" />
-                  <div className="relative bg-white p-6 rounded-xl border border-blue-100 shadow-lg">
-                    <div className="flex flex-col md:flex-row gap-6 items-center">
-                      <div className="w-full md:w-1/2">
-                        <img
-                          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-04%20at%204.49.11%E2%80%AFPM-ylKXyJBLEYOeBRsDcsEoSSqqphKLTm.png"
-                          alt="Plataforma de cursos Lawgic"
-                          className="w-full h-auto rounded-lg shadow-md"
-                        />
+                <div className="bg-white border border-[#E9EEF5] rounded-[16px] p-6 transition-all duration-200 hover:border-[#DDE8FD] hover:shadow-[0_8px_24px_rgba(16,24,40,0.08)]" style={{ boxShadow: '0 1px 2px rgba(16,24,40,0.06)' }}>
+                  <div className="flex flex-col md:flex-row gap-6 items-center">
+                    <div className="w-full md:w-1/2">
+                      <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-04%20at%204.49.11%E2%80%AFPM-ylKXyJBLEYOeBRsDcsEoSSqqphKLTm.png" alt="Plataforma de cursos Lawgic" className="w-full h-auto rounded-[12px]" />
+                    </div>
+                    <div className="w-full md:w-1/2 text-left space-y-3">
+                      <div className="mb-4">
+                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20lawgic-UE4bOsHYCewlb7PYUlKjy6IJD9jdbg.png" alt="Lawgic Logo" className="h-10" />
                       </div>
-                      <div className="w-full md:w-1/2 text-left space-y-3">
-                        <div className="mb-4">
-                          <img
-                            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20lawgic-UE4bOsHYCewlb7PYUlKjy6IJD9jdbg.png"
-                            alt="Lawgic Logo"
-                            className="h-10"
-                          />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800">Más de 200 cursos de derecho mexicano</h3>
-                        <p className="text-gray-600">
-                          Accede a contenido especializado y actualizado constantemente para mantenerte al día con las
-                          últimas actualizaciones legales.
-                        </p>
-                      </div>
+                      <h3 className="text-xl font-bold text-[#0B0F1A]">Más de 200 cursos de derecho mexicano</h3>
+                      <p className="text-[#7C86A4] leading-[1.7]">Accede a contenido especializado y actualizado constantemente para mantenerte al día con las últimas actualizaciones legales.</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Legal Track Card */}
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition duration-200" />
-                  <div className="relative bg-white p-6 rounded-xl border border-blue-100 shadow-lg">
-                    <div className="flex flex-col md:flex-row gap-6 items-center">
-                      <div className="w-full md:w-1/2">
-                        <img
-                          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-04%20at%209.51.10%E2%80%AFAM-u6DEsaY2rFZ4t43BHpw2YQBVnjwoEz.png"
-                          alt="Legal Track Dashboard"
-                          className="w-full h-auto rounded-lg shadow-md"
-                        />
-                      </div>
-                      <div className="w-full md:w-1/2 text-left space-y-3">
-                        <div className="mb-4">
-                          <div className="flex items-center gap-2">
-                            <img
-                              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Legaltrack-9bWIBm28SZ7IQ0DVzAj1pXzWjCKfOs.png"
-                              alt="Legal Track Logo"
-                              className="h-10"
-                            />
-                            <span className="text-gray-600">Legal Track</span>
-                          </div>
+                <div className="bg-white border border-[#E9EEF5] rounded-[16px] p-6 transition-all duration-200 hover:border-[#DDE8FD] hover:shadow-[0_8px_24px_rgba(16,24,40,0.08)]" style={{ boxShadow: '0 1px 2px rgba(16,24,40,0.06)' }}>
+                  <div className="flex flex-col md:flex-row gap-6 items-center">
+                    <div className="w-full md:w-1/2">
+                      <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-04%20at%209.51.10%E2%80%AFAM-u6DEsaY2rFZ4t43BHpw2YQBVnjwoEz.png" alt="Legal Track Dashboard" className="w-full h-auto rounded-[12px]" />
+                    </div>
+                    <div className="w-full md:w-1/2 text-left space-y-3">
+                      <div className="mb-4">
+                        <div className="flex items-center gap-2">
+                          <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Legaltrack-9bWIBm28SZ7IQ0DVzAj1pXzWjCKfOs.png" alt="Legal Track Logo" className="h-10" />
+                          <span className="text-[#7C86A4]">Legal Track</span>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-800">Herramienta de IA legal</h3>
-                        <p className="text-gray-600">
-                          Gestiona tu despacho de manera inteligente con nuestra IA especializada en procesos legales y
-                          seguimiento de casos.
-                        </p>
                       </div>
+                      <h3 className="text-xl font-bold text-[#0B0F1A]">Herramienta de IA legal</h3>
+                      <p className="text-[#7C86A4] leading-[1.7]">Gestiona tu despacho de manera inteligente con nuestra IA especializada en procesos legales y seguimiento de casos.</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Legal AI Quote Card */}
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition duration-200" />
-                  <div className="relative bg-white p-6 rounded-xl border border-blue-100 shadow-lg">
-                    <div className="flex flex-col md:flex-row gap-6 items-center">
-                      <div className="w-full md:w-1/2">
-                        <CaseDetailsAnimation />
+                <div className="bg-white border border-[#E9EEF5] rounded-[16px] p-6 transition-all duration-200 hover:border-[#DDE8FD] hover:shadow-[0_8px_24px_rgba(16,24,40,0.08)]" style={{ boxShadow: '0 1px 2px rgba(16,24,40,0.06)' }}>
+                  <div className="flex flex-col md:flex-row gap-6 items-center">
+                    <div className="w-full md:w-1/2">
+                      <CaseDetailsAnimation />
+                    </div>
+                    <div className="w-full md:w-1/2 text-left space-y-4">
+                      <div className="mb-4">
+                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20iaquote-tqPMRrgbnkZhPAhI98N3aTCq6j1SqR.png" alt="AI Quote Logo" className="h-12" />
                       </div>
-                      <div className="w-full md:w-1/2 text-left space-y-4">
-                        <div className="mb-4">
-                          <img
-                            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20iaquote-tqPMRrgbnkZhPAhI98N3aTCq6j1SqR.png"
-                            alt="AI Quote Logo"
-                            className="h-12"
-                          />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800">Legal AI Quote</h3>
-                  <p className="text-gray-600">
-                          Sistema de cotización automatizado que reduce el tiempo de generación de propuestas de 30 minutos
-                          a solo 3 minutos.
-                  </p>
-                      </div>
+                      <h3 className="text-xl font-bold text-[#0B0F1A]">Legal AI Quote</h3>
+                      <p className="text-[#7C86A4] leading-[1.7]">Sistema de cotización automatizado que reduce el tiempo de generación de propuestas de 30 minutos a solo 3 minutos.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* CTA Button */}
-                <div className="w-full max-w-md">
-                <div className="relative group">
-                  <div className="absolute -inset-[3px] bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600 rounded-xl 
-                    opacity-70 blur-[2px] 
-                    group-hover:opacity-100 group-hover:blur-[3px]
-                    transition-all duration-500 animate-border-flow"
-                  ></div>
-                  <Button 
-                    className="relative w-full h-14 px-8 bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300
-                      hover:scale-[1.02] hover:shadow-lg text-lg font-semibold"
-                      onClick={() => setShowSignInDialog(true)}
-                  >
-                    Empieza Ahora
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </div>
+              {/* CTA Button — pill, Primary-600, shadow-md */}
+              <div className="w-full max-w-md pt-4">
+                <button
+                  className="w-full h-14 px-8 bg-[#3C65E2] hover:bg-[#4056BE] text-white rounded-full font-semibold text-lg transition-all duration-200 hover:-translate-y-[1px] inline-flex items-center justify-center gap-2"
+                  style={{ boxShadow: '0 8px 24px rgba(16,24,40,0.08)' }}
+                  onClick={() => setShowSignInDialog(true)}
+                >
+                  Empieza Ahora
+                  <ArrowRight className="h-5 w-5" />
+                </button>
               </div>
             </div>
           </div>
+
           {showSignInDialog && (
             <SignInModal onClose={() => setShowSignInDialog(false)} />
           )}
         </section>
       </main>
 
-      <footer className="w-full py-8 bg-white border-t border-gray-100">
+      {/* Footer — clean, border top, text-600 */}
+      <footer className="w-full py-8 bg-white border-t border-[#E9EEF5]">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between">
-            <p className="text-sm text-gray-500">© {new Date().getFullYear()} Legal AI Quote. Todos los derechos reservados.</p>
+            <p className="text-sm text-[#7C86A4]">© {new Date().getFullYear()} Legal AI Quote. Todos los derechos reservados.</p>
             <nav className="flex gap-6" aria-label="Enlaces legales">
-              <Link className="text-sm text-gray-500 hover:text-blue-600 transition-colors" href="/terminos">
+              <Link className="text-sm text-[#7C86A4] hover:text-[#3C65E2] transition-colors" href="/terminos">
                 Términos de Servicio
               </Link>
-              <Link className="text-sm text-gray-500 hover:text-blue-600 transition-colors" href="/privacidad">
+              <Link className="text-sm text-[#7C86A4] hover:text-[#3C65E2] transition-colors" href="/privacidad">
                 Privacidad
               </Link>
             </nav>
@@ -300,4 +236,3 @@ export default function LandingPage() {
     </div>
   )
 }
-
