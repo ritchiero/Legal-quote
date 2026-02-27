@@ -1,4 +1,4 @@
-export type TipoCotizacion = "corta" | "detallada" | "onepager";| "detallada";
+export type TipoCotizacion = "corta" | "detallada" | "onepager";
 
 export interface TipoCotizacionOption {
   id: TipoCotizacion;
