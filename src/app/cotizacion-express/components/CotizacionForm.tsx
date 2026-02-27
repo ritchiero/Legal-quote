@@ -134,14 +134,19 @@ const ServicioInput = ({
     <div className="group bg-white rounded-2xl border border-gray-200 hover:border-gray-400 transition-all duration-300 shadow-sm hover:shadow-md">
       <div className="p-5">
         <div className="flex flex-col space-y-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
             <div className="text-gray-400 group-hover:text-blue-500 transition-colors duration-200">
               <ClipboardDocumentCheckIcon className="w-5 h-5" />
             </div>
             <label className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
               Descripción breve del servicio
-            </label>
-          </div>
+                  </label>
+                </div>
+                {value.trim() && (
+                  <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" strokeWidth="2" fill="none" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2l4-4" /></svg>
+                )}
+              </div>
 
           <div className="flex justify-center">
             <div className="inline-flex p-1 rounded-full bg-gray-100 border border-gray-200">
@@ -180,7 +185,7 @@ const ServicioInput = ({
               ) : servicios.length > 0 ? (
                 <div className="relative">
                   <select
-                    className="w-full px-3 py-2 text-sm bg-transparent border-none rounded appearance-none cursor-pointer focus:ring-0 text-gray-900"
+                    className="w-full px-3 py-2 text-sm bg-transparent border-none rounded appearance-none truncate cursor-pointer focus:ring-0 text-gray-900"
                     onChange={(e) => {
                       const servicio = servicios.find(
                         (s) => s.id === e.target.value,
@@ -641,7 +646,7 @@ export default function CotizacionForm({
         if (docSnap.exists()) {
           const data = docSnap.data() as BrandingInfo;
           setBrandingInfo(data);
-          setSenderInfo(data.nombreDespacho); // Inicializa el estado local con el valor de la BD
+          setSenderInfo(data.slogan ? data.nombreDespacho.replace(data.slogan, '').trim() : data.nombreDespacho); // Inicializa el estado local con el valor de la BD
         }
       } catch (error) {
         console.error("Error fetching branding info:", error);
@@ -1055,7 +1060,7 @@ export default function CotizacionForm({
 
         <InputGroup
           label="Quién envía esta cotización"
-          placeholder="Cargando información..."
+          placeholder="Nombre del despacho o abogado"
           value={senderInfo}
           onChange={(value) => setSenderInfo(value)}
           hint="Nombre y división del abogado o despacho que envía la cotización. Puede editar este campo si necesita personalizarlo para esta cotización."

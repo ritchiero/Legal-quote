@@ -60,7 +60,7 @@ const InputGroup = ({
                                         />
                                     </svg>
                                 </span>
-                                <div className="absolute right-0 w-48 p-2 mt-1 text-xs text-gray-600 bg-white rounded-md shadow-xl border border-gray-100 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-10 font-normal">
+                                <div className="absolute right-0 w-48 p-2 mt-1 text-xs text-gray-600 bg-white rounded-md shadow-xl border border-gray-100 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-50 font-normal">
                                     {hint}
                                 </div>
                             </div>

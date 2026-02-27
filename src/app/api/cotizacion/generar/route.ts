@@ -435,10 +435,9 @@ export async function POST(req: Request) {
 
     console.log("🚀 Iniciando generación con sub-agentes profesionales (Anthropic Claude)...");
 
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY is missing");
-    }
-
+        if (!process.env.ANTHROPIC_API_KEY) {
+                throw new Error("ANTHROPIC_API_KEY is missing");
+                    }
     // Preparar datos
     const safeDespachoInfo = (despachoInfo && despachoInfo.nombre) ? despachoInfo : { nombre: "Despacho Legal", slogan: "" };
     const destinatario = { nombre: clienteNombre, empresa: remitente || "" };
