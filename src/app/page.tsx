@@ -74,7 +74,7 @@ export default function Home() {
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return 'Buenos d\u00edas';
+        if (hour < 12) return 'Buenos días';
         if (hour < 18) return 'Buenas tardes';
         return 'Buenas noches';
     };
@@ -124,10 +124,10 @@ export default function Home() {
                             <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center"><BoltIcon className="w-6 h-6 text-blue-600" /></div>
                             <ArrowRightIcon className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
                         </div>
-                        <h3 className="text-lg font-semibold text-[#0E162F] mb-1">Cotizaci\u00f3n Express</h3>
-                        <p className="text-sm text-[#6B7280]">Genera una cotizaci\u00f3n r\u00e1pida con IA. Ideal para propuestas iniciales en minutos.</p>
+                        <h3 className="text-lg font-semibold text-[#0E162F] mb-1">Cotización Express</h3>
+                        <p className="text-sm text-[#6B7280]">Genera una cotización rápida con IA. Ideal para propuestas iniciales en minutos.</p>
                         <div className="mt-4 flex items-center gap-2">
-                            <span className="inline-flex items-center px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium">R\u00e1pida</span>
+                            <span className="inline-flex items-center px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium">Rápida</span>
                             <span className="inline-flex items-center px-2 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-medium">Con IA</span>
                         </div>
                     </div>
@@ -139,7 +139,7 @@ export default function Home() {
                             <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center"><ClipboardDocumentListIcon className="w-6 h-6 text-indigo-600" /></div>
                             <ArrowRightIcon className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-colors" />
                         </div>
-                        <h3 className="text-lg font-semibold text-[#0E162F] mb-1">Cotizaci\u00f3n Estructurada</h3>
+                        <h3 className="text-lg font-semibold text-[#0E162F] mb-1">Cotización Estructurada</h3>
                         <p className="text-sm text-[#6B7280]">Wizard paso a paso para cotizaciones detalladas y formales.</p>
                         <div className="mt-4 flex items-center gap-2">
                             <span className="inline-flex items-center px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-medium">Detallada</span>
@@ -155,7 +155,7 @@ export default function Home() {
                         <div className="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center"><Cog6ToothIcon className="w-5 h-5 text-gray-500" /></div>
                         <div>
                             <p className="text-sm font-medium text-[#0E162F]">Configurador de Cotizador</p>
-                            <p className="text-xs text-[#6B7280]">Perfil, servicios, facturaci\u00f3n, pagos y branding</p>
+                            <p className="text-xs text-[#6B7280]">Perfil, servicios, facturación, pagos y branding</p>
                         </div>
                     </div>
                     <ArrowRightIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
@@ -175,9 +175,9 @@ export default function Home() {
                 ) : quotations.length === 0 ? (
                     <div className="px-6 py-12 text-center">
                         <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4"><DocumentTextIcon className="w-8 h-8 text-gray-300" /></div>
-                        <h3 className="text-base font-medium text-[#0E162F] mb-1">Sin cotizaciones a\u00fan</h3>
-                        <p className="text-sm text-[#6B7280] mb-4">Crea tu primera cotizaci\u00f3n con IA y aparecer\u00e1 aqu\u00ed.</p>
-                        <Link href="/cotizacion-express" className="inline-flex items-center gap-2 px-4 py-2 bg-[#3B82F6] text-white text-sm font-medium rounded-xl hover:bg-[#2563EB] transition-colors"><BoltIcon className="w-4 h-4" />Crear primera cotizaci\u00f3n</Link>
+                        <h3 className="text-base font-medium text-[#0E162F] mb-1">Sin cotizaciones aún</h3>
+                        <p className="text-sm text-[#6B7280] mb-4">Crea tu primera cotización con IA y aparecerá aquí.</p>
+                        <Link href="/cotizacion-express" className="inline-flex items-center gap-2 px-4 py-2 bg-[#3B82F6] text-white text-sm font-medium rounded-xl hover:bg-[#2563EB] transition-colors"><BoltIcon className="w-4 h-4" />Crear primera cotización</Link>
                     </div>
                 ) : (
                     <div className="divide-y divide-gray-50">
