@@ -124,7 +124,7 @@ REGLAS ESTRICTAS:
 Genera ahora la propuesta completa siguiendo esta estructura.`;
     
 
-    const completion = await anthropic.messages.create({model: "claude-3-haiku-20240307",
+    const completion = await anthropic.messages.create({model: "claude-sonnet-4-5-20250514",
       max_tokens: 2048,
       system: "Eres un abogado senior con más de 15 años de experiencia en redacción de propuestas comerciales para servicios legales. Tu especialidad es crear documentos profesionales, persuasivos y claros que generen confianza en los clientes.",
       messages: [{ role: "user", content: prompt }]

@@ -215,7 +215,7 @@ INSTRUCCIONES:
 Genera el resumen:`;
 
   const completion = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: "claude-sonnet-4-5-20250514",
     max_tokens: 1024,
     messages: [{ role: "user", content: prompt }]
   });
@@ -250,7 +250,7 @@ INSTRUCCIONES:
 Genera SOLO la sección de alcance:`;
 
   const completion = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: "claude-sonnet-4-5-20250514",
     max_tokens: 1024,
     messages: [{ role: "user", content: prompt }]
   });
@@ -287,7 +287,7 @@ INSTRUCCIONES:
 Genera la sección:`;
 
   const completion = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: "claude-sonnet-4-5-20250514",
     max_tokens: 1024,
     messages: [{ role: "user", content: prompt }]
   });
@@ -362,7 +362,7 @@ c) Comprobante de domicilio
 Genera las 4 secciones completas (V, VI, VII, VIII):`;
 
   const completion = await anthropic.messages.create({
-    model: "claude-3-haiku-20240307",
+    model: "claude-sonnet-4-5-20250514",
     max_tokens: 1024,
     messages: [{ role: "user", content: prompt }]
   });
