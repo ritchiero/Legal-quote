@@ -9,6 +9,8 @@ import {
   query,
   where,
   getDocs,
+  addDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { toast } from "react-hot-toast";
 import SlateEditor from "./SlateEditor";
@@ -991,6 +993,40 @@ export default function CotizacionForm({
             block: "start",
           });
         }, 100);
+      }
+
+      // Guardar cotizacion en Firestore
+      try {
+        const cotizacionContent = tipoCotizacion === "onepager"
+          ? JSON.stringify(data.estructurado)
+          : data.contenido || "";
+        await addDoc(collection(db, "quotations"), {
+          clienteNombre: destinatario.trim(),
+          remitente: senderInfo.trim(),
+          descripcion: descripcionServicio.trim(),
+          tiempo: estimacionTiempo.trim(),
+          precio: precio.trim(),
+          formaPago: formaPago.trim(),
+          tipoCotizacion,
+          content: cotizacionContent,
+          status: "generated",
+          createdAt: Timestamp.now(),
+          despachoInfo: {
+            nombreDespacho: brandingInfo?.nombreDespacho || "",
+            slogan: brandingInfo?.slogan || "",
+            anoFundacion: brandingInfo?.anoFundacion || "",
+            colores: brandingInfo?.colores || {},
+            logoURL: brandingInfo?.logoURL || "",
+          },
+          userInfo: {
+            displayName: user?.displayName || "",
+            email: user?.email || "",
+            uid: user?.uid || "",
+          },
+        });
+        console.log("Cotizacion guardada en Firestore");
+      } catch (saveError) {
+        console.error("Error guardando cotizacion:", saveError);
       }
     } catch (error: any) {
       console.error("Error:", error);
