@@ -598,6 +598,7 @@ export default function CotizacionForm({
   const [cotizacionGenerada, setCotizacionGenerada] =
     useState<CotizacionGenerada | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [onePagerData, setOnePagerData] = useState(null);
   const [servicioCompleto, setServicioCompleto] = useState(
     initialService
       ? {
@@ -1348,7 +1349,7 @@ export default function CotizacionForm({
                 </div>
               </div>
             ) : onePagerData ? (
-              <OnePagerView data={onePagerData} brandingColors={brandingInfo?.colores} />
+              <OnePagerView data={onePagerData} brandingColors={brandingInfo?.colores} />1
             ) : cotizacionGenerada?.error ? (
               <div className="bg-red-50 p-4 rounded-lg border border-red-200 text-red-700">
                 {cotizacionGenerada.error}
