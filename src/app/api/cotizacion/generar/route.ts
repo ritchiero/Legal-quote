@@ -214,7 +214,7 @@ INSTRUCCIONES:
 Genera el resumen:`;
 
   const result = await generateText({
-    model: anthropic("claude-sonnet-4-5-20250514"),
+    model: anthropic("claude-3-5-sonnet-20241022"),
     prompt: prompt,
     maxTokens: 1024,
   });
@@ -248,7 +248,7 @@ INSTRUCCIONES:
 Genera SOLO la sección de alcance:`;
 
   const result = await generateText({
-    model: anthropic("claude-sonnet-4-5-20250514"),
+    model: anthropic("claude-3-5-sonnet-20241022"),
     prompt: prompt,
     maxTokens: 1024,
   });
@@ -284,7 +284,7 @@ INSTRUCCIONES:
 Genera la sección:`;
 
   const result = await generateText({
-    model: anthropic("claude-sonnet-4-5-20250514"),
+    model: anthropic("claude-3-5-sonnet-20241022"),
     prompt: prompt,
     maxTokens: 1024,
   });
@@ -358,7 +358,7 @@ c) Comprobante de domicilio
 Genera las 4 secciones completas (V, VI, VII, VIII):`;
 
   const result = await generateText({
-    model: anthropic("claude-sonnet-4-5-20250514"),
+    model: anthropic("claude-3-5-sonnet-20241022"),
     prompt: prompt,
     maxTokens: 1024,
   });

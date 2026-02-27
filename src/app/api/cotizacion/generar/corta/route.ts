@@ -107,7 +107,7 @@ export async function POST(req: Request) {
                                                     Genera ahora la propuesta completa siguiendo esta estructura.`;
 
                                                         const result = await generateText({
-                                                              model: anthropic("claude-sonnet-4-5-20250514"),
+                                                              model: anthropic("claude-3-5-sonnet-20241022"),
                                                                     system: "Eres un abogado senior con más de 15 años de experiencia en redacción de propuestas comerciales para servicios legales. Tu especialidad es crear documentos profesionales, persuasivos y claros que generen confianza en los clientes.",
                                                                           prompt: prompt,
                                                                                 maxTokens: 2048,
