@@ -125,21 +125,13 @@ Genera ahora la propuesta completa siguiendo esta estructura.`;
     
 
     const completion = await anthropic.messages.create({model: "claude-haiku-4-5-20250414",
-      model: "gpt-5-mini-2025-08-07",
-      messages: [
-        {
-          role: "system",
-          content: "Eres un abogado senior con más de 15 años de experiencia en redacción de propuestas comerciales para servicios legales. Tu especialidad es crear documentos profesionales, persuasivos y claros que generen confianza en los clientes."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ]
+      max_tokens: 2048,
+      system: "Eres un abogado senior con más de 15 años de experiencia en redacción de propuestas comerciales para servicios legales. Tu especialidad es crear documentos profesionales, persuasivos y claros que generen confianza en los clientes.",
+      messages: [{ role: "user", content: prompt }]
     });
 
     return NextResponse.json({
-      contenido: completion.choices[0].message.content
+      contenido: completion.content[0].type === 'text' ? completion.content[0].text : ''
     });
 
   } catch (error: any) {
