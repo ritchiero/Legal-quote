@@ -1,8 +1,8 @@
-import { OpenAI } from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY
 });
 
 export async function POST(req: Request) {
@@ -124,7 +124,7 @@ REGLAS ESTRICTAS:
 Genera ahora la propuesta completa siguiendo esta estructura.`;
     
 
-    const completion = await openai.chat.completions.create({
+    const completion = await anthropic.messages.create({model: "claude-haiku-4-5-20250414",
       model: "gpt-5-mini-2025-08-07",
       messages: [
         {
