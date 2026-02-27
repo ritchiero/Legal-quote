@@ -68,19 +68,20 @@ export default function Sidebar() {
       ),
       label: 'Cotización Estructurada',
     },
+    {
+      href: '/configuracion',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      ),
+      label: 'Configuración',
+    },
   ];
 
   return (
     <Tooltip.Provider delayDuration={200}>
-      {
-              href: '/configuracion',
-            icon: (
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6.5 1.5L6.2 2.8L5 3.5L3.7 3L2.9 3.9L3.4 5.2L2.8 6.3L1.5 6.5V7.5L2.8 7.8L3.5 9L3 10.3L3.9 11.1L5.2 10.6L6.3 11.2L6.5 12.5H7.5L7.8 11.2L9 10.5L10.3 11L11.1 10.1L10.6 8.8L11.2 7.7L12.5 7.5V6.5L11.2 6.2L10.5 5L11 3.7L10.1 2.9L8.8 3.4L7.7 2.8L7.5 1.5H6.5ZM7 5.5C8.1 5.5 9 6.4 9 7.5C9 8.6 8.1 9.5 7 9.5C5.9 9.5 5 8.6 5 7.5C5 6.4 5.9 5.5 7 5.5Z" fill="currentColor" />
-              </svg>svg>
-          ),
-          label: 'Configuracion',
-      },</svg>
       <div className="hidden md:block fixed left-0 top-0 h-screen w-16 bg-white border-r border-gray-200 z-40">
         <div className="h-full flex flex-col py-6">
           {/* Logo en la parte superior */}
