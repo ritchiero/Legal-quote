@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { toast } from "react-hot-toast";
 import SlateEditor from "./SlateEditor";
+import OnePagerView from "./OnePagerView";
 import InputGroup, { AIButton } from "@/components/InputGroup";
 import RequirementsAIModal from "@/components/modals/RequirementsAIModal";
 import PaymentAIModal from "@/components/modals/PaymentAIModal";
@@ -806,16 +807,18 @@ export default function CotizacionForm({
 
     try {
       const response = await fetch(
-        tipoCotizacion === "corta"
+                tipoCotizacion === "corta"
           ? "/api/cotizacion/generar/corta"
-          : "/api/cotizacion/generar", // Mantiene la ruta original para detallada
+          : tipoCotizacion === "onepager"
+          ? "/api/cotizacion/generar/onepager"
+          : "/api/cotizacion/generar",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(
-            tipoCotizacion === "corta"
+                           tipoCotizacion !== "detallada"         
               ? {
                 // Payload para cotización corta sin cambios
                 clienteNombre: destinatario.trim(),
@@ -968,7 +971,14 @@ export default function CotizacionForm({
 
       const data = await response.json();
 
-      if (data && data.contenido) {
+
+      if (tipoCotizacion === "onepager" && data?.estructurado) {
+        setOnePagerData(data.estructurado);
+        setCotizacionGenerada(null);
+        setTimeout(() => {
+          cotizacionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      } else if (data && data.contenido) {
         setCotizacionGenerada({
           contenido: formatearTexto(data.contenido),
         });
@@ -1153,7 +1163,7 @@ export default function CotizacionForm({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {tiposCotizacion.map((tipo) => (
               <div
                 key={tipo.id}
@@ -1303,7 +1313,7 @@ export default function CotizacionForm({
       </form>
 
       {/* Sección de Cotización Generada */}
-      {(cotizacionGenerada || isGenerating) && (
+      {(cotizacionGenerada || isGenerating || onePagerData) && (
         <div ref={cotizacionRef} className="lg:col-span-3 mt-8">
           <div className="border-t border-gray-200 pt-8">
             <div className="flex items-center justify-between mb-4">
@@ -1337,6 +1347,8 @@ export default function CotizacionForm({
                   Generando su cotización...
                 </div>
               </div>
+            ) : onePagerData ? (
+              <OnePagerView data={onePagerData} brandingColors={brandingInfo?.colores} />
             ) : cotizacionGenerada?.error ? (
               <div className="bg-red-50 p-4 rounded-lg border border-red-200 text-red-700">
                 {cotizacionGenerada.error}
