@@ -1009,6 +1009,7 @@ export default function CotizacionForm({
           formaPago: formaPago.trim(),
           tipoCotizacion,
           content: cotizacionContent,
+          userId: user?.uid || "",
           status: "generated",
           createdAt: Timestamp.now(),
           despachoInfo: {
