@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { anthropic } from "@ai-sdk/anthropic";
+import { generateText } from "ai";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
+
 
 // Función para generar folio y fecha
 const generarFolioYFecha = () => {
@@ -214,14 +213,13 @@ INSTRUCCIONES:
 
 Genera el resumen:`;
 
-  const completion = await anthropic.messages.create({
-    model: "claude-sonnet-4-5-20250514",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }]
+  const result = await generateText({
+    model: anthropic("claude-sonnet-4-5-20250514"),
+    prompt: prompt,
+    maxTokens: 1024,
   });
 
-  const firstBlock = completion.content[0];
-  return firstBlock.type === 'text' ? firstBlock.text.trim() : "";
+  return result.text.trim();
 }
 
 // ====== SUB-AGENTE 3: ALCANCE DE SERVICIOS ======
@@ -249,14 +247,13 @@ INSTRUCCIONES:
 
 Genera SOLO la sección de alcance:`;
 
-  const completion = await anthropic.messages.create({
-    model: "claude-sonnet-4-5-20250514",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }]
+  const result = await generateText({
+    model: anthropic("claude-sonnet-4-5-20250514"),
+    prompt: prompt,
+    maxTokens: 1024,
   });
 
-  const firstBlock = completion.content[0];
-  return firstBlock.type === 'text' ? firstBlock.text.trim() : "";
+  return result.text.trim();
 }
 
 // ====== SUB-AGENTE 4: CRONOGRAMA ======
@@ -286,14 +283,13 @@ INSTRUCCIONES:
 
 Genera la sección:`;
 
-  const completion = await anthropic.messages.create({
-    model: "claude-sonnet-4-5-20250514",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }]
+  const result = await generateText({
+    model: anthropic("claude-sonnet-4-5-20250514"),
+    prompt: prompt,
+    maxTokens: 1024,
   });
 
-  const firstBlock = completion.content[0];
-  return firstBlock.type === 'text' ? firstBlock.text.trim() : "";
+  return result.text.trim();
 }
 
 // ====== SUB-AGENTE 5: HONORARIOS (sin IA) ======
@@ -361,14 +357,13 @@ c) Comprobante de domicilio
 
 Genera las 4 secciones completas (V, VI, VII, VIII):`;
 
-  const completion = await anthropic.messages.create({
-    model: "claude-sonnet-4-5-20250514",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }]
+  const result = await generateText({
+    model: anthropic("claude-sonnet-4-5-20250514"),
+    prompt: prompt,
+    maxTokens: 1024,
   });
 
-  const firstBlock = completion.content[0];
-  return firstBlock.type === 'text' ? firstBlock.text.trim() : "";
+  return result.text.trim();
 }
 
 // ====== SUB-AGENTE 7: FOOTER ======
