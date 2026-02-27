@@ -1,6 +1,7 @@
-import { anthropic } from "@ai-sdk/anthropic";
-import { generateText } from "ai";
+import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -47,13 +48,13 @@ export async function POST(req: Request) {
                                                     Saludo cordial dirigido a ${clienteNombre}, presentando brevemente a ${despachoInfo.nombre} y el propósito de la propuesta.
 
                                                     **ALCANCE DEL SERVICIO** (4-5 puntos con viñetas)
-                                                    Describe con claridad y precisión los entregables específicos del servicio ${descripcion}. Usa verbos de acción (elaborar, revisar, analizar, asesorar). Evita ambigüedades.
+                                                    Describe con claridad y precisión los entregables específicos del servicio ${descripcion}. Usa verbos de acción. Evita ambigüedades.
 
                                                     **METODOLOGÍA DE TRABAJO** (3-4 pasos)
-                                                    Explica el proceso paso a paso desde el inicio hasta la conclusión del servicio. Puede usar numeración interna (1., 2., 3.) para los pasos, pero NO numerar el título.
+                                                    Explica el proceso paso a paso. Puede usar numeración interna pero NO numerar el título.
 
                                                     **VALOR AGREGADO** (2-3 puntos ESPECÍFICOS)
-                                                    Destaca beneficios concretos y medibles de trabajar con ${despachoInfo.nombre}. Evita generalidades. Ejemplos: "Más de 10 años de experiencia", "95% de tasa de éxito", "Respuesta garantizada en 24 horas".
+                                                    Destaca beneficios concretos de trabajar con ${despachoInfo.nombre}.
 
                                                     **CONTRAPRESTACIÓN Y CONDICIONES COMERCIALES**
                                                     - Contraprestación: ${precio}
@@ -62,65 +63,39 @@ export async function POST(req: Request) {
                                                     - Vigencia de esta propuesta: 15 días naturales a partir de ${fecha}
 
                                                     **DATOS DE CONTACTO**
-                                                    Para cualquier duda o aclaración:
                                                     ${userInfo.displayName || despachoInfo.nombre}
                                                     ${userInfo.email ? `Email: ${userInfo.email}` : ''}
                                                     ${userInfo.telefono ? `Tel: ${userInfo.telefono}` : ''}
                                                     ${despachoInfo.web ? `Sitio web: ${despachoInfo.web}` : ''}
 
-                                                    ---
+                                                    Cierre con despedida formal, firma del responsable y espacio para firma del cliente.
 
-                                                    IMPORTANTE: El cierre NO lleva número ni título. Es una despedida formal natural:
-                                                    Quedamos a sus órdenes para cualquier aclaración.
-
-                                                    Atentamente,
-
-                                                    _________________________
-                                                    ${userInfo.displayName || 'Firma del responsable'}
-                                                    ${despachoInfo.nombre}
-
-                                                    Fecha: ______________
-
-                                                    _________________________
-                                                    Firma de conformidad del cliente
-                                                    Nombre: ______________
-                                                    Fecha: ______________
-
-                                                    REGLAS ESTRICTAS:
-                                                    - Tono profesional, ejecutivo y confiable
-                                                    - Lenguaje jurídico preciso pero accesible
+                                                    REGLAS:
+                                                    - Tono profesional y confiable
                                                     - Máximo 450 palabras
-                                                    - Usa formato markdown (##) para títulos pero SIN numeración antes del título
-                                                    - INCORRECTO: "## 1. PRESENTACIÓN"
-                                                    - CORRECTO: "## PRESENTACIÓN"
+                                                    - Usa markdown (##) para títulos SIN numeración
                                                     - NUNCA uses "Inversión", siempre "Contraprestación"
-                                                    - Enfócate en el valor y resultados para el cliente
-                                                    - Sé específico, evita generalidades
-                                                    - Incluye el folio en el encabezado
-                                                    - NO repitas el nombre del despacho en la firma (solo una vez)
-                                                    - Clarifica que el tiempo es "del trámite" no de entrega de propuesta
-                                                    - Incluye TODOS los datos de contacto proporcionados
-                                                    - CRÍTICO: El cierre NO lleva número ni título markdown, es despedida natural
-                                                    - Incluye espacio para firma del cliente y del responsable
-                                                    - Los títulos de sección van en mayúsculas SIN número: PRESENTACIÓN, ALCANCE DEL SERVICIO, etc.
+                                                    - Los títulos van en mayúsculas SIN número
 
-                                                    Genera ahora la propuesta completa siguiendo esta estructura.`;
+                                                    Genera la propuesta completa.`;
 
-                                                        const result = await generateText({
-                                                              model: anthropic("claude-3-5-sonnet-20240620"),
-                                                                    system: "Eres un abogado senior con más de 15 años de experiencia en redacción de propuestas comerciales para servicios legales. Tu especialidad es crear documentos profesionales, persuasivos y claros que generen confianza en los clientes.",
-                                                                          prompt: prompt,
-                                                                                maxTokens: 2048,
-                                                                                    });
+                                                        const completion = await openai.chat.completions.create({
+                                                              model: 'gpt-4o-mini',
+                                                                    messages: [
+                                                                            { role: 'system', content: 'Eres un abogado senior con más de 15 años de experiencia en redacción de propuestas comerciales para servicios legales. Tu especialidad es crear documentos profesionales, persuasivos y claros que generen confianza en los clientes.' },
+                                                                                    { role: 'user', content: prompt }
+                                                                                          ],
+                                                                                                max_tokens: 2048,
+                                                                                                    });
 
-                                                                                        return NextResponse.json({
-                                                                                              contenido: result.text
-                                                                                                  });
-                                                                                                    } catch (error: any) {
-                                                                                                        console.error('Error:', error);
-                                                                                                            return NextResponse.json(
-                                                                                                                  { error: 'Error al generar la cotización corta' },
-                                                                                                                        { status: 500 }
-                                                                                                                            );
-                                                                                                                              }
-                                                                                                                              }
+                                                                                                        return NextResponse.json({
+                                                                                                              contenido: completion.choices[0]?.message?.content || ''
+                                                                                                                  });
+                                                                                                                    } catch (error: any) {
+                                                                                                                        console.error('Error:', error);
+                                                                                                                            return NextResponse.json(
+                                                                                                                                  { error: 'Error al generar la cotización corta' },
+                                                                                                                                        { status: 500 }
+                                                                                                                                            );
+                                                                                                                                              }
+                                                                                                                                              }

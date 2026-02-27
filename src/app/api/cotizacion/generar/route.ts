@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { anthropic } from "@ai-sdk/anthropic";
-import { generateText } from "ai";
+import OpenAI from 'openai';
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 
 
@@ -213,13 +214,13 @@ INSTRUCCIONES:
 
 Genera el resumen:`;
 
-  const result = await generateText({
-    model: anthropic("claude-3-5-sonnet-20240620"),
-    prompt: prompt,
-    maxTokens: 1024,
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 1024,
   });
 
-  return result.text.trim();
+  return completion.choices[0]?.message?.content?.trim() || "";
 }
 
 // ====== SUB-AGENTE 3: ALCANCE DE SERVICIOS ======
@@ -247,13 +248,13 @@ INSTRUCCIONES:
 
 Genera SOLO la sección de alcance:`;
 
-  const result = await generateText({
-    model: anthropic("claude-3-5-sonnet-20240620"),
-    prompt: prompt,
-    maxTokens: 1024,
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 1024,
   });
 
-  return result.text.trim();
+  return completion.choices[0]?.message?.content?.trim() || "";
 }
 
 // ====== SUB-AGENTE 4: CRONOGRAMA ======
@@ -283,13 +284,13 @@ INSTRUCCIONES:
 
 Genera la sección:`;
 
-  const result = await generateText({
-    model: anthropic("claude-3-5-sonnet-20240620"),
-    prompt: prompt,
-    maxTokens: 1024,
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 1024,
   });
 
-  return result.text.trim();
+  return completion.choices[0]?.message?.content?.trim() || "";
 }
 
 // ====== SUB-AGENTE 5: HONORARIOS (sin IA) ======
@@ -357,13 +358,13 @@ c) Comprobante de domicilio
 
 Genera las 4 secciones completas (V, VI, VII, VIII):`;
 
-  const result = await generateText({
-    model: anthropic("claude-3-5-sonnet-20240620"),
-    prompt: prompt,
-    maxTokens: 1024,
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 1024,
   });
 
-  return result.text.trim();
+  return completion.choices[0]?.message?.content?.trim() || "";
 }
 
 // ====== SUB-AGENTE 7: FOOTER ======
@@ -430,8 +431,8 @@ export async function POST(req: Request) {
 
     console.log("🚀 Iniciando generación con sub-agentes profesionales (Anthropic Claude)...");
 
-        if (!process.env.ANTHROPIC_API_KEY) {
-                throw new Error("ANTHROPIC_API_KEY is missing");
+        if (!process.env.OPENAI_API_KEY) {
+                throw new Error("OPENAI_API_KEY is missing");
                     }
     // Preparar datos
     const safeDespachoInfo = (despachoInfo && despachoInfo.nombre) ? despachoInfo : { nombre: "Despacho Legal", slogan: "" };
