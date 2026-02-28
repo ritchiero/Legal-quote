@@ -148,7 +148,7 @@ export default function Home() {
   return (
     <div className="max-w-[1120px] mx-auto">
       {/* Row 1: Greeting + CTA */}
-      <div className="flex justify-between items-end mb-6 animate-fade-in">
+      <div className="relative z-50 flex justify-between items-end mb-6 animate-fade-in">
         <div>
           <h1 className="text-[30px] font-light tracking-tight leading-tight mb-1.5">
             {getGreeting()}, <span className="font-bold">{firstName || 'Usuario'}</span>
