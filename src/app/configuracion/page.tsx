@@ -71,7 +71,7 @@ export default function ConfiguracionPage() {
       secundario: '#666666',
       terciario: '#999999'
     },
-    logoURL: ''
+    logoURL: '',
     logoURLDark: '',
     logoURLLight: '',
   });
