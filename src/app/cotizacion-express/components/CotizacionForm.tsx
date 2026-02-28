@@ -985,6 +985,7 @@ export default function CotizacionForm({
         setCotizacionGenerada({
           contenido: formatearTexto(data.contenido),
         });
+        setOnePagerData(null);
 
         // Esperar un momento para que el contenido se renderice
         setTimeout(() => {
