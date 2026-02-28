@@ -146,7 +146,7 @@ export default function Home() {
   const lastQuote = quotations[0];
 
   return (
-    <div className="max-w-[1120px] mx-auto">
+    <div className="max-w-[1120px] mx-auto pt-8">
       {/* Row 1: Greeting + CTA */}
       <div className="relative z-50 flex justify-between items-end mb-6 animate-fade-in">
         <div>
