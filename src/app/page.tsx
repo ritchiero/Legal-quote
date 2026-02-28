@@ -158,7 +158,7 @@ export default function Home() {
             Monto del mes: <span className="font-semibold text-text-main">{fmt(total)}</span>
           </p>
         </div>
-        <div ref={ctaRef} className="relative animate-fade-in" style={{animationDelay: '.08s'}}>
+        <div ref={ctaRef} className="relative z-50 animate-fade-in" style={{animationDelay: '.08s'}}>
           <button onClick={() => setShowCTA(!showCTA)} className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-primary-700 transition-all hover:shadow-[0_8px_24px_rgba(60,101,226,.28)] hover:-translate-y-[1px]">
             {I.plus} Nueva Cotización
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
