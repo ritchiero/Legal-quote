@@ -28,4 +28,10 @@ export interface BrandingData {
   logoURL?: string;
   signatureBlock?: string;
   signatureURL?: string; // Digital signature image (autograph)
+  logoURLDark?: string;  // Logo for dark backgrounds
+  logoURLLight?: string; // Logo for light backgrounds
+  tipografia?: {
+    encabezados: string; // Google Font for headings
+    cuerpo: string;      // Google Font for body text
+  };
 }

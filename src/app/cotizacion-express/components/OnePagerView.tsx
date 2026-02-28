@@ -51,9 +51,9 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
   const [template, setTemplate] = useState<TemplateName>("ejecutivo");
   const [pageSize, setPageSize] = useState<PageSize>("carta");
   const [customColors, setCustomColors] = useState<{primary:string;accent:string;tertiary:string}>({
-    primary: "#1a1a1a",
-    accent: "#4a4a4a",
-    tertiary: "#6b6b6b",
+    primary: brandingInfo?.colores?.primario || "#1a1a1a",
+    accent: brandingInfo?.colores?.secundario || "#4a4a4a",
+    tertiary: brandingInfo?.colores?.terciario || "#6b6b6b",
   });
   const [showColors, setShowColors] = useState(false);
 
@@ -760,7 +760,7 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
             <label className="flex items-center gap-2 text-sm text-gray-600">
               <input type="color" value={c.tertiary} onChange={(e) => setCustomColors({ ...c, tertiary: e.target.value })} className="w-8 h-8 rounded cursor-pointer border-0" /> Terciario
             </label>
-            <button onClick={() => setCustomColors({ primary: "#1a1a1a", accent: "#4a4a4a", tertiary: "#6b6b6b" })}
+            <button onClick={() => setCustomColors({ primary: brandingInfo?.colores?.primario || "#1a1a1a", accent: brandingInfo?.colores?.secundario || "#4a4a4a", tertiary: brandingInfo?.colores?.terciario || "#6b6b6b" })}
               className="text-xs text-gray-400 hover:text-gray-600 underline ml-auto">Restablecer</button>
           </div>
         )}

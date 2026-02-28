@@ -34,6 +34,17 @@ export default function BrandingTab({
   const [isDrawing, setIsDrawing] = useState(false);
   const [savingSignature, setSavingSignature] = useState(false);
 
+  // Google Fonts list (popular choices for legal/professional)
+  const googleFonts = [
+    "Inter", "Playfair Display", "Merriweather", "Lora", "Roboto",
+    "Open Sans", "Montserrat", "Raleway", "Poppins", "Nunito",
+    "Source Serif Pro", "Libre Baskerville", "Cormorant Garamond",
+    "EB Garamond", "Crimson Text", "PT Serif", "Noto Serif",
+    "DM Sans", "Work Sans", "Josefin Sans", "Outfit", "Manrope",
+  ];
+  const [previewLogoDark, setPreviewLogoDark] = useState<string | null>(null);
+  const [previewLogoLight, setPreviewLogoLight] = useState<string | null>(null);
+
   // Mantén sincronizado el formulario con los datos de branding que reciba el componente
   useEffect(() => {
     setFormData(brandingData);
@@ -122,6 +133,30 @@ export default function BrandingTab({
       toast.success("Logo subido exitosamente");
     } catch (error) {
       console.error("Error al subir logo:", error);
+      toast.error("Error al subir el logo");
+    }
+  };
+
+  const handleLogoVariantUpload = async (e: React.ChangeEvent<HTMLInputElement>, variant: "dark" | "light") => {
+    try {
+      if (!userId || !e.target.files?.[0]) return;
+      const file = e.target.files[0];
+      if (!file.type.startsWith("image/")) { toast.error("Selecciona una imagen valida"); return; }
+      if (file.size > 5 * 1024 * 1024) { toast.error("Maximo 5MB"); return; }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (variant === "dark") setPreviewLogoDark(reader.result as string);
+        else setPreviewLogoLight(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      const storageRef = ref(storage, `logos/${userId}/logo_${variant}_${Date.now()}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      const field = variant === "dark" ? "logoURLDark" : "logoURLLight";
+      setFormData((prev) => ({ ...prev, [field]: url }));
+      toast.success(`Logo (${variant === "dark" ? "fondo oscuro" : "fondo claro"}) subido`);
+    } catch (error) {
+      console.error("Error uploading logo variant:", error);
       toast.error("Error al subir el logo");
     }
   };
@@ -384,6 +419,40 @@ export default function BrandingTab({
               </div>
             </div>
 
+
+            {/* Logo Variants Display */}
+            {(brandingData.logoURLDark || brandingData.logoURLLight) && (
+            <div className="pt-8 border-t border-gray-100">
+              <h4 className="text-sm font-medium text-gray-900 mb-4">Variantes del Logo</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {brandingData.logoURLDark && (
+                <div>
+                  <span className="block text-xs text-gray-500 mb-1">Fondo oscuro</span>
+                  <div className="w-24 h-24 bg-gray-900 rounded-lg flex items-center justify-center p-2"><Image src={brandingData.logoURLDark} alt="Logo Dark" width={96} height={96} className="w-full h-full object-contain" /></div>
+                </div>)}
+                {brandingData.logoURLLight && (
+                <div>
+                  <span className="block text-xs text-gray-500 mb-1">Fondo claro</span>
+                  <div className="w-24 h-24 bg-white rounded-lg border flex items-center justify-center p-2"><Image src={brandingData.logoURLLight} alt="Logo Light" width={96} height={96} className="w-full h-full object-contain" /></div>
+                </div>)}
+              </div>
+            </div>)}
+
+            {/* Typography Display */}
+            {brandingData.tipografia && (
+            <div className="pt-8 border-t border-gray-100">
+              <h4 className="text-sm font-medium text-gray-900 mb-4">Tipografia</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="block text-xs text-gray-500 mb-1">Encabezados</span>
+                  <span className="block text-sm font-semibold text-gray-800">{brandingData.tipografia.encabezados}</span>
+                </div>
+                <div>
+                  <span className="block text-xs text-gray-500 mb-1">Cuerpo</span>
+                  <span className="block text-sm text-gray-800">{brandingData.tipografia.cuerpo}</span>
+                </div>
+              </div>
+            </div>)}
             {/* Firma Block */}
             <div className="pt-8 border-t border-gray-100 mt-8">
               <div className="flex justify-between items-start mb-4">
@@ -684,6 +753,67 @@ export default function BrandingTab({
                   </div>
                 </div>
 
+
+                    {/* Logo Variants for Dark/Light Backgrounds */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">Variantes del Logo</h4>
+                      <p className="text-xs text-gray-500 mb-3">Sube versiones de tu logo optimizadas para fondos oscuros y claros.</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Logo para fondo oscuro</label>
+                          <div className="flex items-center gap-3">
+                            <div className="w-20 h-20 bg-gray-900 rounded-lg border flex items-center justify-center overflow-hidden">
+                              {(previewLogoDark || formData.logoURLDark) ? (
+                                <Image src={previewLogoDark || formData.logoURLDark || ""} alt="Logo Dark" width={80} height={80} className="w-full h-full object-contain p-1" />
+                              ) : (<span className="text-xs text-gray-500">Sin logo</span>)}
+                            </div>
+                            <div>
+                              <input type="file" accept="image/*" onChange={(e) => handleLogoVariantUpload(e, "dark")} className="hidden" id="logo-dark-upload" />
+                              <label htmlFor="logo-dark-upload" className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">Subir</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Logo para fondo claro</label>
+                          <div className="flex items-center gap-3">
+                            <div className="w-20 h-20 bg-white rounded-lg border flex items-center justify-center overflow-hidden">
+                              {(previewLogoLight || formData.logoURLLight) ? (
+                                <Image src={previewLogoLight || formData.logoURLLight || ""} alt="Logo Light" width={80} height={80} className="w-full h-full object-contain p-1" />
+                              ) : (<span className="text-xs text-gray-400">Sin logo</span>)}
+                            </div>
+                            <div>
+                              <input type="file" accept="image/*" onChange={(e) => handleLogoVariantUpload(e, "light")} className="hidden" id="logo-light-upload" />
+                              <label htmlFor="logo-light-upload" className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">Subir</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Typography - Google Fonts */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">Tipografia</h4>
+                      <p className="text-xs text-gray-500 mb-3">Selecciona las fuentes de Google Fonts para tus documentos.</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Encabezados</label>
+                          <select value={formData.tipografia?.encabezados || "Inter"} onChange={(e) => setFormData((prev) => ({ ...prev, tipografia: { encabezados: e.target.value, cuerpo: prev.tipografia?.cuerpo || "Inter" } }))} className="w-full h-12 px-4 border border-gray-200 rounded-full focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none text-sm text-gray-900">
+                            {googleFonts.map((f) => (<option key={f} value={f}>{f}</option>))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Cuerpo de texto</label>
+                          <select value={formData.tipografia?.cuerpo || "Inter"} onChange={(e) => setFormData((prev) => ({ ...prev, tipografia: { encabezados: prev.tipografia?.encabezados || "Inter", cuerpo: e.target.value } }))} className="w-full h-12 px-4 border border-gray-200 rounded-full focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none text-sm text-gray-900">
+                            {googleFonts.map((f) => (<option key={f} value={f}>{f}</option>))}
+                          </select>
+                        </div>
+                      </div>
+                      <div className="mt-3 p-3 bg-gray-50 rounded-lg border">
+                        <p className="text-xs text-gray-500 mb-1">Vista previa:</p>
+                        <p className="text-lg font-bold text-gray-800" style={{ fontFamily: formData.tipografia?.encabezados || "Inter" }}>Encabezado de ejemplo</p>
+                        <p className="text-sm text-gray-600" style={{ fontFamily: formData.tipografia?.cuerpo || "Inter" }}>Este es un texto de ejemplo para el cuerpo del documento.</p>
+                      </div>
+                    </div>
                 {/* Firma Editor */}
                 <div className="pt-6 border-t border-gray-100">
                   <label className="block text-sm font-medium text-gray-700 mb-2">

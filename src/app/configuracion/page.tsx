@@ -72,6 +72,8 @@ export default function ConfiguracionPage() {
       terciario: '#999999'
     },
     logoURL: ''
+    logoURLDark: '',
+    logoURLLight: '',
   });
 
   // Estado para nuevo servicio
@@ -255,6 +257,9 @@ export default function ConfiguracionPage() {
               },
               descripcion: brandingInfo.descripcion || '',
               logoURL: brandingInfo.logoURL || ''
+                logoURLDark: brandingInfo.logoURLDark || '',
+                logoURLLight: brandingInfo.logoURLLight || '',
+                tipografia: brandingInfo.tipografia || undefined,
             });
           }
         });
