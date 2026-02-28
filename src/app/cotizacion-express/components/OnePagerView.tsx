@@ -30,6 +30,7 @@ interface OnePagerViewProps {
 }
 
 type TemplateName = "ejecutivo" | "moderno" | "boutique";
+type PageSize = "carta" | "a4";
 
 const TEMPLATES: { id: TemplateName; label: string; desc: string }[] = [
   { id: "ejecutivo", label: "Ejecutivo", desc: "Corporativo y serio" },
@@ -37,9 +38,15 @@ const TEMPLATES: { id: TemplateName; label: string; desc: string }[] = [
   { id: "boutique", label: "Boutique", desc: "Elegante y premium" },
 ];
 
+const PAGE_SIZES: { id: PageSize; label: string; w: number; h: number; pdfFormat: string }[] = [
+  { id: "carta", label: "Carta", w: 216, h: 279, pdfFormat: "letter" },
+  { id: "a4", label: "A4", w: 210, h: 297, pdfFormat: "a4" },
+];
+
 export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) {
   const pdfRef = useRef<HTMLDivElement>(null);
   const [template, setTemplate] = useState<TemplateName>("ejecutivo");
+  const [pageSize, setPageSize] = useState<PageSize>("carta");
   const [customColors, setCustomColors] = useState<{primary:string;accent:string;tertiary:string}>({
     primary: brandingInfo?.colores?.primario || "#1a1a2e",
     accent: brandingInfo?.colores?.secundario || "#3B82F6",
@@ -52,6 +59,7 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
   const signer = brandingInfo?.signer;
   const despachoName = data.despacho?.nombre || brandingInfo?.nombreDespacho || "Despacho Legal";
   const sloganText = data.despacho?.responsable || brandingInfo?.slogan || "";
+  const ps = PAGE_SIZES.find((p) => p.id === pageSize) || PAGE_SIZES[0];
 
   /* ---- PDF Export ---- */
   const handleExportPDF = async () => {
@@ -60,7 +68,7 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
     const jsPDF = (await import("jspdf")).default;
     const canvas = await html2canvas(pdfRef.current, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
     const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "letter" });
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: ps.pdfFormat as any });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
     const imgW = pageW;
@@ -106,9 +114,13 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
     </div>
   ) : null;
 
+  /* ---- Page dimensions for CSS (proportional) ---- */
+  const pageH = `${ps.h}mm`;
+
   /* ========== TEMPLATE: EJECUTIVO ========== */
   const renderEjecutivo = () => (
-    <div ref={pdfRef} className="bg-white rounded-xl shadow-lg overflow-hidden max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif", minHeight: "279mm" }}>
+    <div ref={pdfRef} className="bg-white rounded-xl shadow-lg overflow-hidden max-w-3xl mx-auto flex flex-col" style={{ fontFamily: "'Inter', sans-serif", minHeight: pageH }}>
+      {/* Header */}
       <div className="flex justify-between items-center p-8 pb-6" style={{ backgroundColor: c.primary }}>
         <div className="flex items-center gap-4">
           {logoURL && <img src={logoURL} alt="Logo" className="h-12 w-auto object-contain rounded" crossOrigin="anonymous" />}
@@ -123,40 +135,46 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
         </div>
       </div>
       <div className="h-1" style={{ background: `linear-gradient(90deg, ${c.accent}, ${c.tertiary})` }} />
-      <div className="grid grid-cols-2 gap-6 px-8 py-5 bg-gray-50 border-b border-gray-200">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: c.accent }}>Para</p>
-          <p className="text-sm font-semibold text-gray-900">{data.cliente?.nombre || "Cliente"}</p>
-          {data.cliente?.empresa && <p className="text-xs text-gray-500">{data.cliente.empresa}</p>}
+      {/* Body (flex-1 fills remaining space) */}
+      <div className="flex-1 flex flex-col">
+        <div className="grid grid-cols-2 gap-6 px-8 py-5 bg-gray-50 border-b border-gray-200">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: c.accent }}>Para</p>
+            <p className="text-sm font-semibold text-gray-900">{data.cliente?.nombre || "Cliente"}</p>
+            {data.cliente?.empresa && <p className="text-xs text-gray-500">{data.cliente.empresa}</p>}
+          </div>
+          <div className="text-right">
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: c.accent }}>Fecha</p>
+            <p className="text-sm text-gray-700">{data.fecha || ""}</p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: c.accent }}>Fecha</p>
-          <p className="text-sm text-gray-700">{data.fecha || ""}</p>
+        <div className="px-8 py-5 border-b border-gray-200">
+          <h3 className="text-lg font-bold text-gray-900">{data.titulo || "Servicios Legales"}</h3>
         </div>
-      </div>
-      <div className="px-8 py-5 border-b border-gray-200">
-        <h3 className="text-lg font-bold text-gray-900">{data.titulo || "Servicios Legales"}</h3>
-      </div>
-      <div className="px-8 py-4">
-        <table className="w-full">
-          <thead><tr className="border-b-2" style={{ borderColor: c.accent }}>
-            <th className="text-left py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: c.accent }}>Servicio</th>
-            <th className="text-right py-3 text-xs font-semibold uppercase tracking-wider w-32" style={{ color: c.accent }}>Honorarios</th>
-          </tr></thead>
-          <tbody>{servRows}</tbody>
-        </table>
-      </div>
-      <div className="px-8 py-4 flex justify-end">{totalsBlock}</div>
-      <div className="grid grid-cols-2 gap-6 px-8 py-5 bg-gray-50 border-t border-gray-200">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: c.accent }}>Condiciones</p>
-          {condBlock}
+        <div className="px-8 py-4">
+          <table className="w-full">
+            <thead><tr className="border-b-2" style={{ borderColor: c.accent }}>
+              <th className="text-left py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: c.accent }}>Servicio</th>
+              <th className="text-right py-3 text-xs font-semibold uppercase tracking-wider w-32" style={{ color: c.accent }}>Honorarios</th>
+            </tr></thead>
+            <tbody>{servRows}</tbody>
+          </table>
         </div>
-        <div>
-          {data.notas && <><p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: c.accent }}>Notas</p><p className="text-xs text-gray-600">{data.notas}</p></>}
+        <div className="px-8 py-4 flex justify-end">{totalsBlock}</div>
+        <div className="grid grid-cols-2 gap-6 px-8 py-5 bg-gray-50 border-t border-gray-200">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: c.accent }}>Condiciones</p>
+            {condBlock}
+          </div>
+          <div>
+            {data.notas && <><p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: c.accent }}>Notas</p><p className="text-xs text-gray-600">{data.notas}</p></>}
+          </div>
         </div>
+        {signerBlock}
+        {/* Spacer pushes footer down */}
+        <div className="flex-1" />
       </div>
-      {signerBlock}
+      {/* Footer (always at bottom) */}
       <div className="px-8 py-4 text-center" style={{ backgroundColor: c.primary }}>
         <p className="text-xs" style={{ color: c.tertiary }}>{despachoName} | {data.folio}</p>
       </div>
@@ -165,10 +183,10 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
 
   /* ========== TEMPLATE: MODERNO ========== */
   const renderModerno = () => (
-    <div ref={pdfRef} className="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif", minHeight: "279mm" }}>
-      <div className="flex">
+    <div ref={pdfRef} className="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto" style={{ fontFamily: "'Inter', sans-serif", minHeight: pageH }}>
+      <div className="flex" style={{ minHeight: pageH }}>
         <div className="w-2 shrink-0" style={{ backgroundColor: c.accent }} />
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           <div className="px-8 pt-8 pb-4 flex justify-between items-start">
             <div className="flex items-center gap-3">
               {logoURL && <img src={logoURL} alt="Logo" className="h-10 w-auto rounded" crossOrigin="anonymous" />}
@@ -245,7 +263,10 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
               </div>
             </div>
           )}
-          <div className="px-8 py-3 mt-2 border-t border-gray-100 flex justify-between items-center">
+          {/* Spacer pushes footer down */}
+          <div className="flex-1" />
+          {/* Footer */}
+          <div className="px-8 py-3 border-t border-gray-100 flex justify-between items-center">
             <p className="text-xs text-gray-400">{despachoName}</p>
             <p className="text-xs text-gray-400">{data.folio}</p>
           </div>
@@ -256,7 +277,8 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
 
   /* ========== TEMPLATE: BOUTIQUE ========== */
   const renderBoutique = () => (
-    <div ref={pdfRef} className="bg-white rounded-xl shadow-lg overflow-hidden max-w-3xl mx-auto" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", minHeight: "279mm" }}>
+    <div ref={pdfRef} className="bg-white rounded-xl shadow-lg overflow-hidden max-w-3xl mx-auto flex flex-col" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", minHeight: pageH }}>
+      {/* Header */}
       <div className="relative p-10 pb-6" style={{ backgroundColor: c.primary }}>
         <div className="absolute inset-0 opacity-10" style={{ background: `radial-gradient(circle at 80% 20%, ${c.accent}, transparent 50%)` }} />
         <div className="relative flex justify-between items-start">
@@ -274,59 +296,65 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
         </div>
       </div>
       <div className="h-px" style={{ backgroundColor: c.accent }} />
-      <div className="px-10 py-6 flex justify-between border-b border-gray-200">
-        <div>
-          <p className="text-[10px] tracking-widest uppercase mb-1" style={{ color: c.accent }}>Preparado para</p>
-          <p className="text-base text-gray-900">{data.cliente?.nombre || "Cliente"}</p>
-          {data.cliente?.empresa && <p className="text-sm text-gray-500 italic">{data.cliente.empresa}</p>}
-        </div>
-        <div className="text-right">
-          <p className="text-[10px] tracking-widest uppercase mb-1" style={{ color: c.accent }}>Fecha</p>
-          <p className="text-sm text-gray-700">{data.fecha}</p>
-        </div>
-      </div>
-      <div className="px-10 py-5 border-b border-gray-200">
-        <h3 className="text-xl text-gray-900 font-normal italic">{data.titulo || "Servicios Legales"}</h3>
-      </div>
-      <div className="px-10 py-6">
-        {data.servicios?.map((s, i) => (
-          <div key={i} className="flex justify-between items-baseline py-3" style={{ borderBottom: i < (data.servicios?.length || 0) - 1 ? "1px solid #e5e7eb" : "none" }}>
-            <span className="text-sm text-gray-700 flex-1 pr-4">{s.descripcion}</span>
-            <span className="text-sm font-medium text-gray-900 whitespace-nowrap">{s.precio}</span>
-          </div>
-        ))}
-      </div>
-      <div className="px-10 py-4 flex justify-end">
-        <div className="w-60 border-t-2" style={{ borderColor: c.accent }}>
-          <div className="flex justify-between py-2 text-sm"><span className="text-gray-500">Subtotal</span><span>{data.subtotal}</span></div>
-          <div className="flex justify-between py-2 text-sm"><span className="text-gray-500">IVA</span><span>{data.iva}</span></div>
-          <div className="flex justify-between py-3 text-lg border-t" style={{ color: c.primary, borderColor: c.accent }}>
-            <span className="font-normal">Total</span><span className="font-bold">{data.total}</span>
-          </div>
-        </div>
-      </div>
-      <div className="px-10 py-5 bg-gray-50 border-t border-gray-200 grid grid-cols-2 gap-6">
-        <div>
-          <p className="text-[10px] tracking-widest uppercase mb-2" style={{ color: c.accent }}>Condiciones</p>
-          {condBlock}
-        </div>
-        {data.notas && (
+      {/* Body (flex-1 fills remaining space) */}
+      <div className="flex-1 flex flex-col">
+        <div className="px-10 py-6 flex justify-between border-b border-gray-200">
           <div>
-            <p className="text-[10px] tracking-widest uppercase mb-2" style={{ color: c.accent }}>Notas</p>
-            <p className="text-xs text-gray-600 italic">{data.notas}</p>
+            <p className="text-[10px] tracking-widest uppercase mb-1" style={{ color: c.accent }}>Preparado para</p>
+            <p className="text-base text-gray-900">{data.cliente?.nombre || "Cliente"}</p>
+            {data.cliente?.empresa && <p className="text-sm text-gray-500 italic">{data.cliente.empresa}</p>}
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] tracking-widest uppercase mb-1" style={{ color: c.accent }}>Fecha</p>
+            <p className="text-sm text-gray-700">{data.fecha}</p>
+          </div>
+        </div>
+        <div className="px-10 py-5 border-b border-gray-200">
+          <h3 className="text-xl text-gray-900 font-normal italic">{data.titulo || "Servicios Legales"}</h3>
+        </div>
+        <div className="px-10 py-6">
+          {data.servicios?.map((s, i) => (
+            <div key={i} className="flex justify-between items-baseline py-3" style={{ borderBottom: i < (data.servicios?.length || 0) - 1 ? "1px solid #e5e7eb" : "none" }}>
+              <span className="text-sm text-gray-700 flex-1 pr-4">{s.descripcion}</span>
+              <span className="text-sm font-medium text-gray-900 whitespace-nowrap">{s.precio}</span>
+            </div>
+          ))}
+        </div>
+        <div className="px-10 py-4 flex justify-end">
+          <div className="w-60 border-t-2" style={{ borderColor: c.accent }}>
+            <div className="flex justify-between py-2 text-sm"><span className="text-gray-500">Subtotal</span><span>{data.subtotal}</span></div>
+            <div className="flex justify-between py-2 text-sm"><span className="text-gray-500">IVA</span><span>{data.iva}</span></div>
+            <div className="flex justify-between py-3 text-lg border-t" style={{ color: c.primary, borderColor: c.accent }}>
+              <span className="font-normal">Total</span><span className="font-bold">{data.total}</span>
+            </div>
+          </div>
+        </div>
+        <div className="px-10 py-5 bg-gray-50 border-t border-gray-200 grid grid-cols-2 gap-6">
+          <div>
+            <p className="text-[10px] tracking-widest uppercase mb-2" style={{ color: c.accent }}>Condiciones</p>
+            {condBlock}
+          </div>
+          {data.notas && (
+            <div>
+              <p className="text-[10px] tracking-widest uppercase mb-2" style={{ color: c.accent }}>Notas</p>
+              <p className="text-xs text-gray-600 italic">{data.notas}</p>
+            </div>
+          )}
+        </div>
+        {signer?.name && (
+          <div className="px-10 py-5 border-t border-gray-200">
+            <div className="border-b pb-3 mb-2" style={{ borderColor: c.accent + "40", width: "200px" }}>
+              <p className="text-sm text-gray-900">{signer.name}</p>
+              {signer.role && <p className="text-xs text-gray-500 italic">{signer.role}</p>}
+            </div>
+            {signer.email && <p className="text-xs text-gray-400">{signer.email}</p>}
+            {signer.phone && <p className="text-xs text-gray-400">{signer.phone}</p>}
           </div>
         )}
+        {/* Spacer pushes footer down */}
+        <div className="flex-1" />
       </div>
-      {signer?.name && (
-        <div className="px-10 py-5 border-t border-gray-200">
-          <div className="border-b pb-3 mb-2" style={{ borderColor: c.accent + "40", width: "200px" }}>
-            <p className="text-sm text-gray-900">{signer.name}</p>
-            {signer.role && <p className="text-xs text-gray-500 italic">{signer.role}</p>}
-          </div>
-          {signer.email && <p className="text-xs text-gray-400">{signer.email}</p>}
-          {signer.phone && <p className="text-xs text-gray-400">{signer.phone}</p>}
-        </div>
-      )}
+      {/* Footer (always at bottom) */}
       <div className="py-4 text-center" style={{ backgroundColor: c.primary }}>
         <p className="text-xs tracking-widest" style={{ color: c.accent }}>{despachoName}</p>
       </div>
@@ -344,7 +372,7 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
 
   return (
     <div>
-      {/* ---- Toolbar: Template selector + Color picker + Export ---- */}
+      {/* ---- Toolbar ---- */}
       <div className="mb-6 space-y-4">
         {/* Template selector */}
         <div className="flex gap-3 flex-wrap">
@@ -360,6 +388,16 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
 
         {/* Actions row */}
         <div className="flex items-center gap-3 flex-wrap">
+          {/* Page size toggle */}
+          <div className="inline-flex rounded-lg border border-gray-200 overflow-hidden">
+            {PAGE_SIZES.map((p) => (
+              <button key={p.id} onClick={() => setPageSize(p.id)}
+                className={`px-3 py-2 text-xs font-medium transition-all ${pageSize === p.id ? "text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                style={pageSize === p.id ? { backgroundColor: c.primary } : {}}>
+                {p.label} <span className="opacity-60">({p.w}x{p.h}mm)</span>
+              </button>
+            ))}
+          </div>
           <button onClick={() => setShowColors(!showColors)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:border-gray-300 transition-all">
             <span className="w-4 h-4 rounded-full border border-gray-300" style={{ backgroundColor: c.primary }} />
@@ -369,7 +407,7 @@ export default function OnePagerView({ data, brandingInfo }: OnePagerViewProps) 
             className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-white font-medium text-sm shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5"
             style={{ backgroundColor: c.primary }}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-            Exportar PDF
+            Exportar PDF ({ps.label})
           </button>
         </div>
 
