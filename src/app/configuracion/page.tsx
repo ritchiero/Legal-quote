@@ -256,7 +256,7 @@ export default function ConfiguracionPage() {
                 terciario: brandingInfo.colores?.terciario || '#999999',
               },
               descripcion: brandingInfo.descripcion || '',
-              logoURL: brandingInfo.logoURL || ''
+              logoURL: brandingInfo.logoURL || '',
                 logoURLDark: brandingInfo.logoURLDark || '',
                 logoURLLight: brandingInfo.logoURLLight || '',
                 tipografia: brandingInfo.tipografia || undefined,
