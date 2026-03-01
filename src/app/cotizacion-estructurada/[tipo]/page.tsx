@@ -80,6 +80,10 @@ export default function CotizacionEstructuradaForm() {
   const [activeConfigAddOn, setActiveConfigAddOn] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
+  // Draft state
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const [savingDraft, setSavingDraft] = useState(false);
+
   /* State for Dynamic Terms */
   const [termsTemplates, setTermsTemplates] = useState<TermTemplate[]>([]);
   const [loadingTerms, setLoadingTerms] = useState(false);
@@ -1532,6 +1536,42 @@ export default function CotizacionEstructuradaForm() {
     return await Promise.all(uploadPromises);
   };
 
+
+  const handleSaveDraft = async () => {
+    if (!user?.uid) {
+      toast.error('Debes iniciar sesion para guardar un borrador.');
+      return;
+    }
+    setSavingDraft(true);
+    try {
+      const draftData: any = {
+        userId: user.uid,
+        clientName: formData.client,
+        quotationType: tipo,
+        descripcion: formData.quotationName || formData.contextDescription || 'Borrador sin titulo',
+        status: 'draft',
+        formDataSnapshot: { ...formData },
+        selectedAddOns: Array.from(selectedAddOns),
+        step,
+        updatedAt: serverTimestamp(),
+      };
+      if (draftId) {
+        await setDoc(doc(db, 'quotations', draftId), draftData, { merge: true });
+        toast.success('Borrador actualizado.');
+      } else {
+        draftData.createdAt = serverTimestamp();
+        draftData.folio = `DRAFT-${Date.now()}`;
+        const ref = await addDoc(collection(db, 'quotations'), draftData);
+        setDraftId(ref.id);
+        toast.success('Borrador guardado.');
+      }
+    } catch (err) {
+      console.error('Error saving draft:', err);
+      toast.error('Error al guardar borrador.');
+    } finally {
+      setSavingDraft(false);
+    }
+  };
   const handleGenerateQuote = async () => {
     // 1. Basic Validation
     if (!formData.client || !formData.pricing) {
@@ -1659,10 +1699,9 @@ export default function CotizacionEstructuradaForm() {
 
       const data = await response.json();
 
-      // 4. Save to Firestore
-      const quotationRef = await addDoc(collection(db, 'quotations'), {
+    // 4. Save to Firestore
+      const quotationData: any = {
         userId: user?.uid,
-        folio: `COT-${Date.now()}`,
         clientName: formData.client,
         quotationType: tipo,
         formatType,
@@ -1673,13 +1712,29 @@ export default function CotizacionEstructuradaForm() {
         content: data.contenido,
         selectedAddOns: Array.from(selectedAddOns),
         formDataSnapshot: payload, // Guardar el payload completo en lugar de formData crudo
-        createdAt: serverTimestamp()
-      });
+        updatedAt: serverTimestamp(),
+      };
+
+      let quotationId: string;
+
+      if (draftId) {
+        // Update existing draft → generated
+        quotationData.folio = `COT-${Date.now()}`;
+        await setDoc(doc(db, 'quotations', draftId), quotationData, { merge: true });
+        quotationId = draftId;
+        setDraftId(null);
+      } else {
+        // Create new quotation
+        quotationData.folio = `COT-${Date.now()}`;
+        quotationData.createdAt = serverTimestamp();
+        const quotationRef = await addDoc(collection(db, 'quotations'), quotationData);
+        quotationId = quotationRef.id;
+      }
 
       toast.success('¡Cotización generada exitosamente!', { id: toastId });
 
       // 5. Redirect to result page
-      router.push(`/cotizacion-estructurada/resultado/${quotationRef.id}`);
+      router.push(`/cotizacion-estructurada/resultado/${quotationId}`);
 
     } catch (error) {
       console.error("Error generating quote:", error);
@@ -2892,6 +2947,17 @@ export default function CotizacionEstructuradaForm() {
                 <span>Atrás</span>
               </Button>
 
+            <Button
+              variant="outline"
+              onClick={handleSaveDraft}
+              disabled={savingDraft}
+              className="px-4 py-2.5 text-sm font-medium rounded-full border-gray-300 hover:bg-gray-50 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+              </svg>
+              <span>{savingDraft ? 'Guardando...' : 'Guardar Borrador'}</span>
+            </Button>
               <Button
                 onClick={handleGenerateQuote}
                 className="px-6 py-2.5 text-sm font-bold rounded-full shadow-lg shadow-blue-500/30 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 flex items-center gap-2"
