@@ -328,6 +328,7 @@ async function generarObligacionesYCierre(despachoInfo: any, userInfo: any, styl
   const telefono = despachoInfo?.telefono || despachoInfo?.phone || despachoInfo?.mobile || userInfo?.phone || userInfo?.mobile || userInfo?.telefono || "";
   const direccion = despachoInfo?.direccion || despachoInfo?.address || userInfo?.location || userInfo?.address || "";
   const email = userInfo?.email || `contacto@${despachoNombre.toLowerCase().replace(/\s/g, '')}.mx`;
+  const web = despachoInfo?.web || despachoInfo?.website || userInfo?.web || userInfo?.website || "";
 
   const prompt = `Genera las secciones finales (V a VIII) de una propuesta legal profesional.
 
@@ -369,7 +370,11 @@ Genera las 4 secciones completas (V, VI, VII, VIII):`;
     max_tokens: 1024,
   });
 
-  return completion.choices[0]?.message?.content?.trim() || "";
+  let footerContent = completion.choices[0]?.message?.content?.trim() || "";
+  const contactSuffix = buildContactSuffix({ telefono, email, direccion, web });
+  footerContent += contactSuffix;
+
+  return footerContent;
 }
 
 // ====== SUB-AGENTE 7: FOOTER ======
@@ -378,16 +383,16 @@ function generarFooter(despachoInfo: any, userInfo: any) {
   const despachoNombre = despachoInfo?.nombre || despachoInfo?.nombreDespacho || "Despacho Legal";
   const email = userInfo?.email || `contacto@${despachoNombre.toLowerCase().replace(/\s/g, '')}.mx`;
 
-  // Datos reales del despacho con fallback a userInfo (Bug 4)
-  // Prioridad: 1. Despacho (Branding), 2. User Profile, 3. Placeholder
-  const direccion = despachoInfo?.direccion || userInfo?.location || userInfo?.address || "DirecciÃÂ³n no disponible";
-  const telefono = despachoInfo?.telefono || userInfo?.telefono || userInfo?.phone || "TelÃÂ©fono no disponible";
+  // Datos reales del despacho con fallback a userInfo
+  const direccion = despachoInfo?.direccion || userInfo?.location || userInfo?.address || "";
+  const telefono = despachoInfo?.telefono || userInfo?.telefono || userInfo?.phone || "";
+  const web = despachoInfo?.web || despachoInfo?.website || userInfo?.web || userInfo?.website || "";
 
   // Bug 1: Formato de firma corregido con salto de lÃÂ­nea
   const firmaNombre = userInfo?.displayName || "Consultor Legal";
   const firmaCargo = despachoInfo?.cargo || "Socio";
 
-  return `
+  let footerContent = `
 ---
 
 **Atentamente,**
@@ -395,11 +400,32 @@ function generarFooter(despachoInfo: any, userInfo: any) {
 ${firmaNombre}
 ${firmaCargo}
 
-**${despachoNombre.toUpperCase()}**
-${direccion}
-${telefono} | ${email}
+**${despachoNombre.toUpperCase()}**`;
 
----`;
+  const contactSuffix = buildContactSuffix({ telefono, email, direccion, web });
+  footerContent += contactSuffix;
+
+  footerContent += `
+
+${separador}`;
+
+  return footerContent;
+}
+
+function buildContactSuffix({ telefono, email, direccion, web }: { telefono?: string; email?: string; direccion?: string; web?: string }) {
+  const contactLines = [
+    direccion?.trim() ? `**Dirección:** ${direccion.trim()}` : null,
+    telefono?.trim() ? `**Teléfono:** ${telefono.trim()}` : null,
+    email?.trim() ? `**Email:** ${email.trim()}` : null,
+    web?.trim() ? `**Web:** ${web.trim()}` : null,
+  ].filter(Boolean);
+
+  if (contactLines.length === 0) return "";
+
+  return `
+
+**Contacto**  
+${contactLines.join('  \n')}`;
 }
 
 // ====== ORQUESTADOR PRINCIPAL ======
