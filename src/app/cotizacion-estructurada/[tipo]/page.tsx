@@ -73,6 +73,8 @@ export default function CotizacionEstructuradaForm() {
   const params = useParams();
   const router = useRouter();
   const tipo = params.tipo as string;
+    const resolvedTipo = slugToTipo[tipo] || tipo;
+      const isValidTipo = resolvedTipo in tiposConfig;
 
   // Wizard Steps: 1 = Form, 2 = Add Ons
   const [step, setStep] = useState(1);
@@ -163,6 +165,18 @@ export default function CotizacionEstructuradaForm() {
     }
   };
 
+  // Mapping from URL slugs to tipo IDs for sidebar/direct navigation
+  const slugToTipo: Record<string, string> = {
+    'honorarios-fijos': '1',
+      'cotizacion-por-hora': '2',
+        'retainer': '3',
+          'contingencia': '4',
+            'proyecto': '5',
+              'iguala-suscripcion': '6',
+                'servicios-legales': '1',
+                  '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6',
+                  };
+
   // States for Service Selector
   const { user } = useAuth(); // Moved up
   const [brandingData, setBrandingData] = useState<any>(null); // Store branding info
@@ -198,10 +212,10 @@ export default function CotizacionEstructuradaForm() {
     times: '',
     location: '',
     requirements: '',
-    payments: tiposConfig[tipo]?.payments || '',
-    payment: tiposConfig[tipo]?.payment || '',
-    pricingType: tiposConfig[tipo]?.pricingType || 'fix',
-    pricing: tiposConfig[tipo]?.pricing || '',
+    payments: tiposConfig[resolvedTipo]?.payments || '',
+    payment: tiposConfig[resolvedTipo]?.payment || '',
+    pricingType: tiposConfig[resolvedTipo]?.pricingType || 'fix',
+    pricing: tiposConfig[resolvedTipo]?.pricing || '',
     details: '',
     frequency: '',
     hourlyRate: '',
@@ -248,6 +262,22 @@ export default function CotizacionEstructuradaForm() {
     { id: 'closing', name: 'Cierre y Firma', enabled: true, detailLevel: 'short', order: 6 },
   ]);
 
+
+  // Validate tipo parameter - redirect if invalid
+    useEffect(() => {
+        if (!isValidTipo) {
+              router.replace('/cotizacion-estructurada');
+                  }
+                    }, [isValidTipo, router]);
+
+                      // Early return while redirecting
+                        if (!isValidTipo) {
+                            return (
+                                  <div className="flex items-center justify-center min-h-screen">
+                                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                                                </div>
+                                                    );
+                                                      }
   // Fetch Branding Info
   useEffect(() => {
     if (!user?.uid) return;
@@ -1128,7 +1158,7 @@ export default function CotizacionEstructuradaForm() {
                 />
               </PopoverContent>
             </Popover>
-          </div >
+          </div>
         );
 
       case 'contact_details':
@@ -1547,7 +1577,7 @@ export default function CotizacionEstructuradaForm() {
       const draftData: any = {
         userId: user.uid,
         clientName: formData.client,
-        quotationType: tipo,
+        quotationType: resolvedTipo,
         descripcion: formData.quotationName || formData.contextDescription || 'Borrador sin titulo',
         status: 'draft',
         formDataSnapshot: { ...formData },
@@ -1703,7 +1733,7 @@ export default function CotizacionEstructuradaForm() {
       const quotationData: any = {
         userId: user?.uid,
         clientName: formData.client,
-        quotationType: tipo,
+        quotationType: resolvedTipo,
         formatType,
         toneType,
         languageType,
@@ -1854,7 +1884,7 @@ export default function CotizacionEstructuradaForm() {
                 <path d="M12 5L7 10L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{tiposTitulos[tipo] || 'Cotización Estructurada'}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{tiposTitulos[resolvedTipo] || 'Cotización Estructurada'}</h1>
           </div>
           <p className="text-base text-gray-500 ml-10 max-w-2xl">Completa los detalles para generar una cotización profesional y detallada.</p>
         </div>
@@ -2059,7 +2089,7 @@ export default function CotizacionEstructuradaForm() {
 
               {/* Honorarios / Pricing Section */}
               {(() => {
-                switch (tipo) {
+                switch (resolvedTipo) {
                   case '4': // Contingencia
                     return (
                       <>
@@ -2971,7 +3001,7 @@ export default function CotizacionEstructuradaForm() {
           </div>
         )
         }
-      </div >
+      </div>
 
       {/* Modals */}
       < RequirementsAIModal
@@ -5838,6 +5868,6 @@ export default function CotizacionEstructuradaForm() {
         )
       }
 
-    </div >
+    </div>
   );
 }
