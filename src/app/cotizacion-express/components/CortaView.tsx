@@ -10,7 +10,7 @@ interface BrandingData {
 }
 
 interface CortaViewProps {
-    contenido: string;
+    contenido?: string;
     brandingInfo?: BrandingData | null;
     firmName?: string;
     onContentChange?: (content: string) => void;
@@ -81,7 +81,7 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
   };
 
   const renderContent = (text: string) => {
-        return text.split("\n").map((line, i) => {
+        if (!text) return []; return text.split("\n").map((line, i) => {
                 const trimmed = line.trim();
                 if (!trimmed) return <div key={i} className="h-3" />;
 
