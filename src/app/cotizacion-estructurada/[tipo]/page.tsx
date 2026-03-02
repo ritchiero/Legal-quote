@@ -69,6 +69,57 @@ interface Servicio {
   incluye?: string[];
 }
 
+
+// Configuraciones por tipo de cotización
+const tiposConfig: Record<string, any> = {
+  '1': { // Honorarios Fijos
+      pricingType: 'fix',
+          payment: 'Pago único por servicio específico',
+              payments: 'Un solo pago al completar el servicio',
+                  pricing: 'Tarifa fija establecida'
+                    },
+                      '2': { // Cotización por Hora
+                          pricingType: 'variable',
+                              payment: 'Pago basado en horas trabajadas',
+                                  payments: 'Facturación mensual según horas',
+                                      pricing: 'Tarifa por hora multiplicada por tiempo trabajado'
+                                        },
+                                          '3': { // Retainer
+                                              pricingType: 'fix',
+                                                  payment: 'Pago mensual anticipado',
+                                                      payments: 'Cuota fija mensual',
+                                                          pricing: 'Anticipo que cubre servicios futuros durante el período'
+                                                            },
+                                                              '4': { // Contingencia
+                                                                  pricingType: 'variable',
+                                                                      payment: 'Pago basado en resultado exitoso',
+                                                                          payments: 'Porcentaje del monto recuperado',
+                                                                              pricing: 'Entre 20-40% del resultado obtenido'
+                                                                                },
+                                                                                  '5': { // Proyecto
+                                                                                      pricingType: 'fix',
+                                                                                          payment: 'Precio total acordado para el proyecto',
+                                                                                              payments: '50% al inicio, 50% al finalizar',
+                                                                                                  pricing: 'Precio fijo por proyecto completo'
+                                                                                                    },
+                                                                                                      '6': { // Iguala/Suscripción
+                                                                                                          pricingType: 'fix',
+                                                                                                              payment: 'Cuota mensual o anual',
+                                                                                                                  payments: 'Pago recurrente mensual/anual',
+                                                                                                                      pricing: 'Suscripción con servicios ilimitados o con límite de horas'
+                                                                                                                        }
+                                                                                                                        };
+// Mapping from URL slugs to tipo IDs for sidebar/direct navigation
+const slugToTipo: Record<string, string> = {
+  'honorarios-fijos': '1',
+    'cotizacion-por-hora': '2',
+      'retainer': '3',
+        'contingencia': '4',
+          'proyecto': '5',
+            'iguala-suscripcion': '6',
+              'servicios-legales': '1',
+                '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6',
+                };
 export default function CotizacionEstructuradaForm() {
   const params = useParams();
   const router = useRouter();
@@ -124,58 +175,6 @@ export default function CotizacionEstructuradaForm() {
   const [notesModalOpen, setNotesModalOpen] = useState(false);
   const [notesOptions, setNotesOptions] = useState<string[]>([]);
   const [notesLoading, setNotesLoading] = useState(false);
-
-  // Configuraciones por tipo de cotización
-  const tiposConfig: Record<string, any> = {
-    '1': { // Honorarios Fijos
-      pricingType: 'fix',
-      payment: 'Pago único por servicio específico',
-      payments: 'Un solo pago al completar el servicio',
-      pricing: 'Tarifa fija establecida'
-    },
-    '2': { // Cotización por Hora
-      pricingType: 'variable',
-      payment: 'Pago basado en horas trabajadas',
-      payments: 'Facturación mensual según horas',
-      pricing: 'Tarifa por hora multiplicada por tiempo trabajado'
-    },
-    '3': { // Retainer
-      pricingType: 'fix',
-      payment: 'Pago mensual anticipado',
-      payments: 'Cuota fija mensual',
-      pricing: 'Anticipo que cubre servicios futuros durante el período'
-    },
-    '4': { // Contingencia
-      pricingType: 'variable',
-      payment: 'Pago basado en resultado exitoso',
-      payments: 'Porcentaje del monto recuperado',
-      pricing: 'Entre 20-40% del resultado obtenido'
-    },
-    '5': { // Proyecto
-      pricingType: 'fix',
-      payment: 'Precio total acordado para el proyecto',
-      payments: '50% al inicio, 50% al finalizar',
-      pricing: 'Precio fijo por proyecto completo'
-    },
-    '6': { // Iguala/Suscripción
-      pricingType: 'fix',
-      payment: 'Cuota mensual o anual',
-      payments: 'Pago recurrente mensual/anual',
-      pricing: 'Suscripción con servicios ilimitados o con límite de horas'
-    }
-  };
-
-  // Mapping from URL slugs to tipo IDs for sidebar/direct navigation
-  const slugToTipo: Record<string, string> = {
-    'honorarios-fijos': '1',
-      'cotizacion-por-hora': '2',
-        'retainer': '3',
-          'contingencia': '4',
-            'proyecto': '5',
-              'iguala-suscripcion': '6',
-                'servicios-legales': '1',
-                  '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6',
-                  };
 
   // States for Service Selector
   const { user } = useAuth(); // Moved up
