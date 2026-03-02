@@ -194,7 +194,7 @@ async function generarResumenEjecutivo(descripcionServicio: string, despachoInfo
 ${styleInstructions}
 
 DATOS:
-Despacho: ${despachoInfo.nombre || despachoInfo.nombreDespacho || "Despacho Legal"}
+Despacho: ${despachoInfo?.nombre || despachoInfo?.nombreDespacho || "Despacho Legal"}
 Servicio: ${descripcionServicio}
 Tiempo: ${tiempo}
 
@@ -325,7 +325,7 @@ Por los servicios descritos en la presente propuesta, nuestros honorarios ascien
 // ====== SUB-AGENTE 6: OBLIGACIONES Y CONFIDENCIALIDAD ======
 async function generarObligacionesYCierre(despachoInfo: any, userInfo: any, styleInstructions: string) {
   const despachoNombre = despachoInfo?.nombre || despachoInfo?.nombreDespacho || "Despacho Legal";
-    const telefono = despachoInfo?.telefono || despachoInfo?.phone || userInfo?.phone || userInfo?.telefono || "";
+  const telefono = despachoInfo?.telefono || despachoInfo?.phone || despachoInfo?.mobile || userInfo?.phone || userInfo?.mobile || userInfo?.telefono || "";
   const direccion = despachoInfo?.direccion || despachoInfo?.address || userInfo?.location || userInfo?.address || "";
   const email = userInfo?.email || `contacto@${despachoNombre.toLowerCase().replace(/\s/g, '')}.mx`;
 
@@ -440,7 +440,12 @@ export async function POST(req: Request) {
                 throw new Error("OPENAI_API_KEY is missing");
                     }
     // Preparar datos
-    const safeDespachoInfo = (despachoInfo && (despachoInfo.nombre || despachoInfo.nombreDespacho)) ? { ...despachoInfo, nombre: despachoInfo.nombre || despachoInfo.nombreDespacho } : { nombre: "Despacho Legal", slogan: "" };
+    const safeDespachoInfo = despachoInfo
+      ? {
+          ...despachoInfo,
+          nombre: despachoInfo?.nombre || despachoInfo?.nombreDespacho || "Despacho Legal",
+        }
+      : { nombre: "Despacho Legal", slogan: "" };
     const destinatario = { nombre: clienteNombre, empresa: remitente || "" };
     const moneda = estructura?.formato?.precios?.formato || 'MXN';
     const serviciosData = servicioInfo ? [servicioInfo] : [{
