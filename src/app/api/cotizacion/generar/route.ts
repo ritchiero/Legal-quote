@@ -455,6 +455,69 @@ function buildContactSuffix({ telefono, email, direccion, web }: { telefono?: st
 ${contactLines.join('  \n')}`;
 }
 
+/**
+ * Reemplaza placeholders de contacto y datos ficticios por información real del usuario/despacho.
+ * También elimina líneas que queden vacías tras aplicar reemplazos sin valor.
+ */
+function replaceContactPlaceholders(contenido: string, despachoInfo: any, userInfo: any): string {
+  try {
+    if (typeof contenido !== 'string' || !contenido.trim()) return "";
+
+    const contactoData = {
+      telefono: despachoInfo?.telefono || userInfo?.telefono || userInfo?.phone || "",
+      email: userInfo?.email || despachoInfo?.email || "",
+      web: despachoInfo?.web || despachoInfo?.website || userInfo?.web || userInfo?.website || "",
+      direccion: despachoInfo?.direccion || userInfo?.location || userInfo?.address || "",
+      nombreBoutique: despachoInfo?.nombre || despachoInfo?.nombreDespacho || "",
+    };
+
+    const replacementRules: Array<{ pattern: RegExp; value: string }> = [
+      { pattern: /\[(?:n[uú]mero\s+de\s+contacto|telefono|tel[eé]fono)\]/gi, value: contactoData.telefono },
+      { pattern: /\[(?:email|correo\s+electr[oó]nico)\]/gi, value: contactoData.email },
+      { pattern: /\[(?:web|sitio\s+web|p[aá]gina\s+web)\]/gi, value: contactoData.web },
+      { pattern: /\[(?:direcci[oó]n|direcci[oó]n\s+de\s+la\s+oficina)\]/gi, value: contactoData.direccion },
+      { pattern: /\[(?:nombre\s+de\s+la\s+boutique|nombre\s+del\s+despacho)\]/gi, value: contactoData.nombreBoutique },
+
+      // Datos ficticios frecuentes generados por IA
+      { pattern: /\(55\)\s*1234-5678/gi, value: contactoData.telefono },
+      { pattern: /contacto@despachoboutique\.com/gi, value: contactoData.email },
+      { pattern: /contacto@lawgic\.(?:com|mx)/gi, value: contactoData.email },
+      { pattern: /www\.despachoboutique\.com/gi, value: contactoData.web },
+    ];
+
+    let replacedContent = contenido;
+    for (const { pattern, value } of replacementRules) {
+      replacedContent = replacedContent.replace(pattern, value || "");
+    }
+
+    const contactLabelPattern = /(tel[eé]fono|email|correo|web|direcci[oó]n|contacto|sitio\s+web)/i;
+
+    const cleanedLines = replacedContent
+      .split('\n')
+      .map((line) => line.replace(/[ \t]+$/g, ''))
+      .filter((line) => {
+        const normalized = line.replace(/[*_`>#-]/g, '').trim();
+        if (!normalized) return false;
+
+        // Elimina líneas tipo "Teléfono:" o "Email -" sin valor real después del reemplazo.
+        const labelOnly = normalized
+          .replace(/^[\p{L}\s]+[:：\-–—]?\s*/u, '')
+          .trim();
+
+        if (contactLabelPattern.test(normalized) && !labelOnly) {
+          return false;
+        }
+
+        return true;
+      });
+
+    return cleanedLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  } catch (error) {
+    console.error('❌ Error replacing contact placeholders:', error);
+    return contenido;
+  }
+}
+
 // ====== ORQUESTADOR PRINCIPAL ======
 export async function POST(req: Request) {
   try {
@@ -577,6 +640,8 @@ ${obligacionesYCierre.trim()}
 
 ${footer.trim()}`;
     }
+
+    contenidoFinal = replaceContactPlaceholders(contenidoFinal, safeDespachoInfo, userInfo);
 
     console.log("Ã¢ÂÂ CotizaciÃÂ³n profesional generada con ÃÂ©xito");
 
