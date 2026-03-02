@@ -368,16 +368,40 @@ Genera las 4 secciones completas (V, VI, VII, VIII):`;
 }
 
 function sanitizeObligacionesContent(content: string) {
-  if (!content?.trim()) return "";
+  if (typeof content !== 'string') return "";
 
-  const placeholderContactLineRegex = /^.*\[.*(?:contacto|tel[eé]fono|correo|direcci[oó]n|oficina|n[uú]mero).*\].*$/gim;
-  const explicitContactLineRegex = /^.*(?:\[N[uú]mero\s+de\s+contacto\]|\[Correo\s+de\s+contacto\]|\[Direcci[oó]n\s+de\s+la\s+oficina\]|contacto@despachoboutique|\(55\)\s*1234-5678).*$\n?/gim;
+  const sanitizedContent = content.trim();
+  if (!sanitizedContent) return "";
 
-  return content
-    .replace(placeholderContactLineRegex, '')
-    .replace(explicitContactLineRegex, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
+  // Se evalúan bloques completos (separados por doble salto de línea) para capturar
+  // datos de contacto distribuidos en múltiples líneas dentro del mismo bloque.
+  const contactSignalPatterns = [
+    /informaci[oó]n\s+de\s+contacto/i,
+    /correo\s+electr[oó]nico/i,
+    /contacto@despachoboutique/i,
+    /contacto@lawgic/i,
+    /\(55\)\s*1234-5678/i,
+    /calle\s+ejemplo/i,
+    /calle\s+ficticia/i,
+    /\[n[uú]mero\s+de\s+contacto\]/i,
+    /\[direcci[oó]n\s+de\s+la\s+oficina\]/i,
+    /no\s+dude\s+en\s+contactarnos/i,
+  ];
+
+  const filteredBlocks = sanitizedContent
+    .split(/\n\s*\n+/)
+    .map((block) => block.trim())
+    .filter((block) => {
+      if (!block) return false;
+
+      const contactSignalCount = contactSignalPatterns.reduce((count, pattern) => {
+        return pattern.test(block) ? count + 1 : count;
+      }, 0);
+
+      return contactSignalCount < 2;
+    });
+
+  return filteredBlocks.join('\n\n').trim();
 }
 
 // ====== SUB-AGENTE 7: FOOTER ======
