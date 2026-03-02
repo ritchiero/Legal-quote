@@ -100,16 +100,16 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                                                     return (
                                                                 <h3 key={i} className="text-base font-bold mt-4 mb-2" style={{ color: c.primary }}>
                                                                   {clean}
-                                                                </h3>h3>
+                                                                </h3>
                                                               );
                                           }
 
                                           if (isBullet) {
                                                     return (
                                                                 <div key={i} className="flex gap-2 ml-4 my-0.5">
-                                                                            <span style={{ color: c.accent }} className="font-bold mt-0.5 text-xs">&#9679;</span>span>
-                                                                            <span className="text-sm text-gray-700 leading-relaxed">{trimmed.replace(/^[-*]\s/, "")}</span>span>
-                                                                </div>div>
+                                                                            <span style={{ color: c.accent }} className="font-bold mt-0.5 text-xs">&#9679;</span>
+                                                                            <span className="text-sm text-gray-700 leading-relaxed">{trimmed.replace(/^[-*]\s/, "")}</span>
+                                                                </div>
                                                               );
                                           }
           
@@ -117,9 +117,9 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                           const num = trimmed.match(/^(\d+)[.)]\s/)?.[1] || "";
                           return (
                                       <div key={i} className="flex gap-2 ml-4 my-0.5">
-                                                  <span className="text-sm font-semibold min-w-[1.2rem]" style={{ color: c.accent }}>{num}.</span>span>
-                                                  <span className="text-sm text-gray-700 leading-relaxed">{trimmed.replace(/^\d+[.)]\s/, "")}</span>span>
-                                      </div>div>
+                                                  <span className="text-sm font-semibold min-w-[1.2rem]" style={{ color: c.accent }}>{num}.</span>
+                                                  <span className="text-sm text-gray-700 leading-relaxed">{trimmed.replace(/^\d+[.)]\s/, "")}</span>
+                                      </div>
                                     );
                 }
           
@@ -149,9 +149,9 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                                         style={pageSize === p.id ? { backgroundColor: c.primary } : {}}
                                       >
                           {p.label}
-                        </button>button>
+                        </button>
                       ))}
-                        </div>div>
+                        </div>
                 
                         <button
                                     onClick={() => {
@@ -174,9 +174,9 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                                                 ) : (
                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                 )}
-                                  </svg>svg>
+                                  </svg>
                           {isEditing ? "Guardar" : "Editar"}
-                        </button>button>
+                        </button>
                 
                         <button
                                     onClick={handleExportPDF}
@@ -185,10 +185,10 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                                   >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                  </svg>svg>
+                                  </svg>
                                   Descargar PDF ({ps.label})
-                        </button>button>
-                </div>div>
+                        </button>
+                </div>
           
             {/* Document */}
                 <div
@@ -209,18 +209,18 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                                                             />
                                         )}
                                                             <div>
-                                                                            <h2 className="text-white text-2xl font-bold tracking-tight">{despachoName}</h2>h2>
-                                                              {sloganText && <p className="text-sm mt-1 text-white/60">{sloganText}</p>p>}
-                                                            </div>div>
-                                              </div>div>
+                                                                            <h2 className="text-white text-2xl font-bold tracking-tight">{despachoName}</h2>
+                                                              {sloganText && <p className="text-sm mt-1 text-white/60">{sloganText}</p>}
+                                                            </div>
+                                              </div>
                                               <div className="text-right">
                                                             <div className="text-white text-xl font-extrabold tracking-tight opacity-90">
                                                                             COTIZACION
-                                                            </div>div>
-                                                            <div className="text-sm mt-1 text-white/50">{formattedDate}</div>div>
-                                              </div>div>
-                                  </div>div>
-                        </div>div>
+                                                            </div>
+                                                            <div className="text-sm mt-1 text-white/50">{formattedDate}</div>
+                                              </div>
+                                  </div>
+                        </div>
                         <div className="h-1" style={{ background: `linear-gradient(90deg, ${c.accent}, ${c.tertiary})` }} />
                 
                   {/* Content */}
@@ -233,28 +233,28 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                                                       style={{ fontFamily: "'Inter', sans-serif" }}
                                                     />
                                     ) : (
-                                      <div className="prose-sm">{renderContent(contenido)}</div>div>
+                                      <div className="prose-sm">{renderContent(contenido)}</div>
                                   )}
-                        </div>div>
+                        </div>
                 
                   {/* Signer */}
                   {signer?.name && (
                                     <div className="px-8 py-4 border-t border-gray-200">
                                                 <div className="mt-4 mb-2">
                                                               <div className="w-40 border-b-2 mb-3" style={{ borderColor: c.accent }} />
-                                                              <p className="text-sm font-semibold text-gray-900">{signer.name}</p>p>
-                                                  {signer.role && <p className="text-xs text-gray-500">{signer.role}</p>p>}
-                                                  {signer.email && <p className="text-xs text-gray-400 mt-1">{signer.email}</p>p>}
-                                                  {signer.phone && <p className="text-xs text-gray-400">{signer.phone}</p>p>}
-                                                </div>div>
-                                    </div>div>
+                                                              <p className="text-sm font-semibold text-gray-900">{signer.name}</p>
+                                                  {signer.role && <p className="text-xs text-gray-500">{signer.role}</p>}
+                                                  {signer.email && <p className="text-xs text-gray-400 mt-1">{signer.email}</p>}
+                                                  {signer.phone && <p className="text-xs text-gray-400">{signer.phone}</p>}
+                                                </div>
+                                    </div>
                         )}
                 
                   {/* Footer */}
                         <div className="px-8 py-4 text-center" style={{ backgroundColor: c.primary }}>
-                                  <p className="text-xs text-white/50">{despachoName} | Documento confidencial | {formattedDate}</p>p>
-                        </div>div>
-                </div>div>
-          </div>div>
+                                  <p className="text-xs text-white/50">{despachoName} | Documento confidencial | {formattedDate}</p>
+                        </div>
+                </div>
+          </div>
         );
 }</div>
