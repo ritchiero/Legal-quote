@@ -70,25 +70,25 @@ interface Servicio {
 }
 
 
-// Configuraciones por tipo de cotización
+// Configuraciones por tipo de cotizaciÃ³n
 const tiposConfig: Record<string, any> = {
   '1': { // Honorarios Fijos
       pricingType: 'fix',
-          payment: 'Pago único por servicio específico',
+          payment: 'Pago Ãºnico por servicio especÃ­fico',
               payments: 'Un solo pago al completar el servicio',
                   pricing: 'Tarifa fija establecida'
                     },
-                      '2': { // Cotización por Hora
+                      '2': { // CotizaciÃ³n por Hora
                           pricingType: 'variable',
                               payment: 'Pago basado en horas trabajadas',
-                                  payments: 'Facturación mensual según horas',
+                                  payments: 'FacturaciÃ³n mensual segÃºn horas',
                                       pricing: 'Tarifa por hora multiplicada por tiempo trabajado'
                                         },
                                           '3': { // Retainer
                                               pricingType: 'fix',
                                                   payment: 'Pago mensual anticipado',
                                                       payments: 'Cuota fija mensual',
-                                                          pricing: 'Anticipo que cubre servicios futuros durante el período'
+                                                          pricing: 'Anticipo que cubre servicios futuros durante el perÃ­odo'
                                                             },
                                                               '4': { // Contingencia
                                                                   pricingType: 'variable',
@@ -102,11 +102,11 @@ const tiposConfig: Record<string, any> = {
                                                                                               payments: '50% al inicio, 50% al finalizar',
                                                                                                   pricing: 'Precio fijo por proyecto completo'
                                                                                                     },
-                                                                                                      '6': { // Iguala/Suscripción
+                                                                                                      '6': { // Iguala/SuscripciÃ³n
                                                                                                           pricingType: 'fix',
                                                                                                               payment: 'Cuota mensual o anual',
                                                                                                                   payments: 'Pago recurrente mensual/anual',
-                                                                                                                      pricing: 'Suscripción con servicios ilimitados o con límite de horas'
+                                                                                                                      pricing: 'SuscripciÃ³n con servicios ilimitados o con lÃ­mite de horas'
                                                                                                                         }
                                                                                                                         };
 // Mapping from URL slugs to tipo IDs for sidebar/direct navigation
@@ -178,7 +178,8 @@ export default function CotizacionEstructuradaForm() {
 
   // States for Service Selector
   const { user } = useAuth(); // Moved up
-  const [brandingData, setBrandingData] = useState<any>(null); // Store branding info
+  const [brandingData, setBrandingData] = useState<any>(null);
+  const [contactData, setContactData] = useState<any>(null); // Store branding info
   const [signatureMode, setSignatureMode] = useState<'upload' | 'draw'>('upload');
 
   // States for Payment Method Creation
@@ -236,13 +237,13 @@ export default function CotizacionEstructuradaForm() {
   });
 
   // Format & Tone State - Defaults Inteligentes
-  const [formatType, setFormatType] = useState<'one-pager' | 'short' | 'large' | 'custom'>('large'); // Default: Detallado (más profesional)
-  const [toneType, setToneType] = useState<'friendly' | 'formal'>('formal'); // Default: Formal (más apropiado para B2B)
-  const [languageType, setLanguageType] = useState<'es' | 'en' | 'other'>('es'); // Default: Español (mercado principal)
-  const [styleType, setStyleType] = useState<'ny-biglaw' | 'silicon-valley' | 'uk-magic-circle' | 'german-engineering' | 'french-cabinet' | 'spanish-boutique' | 'japanese-keigo' | 'swiss-financial' | 'legal-ops' | 'luxury-boutique'>('spanish-boutique'); // Default: Despacho Boutique (más relevante para mercado español)
+  const [formatType, setFormatType] = useState<'one-pager' | 'short' | 'large' | 'custom'>('large'); // Default: Detallado (mÃ¡s profesional)
+  const [toneType, setToneType] = useState<'friendly' | 'formal'>('formal'); // Default: Formal (mÃ¡s apropiado para B2B)
+  const [languageType, setLanguageType] = useState<'es' | 'en' | 'other'>('es'); // Default: EspaÃ±ol (mercado principal)
+  const [styleType, setStyleType] = useState<'ny-biglaw' | 'silicon-valley' | 'uk-magic-circle' | 'german-engineering' | 'french-cabinet' | 'spanish-boutique' | 'japanese-keigo' | 'swiss-financial' | 'legal-ops' | 'luxury-boutique'>('spanish-boutique'); // Default: Despacho Boutique (mÃ¡s relevante para mercado espaÃ±ol)
   const [previewStyleType, setPreviewStyleType] = useState<string | null>(null);
 
-  // Estados para configuración customizada
+  // Estados para configuraciÃ³n customizada
   interface CustomBlock {
     id: string;
     name: string;
@@ -252,12 +253,12 @@ export default function CotizacionEstructuradaForm() {
   }
 
   const [customBlocks, setCustomBlocks] = useState<CustomBlock[]>([
-    { id: 'intro', name: 'Introducción', enabled: true, detailLevel: 'medium', order: 0 },
+    { id: 'intro', name: 'IntroducciÃ³n', enabled: true, detailLevel: 'medium', order: 0 },
     { id: 'services', name: 'Alcance de Servicios', enabled: true, detailLevel: 'medium', order: 1 },
-    { id: 'process', name: 'Metodología/Proceso', enabled: true, detailLevel: 'short', order: 2 },
+    { id: 'process', name: 'MetodologÃ­a/Proceso', enabled: true, detailLevel: 'short', order: 2 },
     { id: 'timeline', name: 'Cronograma', enabled: false, detailLevel: 'short', order: 3 },
     { id: 'costs', name: 'Costos y Forma de Pago', enabled: true, detailLevel: 'long', order: 4 },
-    { id: 'terms', name: 'Términos y Condiciones', enabled: true, detailLevel: 'short', order: 5 },
+    { id: 'terms', name: 'TÃ©rminos y Condiciones', enabled: true, detailLevel: 'short', order: 5 },
     { id: 'closing', name: 'Cierre y Firma', enabled: true, detailLevel: 'short', order: 6 },
   ]);
 
@@ -293,6 +294,14 @@ export default function CotizacionEstructuradaForm() {
           telefono: data.telefono,
           cargo: data.cargo // If exists
         });
+      }
+    });
+
+    // Fetch DatosContacto for phone/address
+    const contactRef = doc(db, 'DatosContacto', user.uid);
+    getDoc(contactRef).then((snap: any) => {
+      if (snap.exists()) {
+        setContactData(snap.data());
       }
     });
 
@@ -401,7 +410,7 @@ export default function CotizacionEstructuradaForm() {
       // Campo principal: Nombre del proyecto
       quotationName: servicio.nombre || servicio.descripcion,
 
-      // Descripción y contexto del servicio
+      // DescripciÃ³n y contexto del servicio
       contextDescription: servicio.descripcion || '',
 
       // Tiempo estimado
@@ -413,7 +422,7 @@ export default function CotizacionEstructuradaForm() {
       // Detalles adicionales del servicio
       details: servicio.detalles || '',
 
-      // Incluye: Convertir array a string separado por saltos de línea
+      // Incluye: Convertir array a string separado por saltos de lÃ­nea
       requirements: servicio.incluye && servicio.incluye.length > 0
         ? servicio.incluye.join('\n')
         : '',
@@ -424,7 +433,7 @@ export default function CotizacionEstructuradaForm() {
       duration: 3000,
     });
 
-    // Cerrar el selector después de cargar
+    // Cerrar el selector despuÃ©s de cargar
     setShowServiceSelector(false);
   };
 
@@ -550,7 +559,7 @@ export default function CotizacionEstructuradaForm() {
       return;
     }
     if (!user?.uid) {
-      toast.error('Ocurrió un error (Usuario no identificado)');
+      toast.error('OcurriÃ³ un error (Usuario no identificado)');
       return;
     }
 
@@ -596,7 +605,7 @@ export default function CotizacionEstructuradaForm() {
     }
     if (selectedPaymentMethodType === 'card') {
       if (!paymentFormData.cardNumber || !paymentFormData.cardHolder) {
-        toast.error('Número de tarjeta y titular son obligatorios');
+        toast.error('NÃºmero de tarjeta y titular son obligatorios');
         return;
       }
     }
@@ -646,21 +655,21 @@ export default function CotizacionEstructuradaForm() {
         stripeAccount: ''
       });
 
-      toast.success('Método de pago agregado exitosamente');
+      toast.success('MÃ©todo de pago agregado exitosamente');
     } catch (error) {
-      console.error('Error al guardar método:', error);
-      toast.error('Error al guardar el método de pago');
+      console.error('Error al guardar mÃ©todo:', error);
+      toast.error('Error al guardar el mÃ©todo de pago');
     } finally {
       setSavingPaymentMethod(false);
     }
   };
 
   const availablePaymentMethodTypes = [
-    { id: 'bank_transfer', name: 'Transferencia Bancaria', icon: '🏦' },
-    { id: 'bank_account', name: 'Cuenta de Banco', icon: '💳' },
-    { id: 'card', name: 'Depósito en Tarjeta', icon: '💳' },
-    { id: 'paypal', name: 'PayPal', icon: '📱' },
-    { id: 'stripe', name: 'Stripe', icon: '💰' }
+    { id: 'bank_transfer', name: 'Transferencia Bancaria', icon: 'ð¦' },
+    { id: 'bank_account', name: 'Cuenta de Banco', icon: 'ð³' },
+    { id: 'card', name: 'DepÃ³sito en Tarjeta', icon: 'ð³' },
+    { id: 'paypal', name: 'PayPal', icon: 'ð±' },
+    { id: 'stripe', name: 'Stripe', icon: 'ð°' }
   ];
 
   const handleAddOnToggle = (addOnId: string) => {
@@ -698,7 +707,7 @@ export default function CotizacionEstructuradaForm() {
     // Validate size
     const validFiles = files.filter(file => {
       if (file.size > MAX_SIZE_BYTES) {
-        toast.error(`El archivo "${file.name}" excede el límite de ${MAX_SIZE_MB}MB.`);
+        toast.error(`El archivo "${file.name}" excede el lÃ­mite de ${MAX_SIZE_MB}MB.`);
         return false;
       }
       return true;
@@ -843,15 +852,15 @@ export default function CotizacionEstructuradaForm() {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {activeConfigAddOn === 'specific_tc' ? 'Términos Específicos' :
-                  activeConfigAddOn === 'general_tc' ? 'Términos Generales' : 'Política de Privacidad'}
+                {activeConfigAddOn === 'specific_tc' ? 'TÃ©rminos EspecÃ­ficos' :
+                  activeConfigAddOn === 'general_tc' ? 'TÃ©rminos Generales' : 'PolÃ­tica de Privacidad'}
               </h3>
-              <p className="text-sm text-gray-600">Selecciona la plantilla legal para esta sección.</p>
+              <p className="text-sm text-gray-600">Selecciona la plantilla legal para esta secciÃ³n.</p>
             </div>
 
             <div className="space-y-4">
               <label className="block text-sm font-medium text-gray-700">
-                Selecciona los Términos y Condiciones
+                Selecciona los TÃ©rminos y Condiciones
               </label>
 
               {loadingTerms ? (
@@ -877,7 +886,7 @@ export default function CotizacionEstructuradaForm() {
                         value={newTemplateData.name}
                         onChange={(e) => setNewTemplateData(prev => ({ ...prev, name: e.target.value }))}
                         className="w-full h-12 px-5 py-3.5 border border-gray-200 rounded-full focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-gray-300 outline-none text-sm text-gray-900 transition-all"
-                        placeholder="Ej. Cláusula Estándar"
+                        placeholder="Ej. ClÃ¡usula EstÃ¡ndar"
                       />
                     </div>
                     <div>
@@ -886,7 +895,7 @@ export default function CotizacionEstructuradaForm() {
                         value={newTemplateData.content}
                         onChange={(e) => setNewTemplateData(prev => ({ ...prev, content: e.target.value }))}
                         className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-gray-300 outline-none text-sm text-gray-900 resize-y transition-all h-32"
-                        placeholder="Escribe el contenido legal aquí..."
+                        placeholder="Escribe el contenido legal aquÃ­..."
                       />
                     </div>
                     <div className="flex justify-end pt-2">
@@ -941,7 +950,7 @@ export default function CotizacionEstructuradaForm() {
               ) : (
                 <div className="p-4 bg-blue-50 text-blue-800 rounded-lg border border-blue-100 flex flex-col items-center text-center">
                   <p className="text-sm mb-3">
-                    No tienes plantillas guardadas para esta sección.
+                    No tienes plantillas guardadas para esta secciÃ³n.
                   </p>
                   <button
                     className="px-4 py-2 bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white text-sm font-medium rounded-full hover:from-[#2563EB] hover:to-[#1D4ED8] hover:shadow-md hover:-translate-y-0.5 transition-all shadow-sm"
@@ -962,8 +971,8 @@ export default function CotizacionEstructuradaForm() {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Métodos de Pago</h3>
-              <p className="text-sm text-gray-600">Selecciona el método de pago para recibir pagos de tus clientes.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">MÃ©todos de Pago</h3>
+              <p className="text-sm text-gray-600">Selecciona el mÃ©todo de pago para recibir pagos de tus clientes.</p>
             </div>
 
             {loadingPaymentMethods ? (
@@ -987,9 +996,9 @@ export default function CotizacionEstructuradaForm() {
                       <div className="flex items-center gap-3">
                         <div className="flex-shrink-0 w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm border border-gray-200 text-lg">
                           {
-                            method.type === 'bank_transfer' || method.type === 'bank_account' ? '🏛️' :
-                              method.type === 'card' ? '💳' :
-                                method.type === 'paypal' ? '📱' : '💰'
+                            method.type === 'bank_transfer' || method.type === 'bank_account' ? 'ðï¸' :
+                              method.type === 'card' ? 'ð³' :
+                                method.type === 'paypal' ? 'ð±' : 'ð°'
                           }
                         </div>
                         <div>
@@ -999,14 +1008,14 @@ export default function CotizacionEstructuradaForm() {
                               method.details?.cardHolder ||
                               method.details?.bank ||
                               method.details?.name ||
-                              'Método de Pago'
+                              'MÃ©todo de Pago'
                             }
                           </p>
                           <p className="text-sm text-gray-500">
                             {
-                              method.type === 'card' ? `•••• ${String(method.details?.cardNumber || '').slice(-4)}` :
+                              method.type === 'card' ? `â¢â¢â¢â¢ ${String(method.details?.cardNumber || '').slice(-4)}` :
                                 method.type === 'paypal' ? method.details?.paypalEmail :
-                                  method.details?.bank ? `${method.details.bank} ••••${String(method.details.accountNumber || method.details.clabe || '').slice(-4)}` :
+                                  method.details?.bank ? `${method.details.bank} â¢â¢â¢â¢${String(method.details.accountNumber || method.details.clabe || '').slice(-4)}` :
                                     method.details?.clabe || 'Detalles'
                             }
                           </p>
@@ -1025,20 +1034,20 @@ export default function CotizacionEstructuradaForm() {
                     className="text-sm text-blue-600 font-medium hover:text-blue-800 flex items-center gap-2"
                     onClick={() => setShowPaymentModal(true)}
                   >
-                    <span className="text-lg">+</span> Agregar método de pago
+                    <span className="text-lg">+</span> Agregar mÃ©todo de pago
                   </button>
                 </div>
               </div>
             ) : (
               <div className="p-4 bg-blue-50 text-blue-800 rounded-lg border border-blue-100 flex flex-col items-center text-center">
                 <p className="text-sm mb-3">
-                  No tienes métodos de pago guardados.
+                  No tienes mÃ©todos de pago guardados.
                 </p>
                 <button
                   className="px-4 py-2 bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white text-sm font-medium rounded-full hover:from-[#2563EB] hover:to-[#1D4ED8] hover:shadow-md hover:-translate-y-0.5 transition-all shadow-sm"
                   onClick={() => setShowPaymentModal(true)}
                 >
-                  Agregar método de pago
+                  Agregar mÃ©todo de pago
                 </button>
               </div>
             )}
@@ -1048,8 +1057,8 @@ export default function CotizacionEstructuradaForm() {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Datos de Facturación</h3>
-              <p className="text-sm text-gray-600">Configura cómo se manejará la información fiscal.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Datos de FacturaciÃ³n</h3>
+              <p className="text-sm text-gray-600">Configura cÃ³mo se manejarÃ¡ la informaciÃ³n fiscal.</p>
             </div>
 
             <div className="space-y-4">
@@ -1064,7 +1073,7 @@ export default function CotizacionEstructuradaForm() {
               >
                 <div>
                   <p className="font-medium text-gray-900">Solicitar datos fiscales al cliente</p>
-                  <p className="text-sm text-gray-500">Incluir un formulario o sección para que el cliente ingrese sus datos de facturación.</p>
+                  <p className="text-sm text-gray-500">Incluir un formulario o secciÃ³n para que el cliente ingrese sus datos de facturaciÃ³n.</p>
                 </div>
                 <div className={`
                     w-6 h-6 rounded border flex items-center justify-center transition-colors
@@ -1076,9 +1085,9 @@ export default function CotizacionEstructuradaForm() {
 
               {userBilling && (
                 <div className="mt-6 pt-6 border-t border-gray-100">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">Tu Información Fiscal (Emisor)</h4>
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Tu InformaciÃ³n Fiscal (Emisor)</h4>
                   <div className="p-3 bg-gray-50 rounded-lg text-sm text-gray-600 border border-gray-200">
-                    <p><span className="font-semibold">Razón Social:</span> {userBilling.razonSocial || 'No definida'}</p>
+                    <p><span className="font-semibold">RazÃ³n Social:</span> {userBilling.razonSocial || 'No definida'}</p>
                     <p><span className="font-semibold">RFC:</span> {userBilling.rfc || 'No definido'}</p>
                   </div>
                   <button
@@ -1104,7 +1113,7 @@ export default function CotizacionEstructuradaForm() {
               <textarea
                 value={formData.notes || ''}
                 onChange={(e) => handleInputChange('notes', e.target.value)}
-                placeholder="Escribe aquí cualquier aclaración importante, condiciones especiales o mensajes personalizados para tu cliente..."
+                placeholder="Escribe aquÃ­ cualquier aclaraciÃ³n importante, condiciones especiales o mensajes personalizados para tu cliente..."
                 rows={8}
                 className="w-full px-5 py-4 bg-white rounded-b-2xl border-none focus:ring-0 text-gray-700 placeholder:text-gray-400 resize-none text-base leading-relaxed"
               />
@@ -1127,8 +1136,8 @@ export default function CotizacionEstructuradaForm() {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Fecha de Expiración</h3>
-              <p className="text-sm text-gray-600">Define hasta cuándo es válida esta cotización.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Fecha de ExpiraciÃ³n</h3>
+              <p className="text-sm text-gray-600">Define hasta cuÃ¡ndo es vÃ¡lida esta cotizaciÃ³n.</p>
             </div>
 
             <Popover>
@@ -1173,7 +1182,7 @@ export default function CotizacionEstructuradaForm() {
                       value={formData.contactName || ''}
                       onChange={(e) => handleInputChange('contactName', e.target.value)}
                       className="w-full h-12 px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-full focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-gray-300 transition-all outline-none text-sm font-medium text-gray-900"
-                      placeholder="Ej. Juan Pérez"
+                      placeholder="Ej. Juan PÃ©rez"
                     />
                   </div>
 
@@ -1189,7 +1198,7 @@ export default function CotizacionEstructuradaForm() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Teléfono / WhatsApp</label>
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">TelÃ©fono / WhatsApp</label>
                     <input
                       type="tel"
                       value={formData.contactPhone || ''}
@@ -1201,7 +1210,7 @@ export default function CotizacionEstructuradaForm() {
                 </div>
               </div>
               <p className="text-xs text-gray-400 text-center">
-                Estos datos aparecerán en el pie de página de tu cotización.
+                Estos datos aparecerÃ¡n en el pie de pÃ¡gina de tu cotizaciÃ³n.
               </p>
             </div>
           </div>
@@ -1225,7 +1234,7 @@ export default function CotizacionEstructuradaForm() {
                 />
                 <div className="flex-1">
                   <span className="text-sm font-medium text-gray-900">Incluir espacio para firma</span>
-                  <p className="text-xs text-gray-500 mt-0.5">Se generará un bloque para firma al final del PDF.</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Se generarÃ¡ un bloque para firma al final del PDF.</p>
                 </div>
               </label>
 
@@ -1329,7 +1338,7 @@ export default function CotizacionEstructuradaForm() {
                         </button>
                       </div>
                       <p className="text-xs text-gray-500 text-center">
-                        Dibuja tu firma en el recuadro. Puedes usar el mouse o tu dedo en dispositivos táctiles.
+                        Dibuja tu firma en el recuadro. Puedes usar el mouse o tu dedo en dispositivos tÃ¡ctiles.
                       </p>
                     </div>
                   )}
@@ -1344,7 +1353,7 @@ export default function CotizacionEstructuradaForm() {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Adjuntos</h3>
-              <p className="text-sm text-gray-600">Sube archivos adicionales para anexar a la cotización.</p>
+              <p className="text-sm text-gray-600">Sube archivos adicionales para anexar a la cotizaciÃ³n.</p>
             </div>
 
             <div
@@ -1363,7 +1372,7 @@ export default function CotizacionEstructuradaForm() {
                 <PaperClipIcon className="w-6 h-6 text-blue-500" />
               </div>
               <p className="text-sm font-medium text-gray-900">Haz clic para subir archivos</p>
-              <p className="text-xs text-gray-500 mt-1">PDF, Documentos, Imágenes (Max 50MB por archivo)</p>
+              <p className="text-xs text-gray-500 mt-1">PDF, Documentos, ImÃ¡genes (Max 50MB por archivo)</p>
             </div>
 
             {/* File List */}
@@ -1397,7 +1406,7 @@ export default function CotizacionEstructuradaForm() {
         );
 
       default:
-        return <div className="p-4 text-center text-gray-500">Selecciona una opción para configurar</div>;
+        return <div className="p-4 text-center text-gray-500">Selecciona una opciÃ³n para configurar</div>;
     }
   };
 
@@ -1616,7 +1625,7 @@ export default function CotizacionEstructuradaForm() {
     }
 
     if (selectedAddOns.has('expiration_date') && !formData.expirationDate) {
-      toast.error('Agregaste "Fecha de Expiración" pero no seleccionaste una fecha.', { duration: 4000 });
+      toast.error('Agregaste "Fecha de ExpiraciÃ³n" pero no seleccionaste una fecha.', { duration: 4000 });
       handleConfigureAddOn('expiration_date');
       return;
     }
@@ -1629,7 +1638,7 @@ export default function CotizacionEstructuradaForm() {
 
     // Check terms (checking generic selectedTermId - considering current limitation)
     if ((selectedAddOns.has('specific_tc') || selectedAddOns.has('general_tc') || selectedAddOns.has('privacy_policy')) && !selectedTermId) {
-      toast.error('Seleccionaste una opción legal pero no elegiste una plantilla.', { duration: 4000 });
+      toast.error('Seleccionaste una opciÃ³n legal pero no elegiste una plantilla.', { duration: 4000 });
       if (selectedAddOns.has('specific_tc')) handleConfigureAddOn('specific_tc');
       else if (selectedAddOns.has('general_tc')) handleConfigureAddOn('general_tc');
       else handleConfigureAddOn('privacy_policy');
@@ -1642,7 +1651,7 @@ export default function CotizacionEstructuradaForm() {
       return;
     }
 
-    const toastId = toast.loading('Generando cotización...');
+    const toastId = toast.loading('Generando cotizaciÃ³n...');
 
     try {
       // 1. Upload attachments first if any
@@ -1680,13 +1689,18 @@ export default function CotizacionEstructuradaForm() {
         userInfo: {
           email: user?.email,
           displayName: user?.displayName,
-          uid: user?.uid
+          uid: user?.uid,
+          phone: contactData?.phone || contactData?.mobile || "",
+          address: contactData?.address || "",
+          location: contactData?.address || ""
         },
 
         // Branding (Bug Fix: Use fetched data)
-        despachoInfo: brandingData || {
-          nombre: user?.displayName || "Despacho Legal",
-          slogan: ""
+        despachoInfo: {
+          ...(brandingData || {}),
+          ...(contactData || {}),
+          nombre: brandingData?.nombreDespacho || brandingData?.nombre || user?.displayName || "Despacho Legal",
+          slogan: brandingData?.slogan || ""
         },
 
         // Add-Ons
@@ -1707,7 +1721,7 @@ export default function CotizacionEstructuradaForm() {
       };
 
       // Debug: Log what we're sending
-      console.log('📊 Branding Data being sent:', {
+      console.log('ð Branding Data being sent:', {
         brandingData,
         'payload.despachoInfo': payload.despachoInfo,
         'user.displayName': user?.displayName
@@ -1723,7 +1737,7 @@ export default function CotizacionEstructuradaForm() {
       });
 
       if (!response.ok) {
-        throw new Error('Error del servidor al generar cotización');
+        throw new Error('Error del servidor al generar cotizaciÃ³n');
       }
 
       const data = await response.json();
@@ -1747,7 +1761,7 @@ export default function CotizacionEstructuradaForm() {
       let quotationId: string;
 
       if (draftId) {
-        // Update existing draft → generated
+        // Update existing draft â generated
         quotationData.folio = `COT-${Date.now()}`;
         await setDoc(doc(db, 'quotations', draftId), quotationData, { merge: true });
         quotationId = draftId;
@@ -1760,14 +1774,14 @@ export default function CotizacionEstructuradaForm() {
         quotationId = quotationRef.id;
       }
 
-      toast.success('¡Cotización generada exitosamente!', { id: toastId });
+      toast.success('Â¡CotizaciÃ³n generada exitosamente!', { id: toastId });
 
       // 5. Redirect to result page
       router.push(`/cotizacion-estructurada/resultado/${quotationId}`);
 
     } catch (error) {
       console.error("Error generating quote:", error);
-      toast.error('Hubo un error al generar la cotización.', { id: toastId });
+      toast.error('Hubo un error al generar la cotizaciÃ³n.', { id: toastId });
     }
   };
 
@@ -1787,11 +1801,11 @@ export default function CotizacionEstructuradaForm() {
 
   const tiposTitulos: Record<string, string> = {
     '1': 'Honorarios Fijos',
-    '2': 'Cotización por Hora',
+    '2': 'CotizaciÃ³n por Hora',
     '3': 'Retainer',
     '4': 'Contingencia',
     '5': 'Proyecto',
-    '6': 'Iguala/Suscripción'
+    '6': 'Iguala/SuscripciÃ³n'
   };
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -1801,7 +1815,7 @@ export default function CotizacionEstructuradaForm() {
     }));
   };
 
-  // Funciones para configuración customizada
+  // Funciones para configuraciÃ³n customizada
   const handleToggleBlock = (blockId: string) => {
     setCustomBlocks(prev => prev.map(block =>
       block.id === blockId ? { ...block, enabled: !block.enabled } : block
@@ -1883,13 +1897,13 @@ export default function CotizacionEstructuradaForm() {
                 <path d="M12 5L7 10L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{tiposTitulos[resolvedTipo] || 'Cotización Estructurada'}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{tiposTitulos[resolvedTipo] || 'CotizaciÃ³n Estructurada'}</h1>
           </div>
-          <p className="text-base text-gray-500 ml-10 max-w-2xl">Completa los detalles para generar una cotización profesional y detallada.</p>
+          <p className="text-base text-gray-500 ml-10 max-w-2xl">Completa los detalles para generar una cotizaciÃ³n profesional y detallada.</p>
         </div>
 
-        {/* Formulario en cuadrícula 3 columnas */}
-        {/* Formulario en cuadrícula 3 columnas */}
+        {/* Formulario en cuadrÃ­cula 3 columnas */}
+        {/* Formulario en cuadrÃ­cula 3 columnas */}
         {step === 1 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
@@ -1998,7 +2012,7 @@ export default function CotizacionEstructuradaForm() {
               <div className="col-span-1">
                 <InputGroup
                   label="Necesidad"
-                  placeholder="¿Cuál es el dolor o necesidad principal?"
+                  placeholder="Â¿CuÃ¡l es el dolor o necesidad principal?"
                   value={formData.clientNeed}
                   onChange={(e) => handleInputChange('clientNeed', e)}
                   icon={<BoltIcon className="w-5 h-5" />}
@@ -2013,7 +2027,7 @@ export default function CotizacionEstructuradaForm() {
               <div className="col-span-1">
                 <InputGroup
                   label="Tiempos"
-                  placeholder="Estimación de tiempo de entrega..."
+                  placeholder="EstimaciÃ³n de tiempo de entrega..."
                   value={formData.times}
                   onChange={(e) => handleInputChange('times', e)}
                   icon={<ClockIcon className="w-5 h-5" />}
@@ -2024,10 +2038,10 @@ export default function CotizacionEstructuradaForm() {
                 </InputGroup>
               </div>
 
-              {/* Jurisdicción */}
+              {/* JurisdicciÃ³n */}
               <div className="col-span-1">
                 <InputGroup
-                  label="Jurisdicción"
+                  label="JurisdicciÃ³n"
                   placeholder=""
                   icon={<MapPinIcon className="w-5 h-5" />}
                 >
@@ -2036,8 +2050,8 @@ export default function CotizacionEstructuradaForm() {
                     onChange={(e) => handleInputChange('location', e.target.value)}
                     className="w-full px-3 py-2 bg-transparent border-none text-sm focus:ring-0 text-gray-900 appearance-none cursor-pointer"
                   >
-                    <option value="">Seleccionar jurisdicción</option>
-                    <option value="México">México</option>
+                    <option value="">Seleccionar jurisdicciÃ³n</option>
+                    <option value="MÃ©xico">MÃ©xico</option>
                     <option value="USA">USA</option>
                   </select>
                 </InputGroup>
@@ -2071,10 +2085,10 @@ export default function CotizacionEstructuradaForm() {
                 </InputGroup>
               </div>
 
-              {/* Método de Pago */}
+              {/* MÃ©todo de Pago */}
               <div className="col-span-1">
                 <InputGroup
-                  label="Método de Pago"
+                  label="MÃ©todo de Pago"
                   placeholder="Transferencia, tarjeta, etc..."
                   value={formData.payment}
                   onChange={(e) => handleInputChange('payment', e)}
@@ -2094,7 +2108,7 @@ export default function CotizacionEstructuradaForm() {
                       <>
                         <div className="col-span-1">
                           <InputGroup
-                            label="% de Éxito"
+                            label="% de Ãxito"
                             placeholder="Ej. 20"
                             value={formData.successFee}
                             onChange={(e) => handleInputChange('successFee', e)}
@@ -2160,7 +2174,7 @@ export default function CotizacionEstructuradaForm() {
                     return (
                       <div className="col-span-1">
                         <InputGroup
-                          label="Suscripción"
+                          label="SuscripciÃ³n"
                           placeholder=""
                           icon={<CurrencyDollarIcon className="w-5 h-5" />}
                         >
@@ -2277,21 +2291,21 @@ export default function CotizacionEstructuradaForm() {
                     <SheetTitle className="text-xl font-bold text-gray-900">
                       {activeConfigAddOn === 'notes' && 'Notas Adicionales'}
                       {activeConfigAddOn === 'attachments' && 'Adjuntos'}
-                      {activeConfigAddOn === 'expiration_date' && 'Fecha de Expiración'}
+                      {activeConfigAddOn === 'expiration_date' && 'Fecha de ExpiraciÃ³n'}
                       {activeConfigAddOn === 'contact_details' && 'Datos de Contacto'}
-                      {activeConfigAddOn === 'specific_tc' && 'Términos Específicos'}
-                      {activeConfigAddOn === 'general_tc' && 'Términos Generales'}
-                      {activeConfigAddOn === 'privacy_policy' && 'Política de Privacidad'}
+                      {activeConfigAddOn === 'specific_tc' && 'TÃ©rminos EspecÃ­ficos'}
+                      {activeConfigAddOn === 'general_tc' && 'TÃ©rminos Generales'}
+                      {activeConfigAddOn === 'privacy_policy' && 'PolÃ­tica de Privacidad'}
                       {activeConfigAddOn === 'bank_account' && 'Cuenta Bancaria'}
-                      {activeConfigAddOn === 'invoicing_info' && 'Facturación'}
+                      {activeConfigAddOn === 'invoicing_info' && 'FacturaciÃ³n'}
                       {activeConfigAddOn === 'signature' && 'Firma Digital'}
                     </SheetTitle>
                     <SheetDescription className="text-sm text-gray-500 mt-1">
                       {activeConfigAddOn === 'notes' && 'Agrega detalles puntuales o aclaraciones para el cliente.'}
                       {activeConfigAddOn === 'attachments' && 'Sube documentos complementarios.'}
                       {activeConfigAddOn === 'expiration_date' && 'Define la vigencia de esta propuesta.'}
-                      {activeConfigAddOn === 'contact_details' && 'Edita la información de contacto visible.'}
-                      {activeConfigAddOn === 'bank_account' && 'Selecciona dónde recibir el pago.'}
+                      {activeConfigAddOn === 'contact_details' && 'Edita la informaciÃ³n de contacto visible.'}
+                      {activeConfigAddOn === 'bank_account' && 'Selecciona dÃ³nde recibir el pago.'}
                       {['specific_tc', 'general_tc', 'privacy_policy'].includes(activeConfigAddOn || '') && 'Selecciona la plantilla legal adecuada.'}
                     </SheetDescription>
                   </div>
@@ -2312,7 +2326,7 @@ export default function CotizacionEstructuradaForm() {
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                <span>Atrás</span>
+                <span>AtrÃ¡s</span>
               </button>
 
               <Button
@@ -2329,19 +2343,19 @@ export default function CotizacionEstructuradaForm() {
         )}
 
         {step === 3 && (
-          /* STEP 3: Format & Tone - Versión Compacta */
+          /* STEP 3: Format & Tone - VersiÃ³n Compacta */
           <div className="animate-in fade-in slide-in-from-right-8 duration-500 max-w-4xl mx-auto">
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-8">
 
-              {/* Hint de Configuración Recomendada */}
+              {/* Hint de ConfiguraciÃ³n Recomendada */}
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
                 <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-blue-900 mb-1">Ya configuramos las opciones más comunes para ti</p>
+                  <p className="text-sm font-semibold text-blue-900 mb-1">Ya configuramos las opciones mÃ¡s comunes para ti</p>
                   <p className="text-xs text-blue-700">
-                    Puedes generar directamente con la configuración recomendada (Detallado, Formal, Español, Despacho Boutique) o personalizar según tus preferencias.
+                    Puedes generar directamente con la configuraciÃ³n recomendada (Detallado, Formal, EspaÃ±ol, Despacho Boutique) o personalizar segÃºn tus preferencias.
                   </p>
                 </div>
               </div>
@@ -2405,7 +2419,7 @@ export default function CotizacionEstructuradaForm() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-base font-semibold text-gray-900">Personaliza cada bloque</h3>
-                      <p className="text-xs text-gray-600 mt-1">Activa, ordena y ajusta el nivel de detalle de cada sección</p>
+                      <p className="text-xs text-gray-600 mt-1">Activa, ordena y ajusta el nivel de detalle de cada secciÃ³n</p>
                     </div>
                     <span className="text-xs font-medium text-blue-700 bg-white px-3 py-1.5 rounded-full border border-blue-200">
                       {customBlocks.filter(b => b.enabled).length} bloques activos
@@ -2502,14 +2516,14 @@ export default function CotizacionEstructuradaForm() {
                     <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Usa las flechas para reordenar los bloques según tus preferencias
+                    Usa las flechas para reordenar los bloques segÃºn tus preferencias
                   </p>
                 </div>
               )}
 
               {/* Tono - Segment Control */}
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Tono de Comunicación</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Tono de ComunicaciÃ³n</h2>
                 <div className="flex items-center justify-center bg-gray-100 rounded-lg p-1 max-w-md mx-auto relative">
                   <button
                     onClick={() => setToneType('friendly')}
@@ -2552,7 +2566,7 @@ export default function CotizacionEstructuradaForm() {
                         }`}
                     >
                       <ChatBubbleLeftEllipsisIcon className="w-5 h-5" />
-                      <span className="text-sm font-medium">Español</span>
+                      <span className="text-sm font-medium">EspaÃ±ol</span>
                       {languageType === 'es' && (
                         <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full">
                           Recomendado
@@ -2568,7 +2582,7 @@ export default function CotizacionEstructuradaForm() {
                         }`}
                     >
                       <GlobeAltIcon className="w-5 h-5" />
-                      <span className="text-sm font-medium">Inglés</span>
+                      <span className="text-sm font-medium">InglÃ©s</span>
                     </button>
 
                     <button
@@ -2590,7 +2604,7 @@ export default function CotizacionEstructuradaForm() {
                         type="text"
                         value={formData.customLanguage || ''}
                         onChange={(e) => handleInputChange('customLanguage', e.target.value)}
-                        placeholder="Especifica el idioma (ej: Francés, Portugués, Alemán...)"
+                        placeholder="Especifica el idioma (ej: FrancÃ©s, PortuguÃ©s, AlemÃ¡n...)"
                         className="w-full h-12 px-5 py-3.5 bg-gray-50 border-2 border-blue-200 rounded-full focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-blue-300 transition-all outline-none text-sm font-medium text-gray-900"
                         autoFocus
                       />
@@ -2599,9 +2613,9 @@ export default function CotizacionEstructuradaForm() {
                 </div>
               </div>
 
-              {/* Estilo de Cotización - Grid de Cards */}
+              {/* Estilo de CotizaciÃ³n - Grid de Cards */}
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Estilo de Cotización</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Estilo de CotizaciÃ³n</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
 
                   {/* NY BigLaw */}
@@ -2672,7 +2686,7 @@ export default function CotizacionEstructuradaForm() {
                     </div>
                   </div>
 
-                  {/* Británica */}
+                  {/* BritÃ¡nica */}
                   <div
                     onClick={() => setStyleType('uk-magic-circle')}
                     className={`p-4 rounded-xl border-2 transition-all text-left relative cursor-pointer ${styleType === 'uk-magic-circle'
@@ -2697,16 +2711,16 @@ export default function CotizacionEstructuradaForm() {
                       <div className="flex-1">
                         <h3 className={`font-semibold text-sm mb-1 ${styleType === 'uk-magic-circle' ? 'text-blue-900' : 'text-gray-900'
                           }`}>
-                          Británica
+                          BritÃ¡nica
                         </h3>
                         <p className="text-xs text-gray-600 leading-relaxed">
-                          Formalidad elegante, precisión, calma corporativa.
+                          Formalidad elegante, precisiÃ³n, calma corporativa.
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Alemán / Ingeniería Contractual */}
+                  {/* AlemÃ¡n / IngenierÃ­a Contractual */}
                   <div
                     onClick={() => setStyleType('german-engineering')}
                     className={`p-4 rounded-xl border-2 transition-all text-left relative cursor-pointer ${styleType === 'german-engineering'
@@ -2731,16 +2745,16 @@ export default function CotizacionEstructuradaForm() {
                       <div className="flex-1">
                         <h3 className={`font-semibold text-sm mb-1 ${styleType === 'german-engineering' ? 'text-blue-900' : 'text-gray-900'
                           }`}>
-                          Ingeniería Contractual
+                          IngenierÃ­a Contractual
                         </h3>
                         <p className="text-xs text-gray-600 leading-relaxed">
-                          Rigor, completitud, cero ambigüedad. Estilo alemán.
+                          Rigor, completitud, cero ambigÃ¼edad. Estilo alemÃ¡n.
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Francés / Cabinet */}
+                  {/* FrancÃ©s / Cabinet */}
                   <div
                     onClick={() => setStyleType('french-cabinet')}
                     className={`p-4 rounded-xl border-2 transition-all text-left relative cursor-pointer ${styleType === 'french-cabinet'
@@ -2765,7 +2779,7 @@ export default function CotizacionEstructuradaForm() {
                       <div className="flex-1">
                         <h3 className={`font-semibold text-sm mb-1 ${styleType === 'french-cabinet' ? 'text-blue-900' : 'text-gray-900'
                           }`}>
-                          Cabinet Francés
+                          Cabinet FrancÃ©s
                         </h3>
                         <p className="text-xs text-gray-600 leading-relaxed">
                           Refinamiento, narrativa, claridad conceptual elegante.
@@ -2774,7 +2788,7 @@ export default function CotizacionEstructuradaForm() {
                     </div>
                   </div>
 
-                  {/*Español / Despacho Boutique */}
+                  {/*EspaÃ±ol / Despacho Boutique */}
                   <div
                     onClick={() => setStyleType('spanish-boutique')}
                     className={`p-4 rounded-xl border-2 transition-all text-left relative cursor-pointer ${styleType === 'spanish-boutique'
@@ -2809,13 +2823,13 @@ export default function CotizacionEstructuradaForm() {
                           )}
                         </div>
                         <p className="text-xs text-gray-600 leading-relaxed">
-                          Cercanía profesional + autoridad técnica. Estilo Madrid.
+                          CercanÃ­a profesional + autoridad tÃ©cnica. Estilo Madrid.
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  {/*Japonés / Keigo */}
+                  {/*JaponÃ©s / Keigo */}
                   <div
                     onClick={() => setStyleType('japanese-keigo')}
                     className={`p-4 rounded-xl border-2 transition-all text-left relative cursor-pointer ${styleType === 'japanese-keigo'
@@ -2840,10 +2854,10 @@ export default function CotizacionEstructuradaForm() {
                       <div className="flex-1">
                         <h3 className={`font-semibold text-sm mb-1 ${styleType === 'japanese-keigo' ? 'text-blue-900' : 'text-gray-900'
                           }`}>
-                          Keigo Japonés
+                          Keigo JaponÃ©s
                         </h3>
                         <p className="text-xs text-gray-600 leading-relaxed">
-                          Respeto, cortesía, precisión. Estructura impecable.
+                          Respeto, cortesÃ­a, precisiÃ³n. Estructura impecable.
                         </p>
                       </div>
                     </div>
@@ -2911,7 +2925,7 @@ export default function CotizacionEstructuradaForm() {
                           Legal Ops
                         </h3>
                         <p className="text-xs text-gray-600 leading-relaxed">
-                          Procurement-friendly, fácil de aprobar internamente.
+                          Procurement-friendly, fÃ¡cil de aprobar internamente.
                         </p>
                       </div>
                     </div>
@@ -2945,7 +2959,7 @@ export default function CotizacionEstructuradaForm() {
                           Luxury Boutique
                         </h3>
                         <p className="text-xs text-gray-600 leading-relaxed">
-                          Exclusividad, atención premium, detalle impecable.
+                          Exclusividad, atenciÃ³n premium, detalle impecable.
                         </p>
                       </div>
                     </div>
@@ -2957,7 +2971,7 @@ export default function CotizacionEstructuradaForm() {
                   <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Cada estilo define la estructura, tono y presentación visual de tu cotización
+                  Cada estilo define la estructura, tono y presentaciÃ³n visual de tu cotizaciÃ³n
                 </p>
               </div>
 
@@ -2973,7 +2987,7 @@ export default function CotizacionEstructuradaForm() {
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                <span>Atrás</span>
+                <span>AtrÃ¡s</span>
               </Button>
 
             <Button
@@ -2991,7 +3005,7 @@ export default function CotizacionEstructuradaForm() {
                 onClick={handleGenerateQuote}
                 className="px-6 py-2.5 text-sm font-bold rounded-full shadow-lg shadow-blue-500/30 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 flex items-center gap-2"
               >
-                <span>Generar Cotización</span>
+                <span>Generar CotizaciÃ³n</span>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
@@ -3059,13 +3073,13 @@ export default function CotizacionEstructuradaForm() {
                   Vista Previa del Estilo
                 </h3>
                 <p className="text-sm text-gray-500 mt-1">
-                  Ejemplo de cómo se verá tu cotización con este estilo
+                  Ejemplo de cÃ³mo se verÃ¡ tu cotizaciÃ³n con este estilo
                 </p>
                 <div className="mt-2 flex items-center gap-2">
                   <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                    {languageType === 'es' && 'Tu cotización se generará en Español'}
+                    {languageType === 'es' && 'Tu cotizaciÃ³n se generarÃ¡ en EspaÃ±ol'}
                     {languageType === 'en' && 'Your quote will be generated in English'}
-                    {languageType === 'other' && `Tu cotización se generará en ${formData.customLanguage || 'el idioma especificado'}`}
+                    {languageType === 'other' && `Tu cotizaciÃ³n se generarÃ¡ en ${formData.customLanguage || 'el idioma especificado'}`}
                   </span>
                 </div>
               </div>
@@ -3107,7 +3121,7 @@ export default function CotizacionEstructuradaForm() {
 
                     {/* Re: line */}
                     <div className="mt-4">
-                      <p className="text-sm"><span className="font-bold">Re:</span> Engagement Letter – Corporate Legal Services</p>
+                      <p className="text-sm"><span className="font-bold">Re:</span> Engagement Letter â Corporate Legal Services</p>
                     </div>
 
                     {/* Salutation */}
@@ -3246,7 +3260,7 @@ export default function CotizacionEstructuradaForm() {
 
                     {/* Re: line */}
                     <div className="mt-4">
-                      <p className="text-sm"><span className="font-bold">Re:</span> NDA Review — Fixed Fee Engagement</p>
+                      <p className="text-sm"><span className="font-bold">Re:</span> NDA Review â Fixed Fee Engagement</p>
                     </div>
 
                     {/* Greeting */}
@@ -3257,7 +3271,7 @@ export default function CotizacionEstructuradaForm() {
                     {/* Intro */}
                     <div className="mt-3">
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Thanks for reaching out. We&apos;re happy to help with your NDA review. Below is our proposal — we&apos;ve kept it simple.
+                        Thanks for reaching out. We&apos;re happy to help with your NDA review. Below is our proposal â we&apos;ve kept it simple.
                       </p>
                     </div>
 
@@ -3266,19 +3280,19 @@ export default function CotizacionEstructuradaForm() {
                       <h3 className="text-base font-bold text-gray-900 mb-3">What&apos;s included</h3>
                       <div className="bg-blue-50 border border-blue-200 p-4 rounded space-y-2">
                         <div className="flex items-start gap-2">
-                          <span className="text-blue-600 text-sm">→</span>
+                          <span className="text-blue-600 text-sm">â</span>
                           <p className="text-sm text-gray-900">Full review of your NDA (~500 words)</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-blue-600 text-sm">→</span>
+                          <span className="text-blue-600 text-sm">â</span>
                           <p className="text-sm text-gray-900">Risk assessment memo (plain English, no legalese)</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-blue-600 text-sm">→</span>
+                          <span className="text-blue-600 text-sm">â</span>
                           <p className="text-sm text-gray-900">Redline with suggested edits</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-blue-600 text-sm">→</span>
+                          <span className="text-blue-600 text-sm">â</span>
                           <p className="text-sm text-gray-900">15-min call to walk through findings (optional)</p>
                         </div>
                       </div>
@@ -3324,10 +3338,10 @@ export default function CotizacionEstructuradaForm() {
                       <h3 className="text-base font-bold text-gray-900 mb-3">How we work</h3>
                       <p className="text-sm text-gray-900 mb-2">We keep things founder-friendly:</p>
                       <ul className="space-y-1 ml-4">
-                        <li className="text-sm text-gray-900">• No billable hour surprises — flat fee means flat fee</li>
-                        <li className="text-sm text-gray-900">• Plain English deliverables — you&apos;ll actually understand what we send</li>
-                        <li className="text-sm text-gray-900">• Slack/email preferred — skip the formal meetings unless you want them</li>
-                        <li className="text-sm text-gray-900">• We&apos;ve reviewed 500+ NDAs for tech companies — we know what matters</li>
+                        <li className="text-sm text-gray-900">â¢ No billable hour surprises â flat fee means flat fee</li>
+                        <li className="text-sm text-gray-900">â¢ Plain English deliverables â you&apos;ll actually understand what we send</li>
+                        <li className="text-sm text-gray-900">â¢ Slack/email preferred â skip the formal meetings unless you want them</li>
+                        <li className="text-sm text-gray-900">â¢ We&apos;ve reviewed 500+ NDAs for tech companies â we know what matters</li>
                       </ul>
                     </div>
 
@@ -3357,7 +3371,7 @@ export default function CotizacionEstructuradaForm() {
                     <div className="mt-3">
                       <p className="text-sm font-bold text-gray-900">Sarah Chen</p>
                       <p className="text-sm text-gray-700">Partner, Baxter Grove LLP</p>
-                      <p className="text-sm text-gray-600">sarah@baxtergrove.com  •  (650) 555-0142</p>
+                      <p className="text-sm text-gray-600">sarah@baxtergrove.com  â¢  (650) 555-0142</p>
                     </div>
 
                     {/* Disclaimer */}
@@ -3369,7 +3383,7 @@ export default function CotizacionEstructuradaForm() {
                   </div>
                 )}
 
-                {/* Británica Example */}
+                {/* BritÃ¡nica Example */}
                 {previewStyleType === 'uk-magic-circle' && (
                   <div className="space-y-4 font-serif text-sm">
                     {/* Header */}
@@ -3460,7 +3474,7 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Review and memorandum</td>
-                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">£950</td>
+                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">Â£950</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Marked-up agreement</td>
@@ -3468,17 +3482,17 @@ export default function CotizacionEstructuradaForm() {
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">VAT (20%)</td>
-                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">£190</td>
+                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">Â£190</td>
                           </tr>
                           <tr className="font-bold">
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Total</td>
-                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">£1,140</td>
+                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">Â£1,140</td>
                           </tr>
                         </tbody>
                       </table>
 
                       <p className="text-xs text-gray-700 leading-relaxed">
-                        The above fee assumes a document of the length indicated and does not include any subsequent negotiations with the counterparty. Should you require assistance with negotiations or further correspondence, we would be pleased to discuss appropriate arrangements, which would ordinarily be charged on a time basis at our standard hourly rates (currently £475 per hour for a partner and £325 per hour for an associate).
+                        The above fee assumes a document of the length indicated and does not include any subsequent negotiations with the counterparty. Should you require assistance with negotiations or further correspondence, we would be pleased to discuss appropriate arrangements, which would ordinarily be charged on a time basis at our standard hourly rates (currently Â£475 per hour for a partner and Â£325 per hour for an associate).
                       </p>
                     </div>
 
@@ -3557,27 +3571,27 @@ export default function CotizacionEstructuradaForm() {
                     {/* Header */}
                     <div className="flex justify-between items-start pb-3 border-b border-gray-400">
                       <div>
-                        <h1 className="text-base font-bold text-gray-900">WEGNER HARTMANN KRÖGER</h1>
-                        <p className="text-xs text-gray-700 mt-0.5">Abogados | Rechtsanwälte PartG mbB</p>
+                        <h1 className="text-base font-bold text-gray-900">WEGNER HARTMANN KRÃGER</h1>
+                        <p className="text-xs text-gray-700 mt-0.5">Abogados | RechtsanwÃ¤lte PartG mbB</p>
                       </div>
                       <div className="text-right text-xs text-gray-700">
-                        <p>Bockenheimer Landstraße 51</p>
+                        <p>Bockenheimer LandstraÃe 51</p>
                         <p>60325 Frankfurt am Main</p>
                         <p>T: +49 69 7140 8860</p>
                         <p>kanzlei@whk-recht.de</p>
                       </div>
                     </div>
 
-                    {/* Título principal */}
+                    {/* TÃ­tulo principal */}
                     <div className="border-2 border-gray-900 p-3 text-center mt-4">
-                      <h2 className="text-base font-bold text-gray-900">ACUERDO DE PRESTACIÓN DE SERVICIOS</h2>
+                      <h2 className="text-base font-bold text-gray-900">ACUERDO DE PRESTACIÃN DE SERVICIOS</h2>
                       <p className="text-xs text-gray-600 mt-1 italic">Mandatsvereinbarung / Engagement Letter</p>
                     </div>
 
-                    {/* Información del expediente */}
+                    {/* InformaciÃ³n del expediente */}
                     <div className="mt-4 space-y-1">
                       <div className="flex text-xs">
-                        <span className="w-40 text-gray-700">N.° de Expediente:</span>
+                        <span className="w-40 text-gray-700">N.Â° de Expediente:</span>
                         <span className="font-medium text-gray-900">WHK/2026/NDA-0147</span>
                       </div>
                       <div className="flex text-xs">
@@ -3585,16 +3599,16 @@ export default function CotizacionEstructuradaForm() {
                         <span className="text-gray-900">23 de enero de 2026</span>
                       </div>
                       <div className="flex text-xs">
-                        <span className="w-40 text-gray-700">Versión:</span>
+                        <span className="w-40 text-gray-700">VersiÃ³n:</span>
                         <span className="text-gray-900">1.0</span>
                       </div>
                       <div className="flex text-xs">
                         <span className="w-40 text-gray-700">Estado:</span>
-                        <span className="text-gray-900">Borrador para aprobación</span>
+                        <span className="text-gray-900">Borrador para aprobaciÃ³n</span>
                       </div>
                       <div className="flex text-xs">
                         <span className="w-40 text-gray-700">Cliente:</span>
-                        <span className="text-gray-900">[Nombre del Cliente / Razón Social]</span>
+                        <span className="text-gray-900">[Nombre del Cliente / RazÃ³n Social]</span>
                       </div>
                       <div className="flex text-xs">
                         <span className="w-40 text-gray-700">Responsable WHK:</span>
@@ -3602,10 +3616,10 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Sección 1 - DEFINICIONES */}
+                    {/* SecciÃ³n 1 - DEFINICIONES */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">1. DEFINICIONES</h3>
-                      <p className="text-xs text-gray-900 mb-2">Salvo indicación en contrario, los siguientes términos tendrán el significado que se les atribuye a continuación.</p>
+                      <p className="text-xs text-gray-900 mb-2">Salvo indicaciÃ³n en contrario, los siguientes tÃ©rminos tendrÃ¡n el significado que se les atribuye a continuaciÃ³n.</p>
 
                       <table className="w-full text-xs border border-gray-400 mt-2">
                         <tbody>
@@ -3614,55 +3628,55 @@ export default function CotizacionEstructuradaForm() {
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Non-Disclosure Agreement (Acuerdo de Confidencialidad) conforme al Anexo 1</td>
                           </tr>
                           <tr>
-                            <td className="border border-gray-400 px-2 py-1.5 font-bold text-gray-900">Objeto de Revisión</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">El NDA proporcionado por el Cliente con una extensión aproximada de 500 palabras</td>
+                            <td className="border border-gray-400 px-2 py-1.5 font-bold text-gray-900">Objeto de RevisiÃ³n</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">El NDA proporcionado por el Cliente con una extensiÃ³n aproximada de 500 palabras</td>
                           </tr>
                           <tr className="bg-gray-100">
-                            <td className="border border-gray-400 px-2 py-1.5 font-bold text-gray-900">Informe de Revisión</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Documentación escrita de los resultados de la revisión conforme a la Sección 3.2</td>
+                            <td className="border border-gray-400 px-2 py-1.5 font-bold text-gray-900">Informe de RevisiÃ³n</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">DocumentaciÃ³n escrita de los resultados de la revisiÃ³n conforme a la SecciÃ³n 3.2</td>
                           </tr>
                           <tr>
-                            <td className="border border-gray-400 px-2 py-1.5 font-bold text-gray-900">Día Hábil</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Lunes a viernes, excluyendo días festivos oficiales en la jurisdicción aplicable</td>
+                            <td className="border border-gray-400 px-2 py-1.5 font-bold text-gray-900">DÃ­a HÃ¡bil</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Lunes a viernes, excluyendo dÃ­as festivos oficiales en la jurisdicciÃ³n aplicable</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 2 */}
+                    {/* SecciÃ³n 2 */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">2. OBJETO Y OBJETIVOS</h3>
                       <p className="text-xs font-bold text-gray-900 mb-1">2.1 Objeto del Contrato</p>
                       <p className="text-xs text-gray-900 leading-relaxed mb-2">
-                        El presente acuerdo tiene como objeto la revisión jurídica de un Acuerdo de Confidencialidad (NDA) para la identificación de riesgos, desviaciones respecto de estándares de mercado, así como la elaboración de propuestas de modificación.
+                        El presente acuerdo tiene como objeto la revisiÃ³n jurÃ­dica de un Acuerdo de Confidencialidad (NDA) para la identificaciÃ³n de riesgos, desviaciones respecto de estÃ¡ndares de mercado, asÃ­ como la elaboraciÃ³n de propuestas de modificaciÃ³n.
                       </p>
 
                       <p className="text-xs font-bold text-gray-900 mb-1">2.2 Objetivos</p>
                       <p className="text-xs text-gray-900 ml-3 space-y-0.5">
-                        (a) Identificación de riesgos legales y comerciales en el Objeto de Revisión;<br />
-                        (b) Evaluación de desviaciones respecto de condiciones contractuales estándar de mercado;<br />
-                        (c) Elaboración de recomendaciones concretas y propuestas de redacción alternativa.
+                        (a) IdentificaciÃ³n de riesgos legales y comerciales en el Objeto de RevisiÃ³n;<br />
+                        (b) EvaluaciÃ³n de desviaciones respecto de condiciones contractuales estÃ¡ndar de mercado;<br />
+                        (c) ElaboraciÃ³n de recomendaciones concretas y propuestas de redacciÃ³n alternativa.
                       </p>
 
                       <p className="text-xs font-bold text-gray-900 mb-1 mt-2">2.3 Limitaciones (Alcance Negativo)</p>
                       <p className="text-xs text-gray-900 mb-1">Los siguientes servicios quedan expresamente excluidos del presente acuerdo:</p>
                       <ul className="text-xs text-gray-900 ml-4 space-y-0.5 list-disc">
-                        <li>Asesoría sobre la transacción subyacente o el modelo de negocio;</li>
-                        <li>Análisis fiscal o tributario;</li>
-                        <li>Revisión conforme a derecho extranjero (salvo encargo específico);</li>
-                        <li>Conducción de negociaciones con la contraparte.</li>
+                        <li>AsesorÃ­a sobre la transacciÃ³n subyacente o el modelo de negocio;</li>
+                        <li>AnÃ¡lisis fiscal o tributario;</li>
+                        <li>RevisiÃ³n conforme a derecho extranjero (salvo encargo especÃ­fico);</li>
+                        <li>ConducciÃ³n de negociaciones con la contraparte.</li>
                       </ul>
                     </div>
 
-                    {/* Sección 3 - ALCANCE DE SERVICIOS */}
+                    {/* SecciÃ³n 3 - ALCANCE DE SERVICIOS */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">3. ALCANCE DE SERVICIOS (LEISTUNGSUMFANG)</h3>
-                      <p className="text-xs font-bold text-gray-900 mb-2">3.1 Actividades de Revisión</p>
+                      <p className="text-xs font-bold text-gray-900 mb-2">3.1 Actividades de RevisiÃ³n</p>
 
                       <table className="w-full text-xs border border-gray-400">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.°</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.Â°</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">Servicio</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-32">Entregable</th>
                           </tr>
@@ -3670,38 +3684,38 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">3.1.1</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión formal del NDA: verificación de completitud de elementos esenciales</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Nota de revisión</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n formal del NDA: verificaciÃ³n de completitud de elementos esenciales</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Nota de revisiÃ³n</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">3.1.2</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis sustantivo de las obligaciones de confidencialidad y su alcance</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis de riesgos</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis sustantivo de las obligaciones de confidencialidad y su alcance</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis de riesgos</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">3.1.3</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión de excepciones (divulgación por autoridades, etc.)</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Matriz de evaluación</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n de excepciones (divulgaciÃ³n por autoridades, etc.)</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Matriz de evaluaciÃ³n</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">3.1.4</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis de cláusulas de responsabilidad y penas convencionales</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Evaluación de riesgo</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis de clÃ¡usulas de responsabilidad y penas convencionales</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">EvaluaciÃ³n de riesgo</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">3.1.5</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión de disposiciones de vigencia y terminación</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Nota de revisión</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n de disposiciones de vigencia y terminaciÃ³n</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Nota de revisiÃ³n</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 4 - SUPUESTOS */}
+                    {/* SecciÃ³n 4 - SUPUESTOS */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">4. SUPUESTOS Y PRERREQUISITOS</h3>
                       <p className="text-xs text-gray-900 mb-2 leading-relaxed">
-                        La prestación de servicios se realiza bajo los siguientes supuestos. Cualquier desviación podrá resultar en ajustes al cronograma y honorarios:
+                        La prestaciÃ³n de servicios se realiza bajo los siguientes supuestos. Cualquier desviaciÃ³n podrÃ¡ resultar en ajustes al cronograma y honorarios:
                       </p>
 
                       <table className="w-full text-xs border border-gray-400">
@@ -3715,24 +3729,24 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">S-01</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">El Objeto de Revisión se encuentra disponible en idioma español o inglés</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">El Objeto de RevisiÃ³n se encuentra disponible en idioma espaÃ±ol o inglÃ©s</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Cliente</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">S-02</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">La extensión del NDA no excede de 500 palabras</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">La extensiÃ³n del NDA no excede de 500 palabras</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Cliente</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">S-03</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">La documentación completa será proporcionada dentro de los 2 Días Hábiles siguientes al encargo</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">La documentaciÃ³n completa serÃ¡ proporcionada dentro de los 2 DÃ­as HÃ¡biles siguientes al encargo</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Cliente</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 5 - CRONOGRAMA */}
+                    {/* SecciÃ³n 5 - CRONOGRAMA */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">5. CRONOGRAMA E HITOS</h3>
 
@@ -3747,42 +3761,42 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">H-0</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Formalización del encargo y recepción de documentos</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Día 0</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">FormalizaciÃ³n del encargo y recepciÃ³n de documentos</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">DÃ­a 0</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">H-1</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión formal y control de completitud</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Día 1</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n formal y control de completitud</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">DÃ­a 1</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">H-2</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis sustantivo y evaluación de riesgos</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Día 2-3</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis sustantivo y evaluaciÃ³n de riesgos</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">DÃ­a 2-3</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">H-3</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Elaboración de Informe de Revisión y Markup</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Día 4</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">ElaboraciÃ³n de Informe de RevisiÃ³n y Markup</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">DÃ­a 4</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">H-4</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Control de calidad (principio de cuatro ojos)</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Día 5</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">DÃ­a 5</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">H-5</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Entrega de documentos al Cliente</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Día 5</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">DÃ­a 5</td>
                           </tr>
                         </tbody>
                       </table>
                       <p className="text-xs italic text-gray-600 mt-2">
-                        Duración total: 5 Días Hábiles desde la recepción completa de documentos. Procesamiento express (2 Días Hábiles) disponible con cargo adicional.
+                        DuraciÃ³n total: 5 DÃ­as HÃ¡biles desde la recepciÃ³n completa de documentos. Procesamiento express (2 DÃ­as HÃ¡biles) disponible con cargo adicional.
                       </p>
                     </div>
 
-                    {/* Sección 7 - HONORARIOS */}
+                    {/* SecciÃ³n 7 - HONORARIOS */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">7. HONORARIOS</h3>
                       <p className="text-xs font-bold text-gray-900 mb-2">7.1 Honorarios Fijos</p>
@@ -3797,7 +3811,7 @@ export default function CotizacionEstructuradaForm() {
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión de NDA incl. Informe (Secc. 3.1, 3.2)</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n de NDA incl. Informe (Secc. 3.1, 3.2)</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">1.200,00</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">1.428,00</td>
                           </tr>
@@ -3807,12 +3821,12 @@ export default function CotizacionEstructuradaForm() {
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900 italic">Incl.</td>
                           </tr>
                           <tr>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Cargo por servicio express (opcional, 2 Días Hábiles)</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Cargo por servicio express (opcional, 2 DÃ­as HÃ¡biles)</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">400,00</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">476,00</td>
                           </tr>
                           <tr className="bg-gray-100 font-bold">
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">TOTAL (Estándar)</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">TOTAL (EstÃ¡ndar)</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">1.200,00</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">1.428,00</td>
                           </tr>
@@ -3820,11 +3834,11 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 10 - DISPOSICIONES FINALES */}
+                    {/* SecciÃ³n 10 - DISPOSICIONES FINALES */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">10. DISPOSICIONES FINALES</h3>
-                      <p className="text-xs text-gray-900 mb-1"><span className="font-bold">10.1</span> Este acuerdo se rige por el derecho alemán.</p>
-                      <p className="text-xs text-gray-900 mb-1"><span className="font-bold">10.2</span> Cualquier modificación o adición a este acuerdo deberá constar por escrito.</p>
+                      <p className="text-xs text-gray-900 mb-1"><span className="font-bold">10.1</span> Este acuerdo se rige por el derecho alemÃ¡n.</p>
+                      <p className="text-xs text-gray-900 mb-1"><span className="font-bold">10.2</span> Cualquier modificaciÃ³n o adiciÃ³n a este acuerdo deberÃ¡ constar por escrito.</p>
                       <p className="text-xs text-gray-900"><span className="font-bold">10.3</span> El presente acuerdo tiene vigencia hasta el 23 de febrero de 2026.</p>
                     </div>
 
@@ -3852,9 +3866,9 @@ export default function CotizacionEstructuradaForm() {
                     {/* ANEXOS */}
                     <div className="mt-4">
                       <p className="text-xs font-bold text-gray-900 mb-1">ANEXOS</p>
-                      <p className="text-xs text-gray-900 ml-3">Anexo 1: Objeto de Revisión (NDA)</p>
+                      <p className="text-xs text-gray-900 ml-3">Anexo 1: Objeto de RevisiÃ³n (NDA)</p>
                       <p className="text-xs text-gray-900 ml-3">Anexo 2: Aviso de Privacidad conforme al Art. 13 RGPD</p>
-                      <p className="text-xs text-gray-900 ml-3">Anexo 3: Condiciones Generales de Contratación</p>
+                      <p className="text-xs text-gray-900 ml-3">Anexo 3: Condiciones Generales de ContrataciÃ³n</p>
                     </div>
                   </div>
                 )}
@@ -3864,15 +3878,15 @@ export default function CotizacionEstructuradaForm() {
                   <div className="space-y-4 font-serif text-sm">
                     {/* Header elegante centrado */}
                     <div className="text-center pb-4">
-                      <h1 className="text-xl font-bold text-gray-800 tracking-wide">BEAUMONT LEFÈVRE</h1>
-                      <p className="text-xs text-gray-500 italic mt-1">— AVOCATS —</p>
-                      <p className="text-xs text-gray-600 mt-2">12, avenue Montaigne · 75008 Paris</p>
+                      <h1 className="text-xl font-bold text-gray-800 tracking-wide">BEAUMONT LEFÃVRE</h1>
+                      <p className="text-xs text-gray-500 italic mt-1">â AVOCATS â</p>
+                      <p className="text-xs text-gray-600 mt-2">12, avenue Montaigne Â· 75008 Paris</p>
                     </div>
 
-                    {/* Líneas decorativas */}
+                    {/* LÃ­neas decorativas */}
                     <div className="flex items-center justify-center gap-4 my-4">
                       <div className="flex-1 border-t border-gray-400"></div>
-                      <span className="text-gray-400">✦</span>
+                      <span className="text-gray-400">â¦</span>
                       <div className="flex-1 border-t border-gray-400"></div>
                     </div>
 
@@ -3884,17 +3898,17 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Dirección del cliente */}
+                    {/* DirecciÃ³n del cliente */}
                     <div className="mb-4 text-sm text-gray-900">
                       <p>[Nombre del Cliente]</p>
                       <p>[Empresa]</p>
-                      <p>[Dirección]</p>
+                      <p>[DirecciÃ³n]</p>
                     </div>
 
                     {/* Asunto */}
                     <div className="mb-4">
                       <p className="text-sm text-gray-900">
-                        <span className="font-semibold">Asunto:</span> <span className="italic">Propuesta de servicios — Revisión de Acuerdo de Confidencialidad</span>
+                        <span className="font-semibold">Asunto:</span> <span className="italic">Propuesta de servicios â RevisiÃ³n de Acuerdo de Confidencialidad</span>
                       </p>
                     </div>
 
@@ -3903,16 +3917,16 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-sm text-gray-900">Estimado(a) [Nombre]:</p>
                     </div>
 
-                    {/* Párrafo introductorio */}
+                    {/* PÃ¡rrafo introductorio */}
                     <div className="mb-5">
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Agradecemos sinceramente la confianza que deposita en nuestro Cabinet al solicitarnos asistencia en la revisión del acuerdo de confidencialidad que tiene previsto suscribir. Es un placer presentarle nuestra propuesta de intervención.
+                        Agradecemos sinceramente la confianza que deposita en nuestro Cabinet al solicitarnos asistencia en la revisiÃ³n del acuerdo de confidencialidad que tiene previsto suscribir. Es un placer presentarle nuestra propuesta de intervenciÃ³n.
                       </p>
                     </div>
 
                     <div className="mb-5">
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Hemos tomado debida nota de que el documento en cuestión —de aproximadamente quinientas palabras— tiene por objeto proteger el intercambio de información sensible en el marco de conversaciones preliminares con un potencial socio comercial. Comprendemos la importancia de contar con un análisis riguroso que le permita tomar decisiones informadas antes de comprometer su firma.
+                        Hemos tomado debida nota de que el documento en cuestiÃ³n âde aproximadamente quinientas palabrasâ tiene por objeto proteger el intercambio de informaciÃ³n sensible en el marco de conversaciones preliminares con un potencial socio comercial. Comprendemos la importancia de contar con un anÃ¡lisis riguroso que le permita tomar decisiones informadas antes de comprometer su firma.
                       </p>
                     </div>
 
@@ -3921,7 +3935,7 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-gray-400">* * *</p>
                     </div>
 
-                    {/* Sección I */}
+                    {/* SecciÃ³n I */}
                     <div className="mt-6">
                       <h3 className="text-base font-bold text-gray-900 text-center mb-4">I. NUESTRA PROPUESTA</h3>
                       <p className="text-sm text-gray-900 leading-relaxed mb-3">
@@ -3930,20 +3944,20 @@ export default function CotizacionEstructuradaForm() {
 
                       <div className="ml-6 space-y-3">
                         <p className="text-sm text-gray-900 leading-relaxed">
-                          <span className="italic text-gray-700">Primero</span>, identificar las cláusulas que pudieran presentar un riesgo jurídico o comercial para sus intereses, ya sea por su redacción, su alcance o su eventual interpretación.
+                          <span className="italic text-gray-700">Primero</span>, identificar las clÃ¡usulas que pudieran presentar un riesgo jurÃ­dico o comercial para sus intereses, ya sea por su redacciÃ³n, su alcance o su eventual interpretaciÃ³n.
                         </p>
 
                         <p className="text-sm text-gray-900 leading-relaxed">
-                          <span className="italic text-gray-700">Segundo</span>, evaluar la conformidad del documento con las prácticas habituales del mercado y los estándares aplicables en materia de confidencialidad empresarial.
+                          <span className="italic text-gray-700">Segundo</span>, evaluar la conformidad del documento con las prÃ¡cticas habituales del mercado y los estÃ¡ndares aplicables en materia de confidencialidad empresarial.
                         </p>
 
                         <p className="text-sm text-gray-900 leading-relaxed">
-                          <span className="italic text-gray-700">Tercero</span>, formular propuestas concretas de modificación que fortalezcan su posición, acompañadas de la justificación correspondiente.
+                          <span className="italic text-gray-700">Tercero</span>, formular propuestas concretas de modificaciÃ³n que fortalezcan su posiciÃ³n, acompaÃ±adas de la justificaciÃ³n correspondiente.
                         </p>
                       </div>
 
                       <p className="text-sm text-gray-900 leading-relaxed mt-4">
-                        Al término de nuestra intervención, le remitiremos un informe de síntesis redactado en términos accesibles —sin tecnicismos innecesarios— junto con una versión anotada del documento que refleje nuestras observaciones y sugerencias.
+                        Al tÃ©rmino de nuestra intervenciÃ³n, le remitiremos un informe de sÃ­ntesis redactado en tÃ©rminos accesibles âsin tecnicismos innecesariosâ junto con una versiÃ³n anotada del documento que refleje nuestras observaciones y sugerencias.
                       </p>
                     </div>
 
@@ -3952,36 +3966,36 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-gray-400">* * *</p>
                     </div>
 
-                    {/* Sección II */}
+                    {/* SecciÃ³n II */}
                     <div className="mt-6">
-                      <h3 className="text-base font-bold text-gray-900 text-center mb-4">II. MODALIDADES DE INTERVENCIÓN</h3>
+                      <h3 className="text-base font-bold text-gray-900 text-center mb-4">II. MODALIDADES DE INTERVENCIÃN</h3>
 
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm font-semibold text-gray-900 mb-1">Equipo asignado.</p>
                           <p className="text-sm text-gray-900 leading-relaxed">
-                            El expediente será conducido personalmente por <span className="italic">Maître Élise Beaumont</span>, socia del Cabinet, con el apoyo de un colaborador senior especializado en derecho de los negocios. Esta configuración garantiza tanto la calidad del análisis como la disponibilidad de sus interlocutores.
+                            El expediente serÃ¡ conducido personalmente por <span className="italic">MaÃ®tre Ãlise Beaumont</span>, socia del Cabinet, con el apoyo de un colaborador senior especializado en derecho de los negocios. Esta configuraciÃ³n garantiza tanto la calidad del anÃ¡lisis como la disponibilidad de sus interlocutores.
                           </p>
                         </div>
 
                         <div>
                           <p className="text-sm font-semibold text-gray-900 mb-1">Plazos.</p>
                           <p className="text-sm text-gray-900 leading-relaxed">
-                            Nos comprometemos a entregarle el informe y el documento anotado en un plazo de <span className="italic">cinco días hábiles</span> contados a partir de la recepción del acuerdo de confidencialidad. En caso de urgencia justificada, podemos proponer una entrega acelerada en cuarenta y ocho horas, sujeta a disponibilidad y a un ajuste de honorarios.
+                            Nos comprometemos a entregarle el informe y el documento anotado en un plazo de <span className="italic">cinco dÃ­as hÃ¡biles</span> contados a partir de la recepciÃ³n del acuerdo de confidencialidad. En caso de urgencia justificada, podemos proponer una entrega acelerada en cuarenta y ocho horas, sujeta a disponibilidad y a un ajuste de honorarios.
                           </p>
                         </div>
 
                         <div>
-                          <p className="text-sm font-semibold text-gray-900 mb-1">Comunicación.</p>
+                          <p className="text-sm font-semibold text-gray-900 mb-1">ComunicaciÃ³n.</p>
                           <p className="text-sm text-gray-900 leading-relaxed">
-                            Privilegiamos un diálogo fluido con nuestros clientes. Quedamos a su entera disposición para una conversación telefónica o videoconferencia de aproximadamente treinta minutos, sin cargo adicional, a fin de comentar nuestras conclusiones y responder sus interrogantes.
+                            Privilegiamos un diÃ¡logo fluido con nuestros clientes. Quedamos a su entera disposiciÃ³n para una conversaciÃ³n telefÃ³nica o videoconferencia de aproximadamente treinta minutos, sin cargo adicional, a fin de comentar nuestras conclusiones y responder sus interrogantes.
                           </p>
                         </div>
 
                         <div>
                           <p className="text-sm font-semibold text-gray-900 mb-1">Alcance.</p>
                           <p className="text-sm text-gray-900 leading-relaxed">
-                            Conviene precisar que nuestra intervención se circunscribe al análisis del documento proporcionado. No comprende asesoramiento sobre la operación subyacente, consideraciones fiscales ni la revisión conforme a ordenamientos jurídicos distintos al aplicable según el propio acuerdo. Tampoco incluye la conducción de negociaciones con la contraparte, servicio que podríamos ofrecer bajo condiciones separadas si así lo desea.
+                            Conviene precisar que nuestra intervenciÃ³n se circunscribe al anÃ¡lisis del documento proporcionado. No comprende asesoramiento sobre la operaciÃ³n subyacente, consideraciones fiscales ni la revisiÃ³n conforme a ordenamientos jurÃ­dicos distintos al aplicable segÃºn el propio acuerdo. Tampoco incluye la conducciÃ³n de negociaciones con la contraparte, servicio que podrÃ­amos ofrecer bajo condiciones separadas si asÃ­ lo desea.
                           </p>
                         </div>
                       </div>
@@ -3992,26 +4006,26 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-gray-400">* * *</p>
                     </div>
 
-                    {/* Sección III - Honorarios */}
+                    {/* SecciÃ³n III - Honorarios */}
                     <div className="mt-6">
                       <h3 className="text-base font-bold text-gray-900 text-center mb-4">III. HONORARIOS</h3>
                       <p className="text-sm text-gray-900 leading-relaxed mb-4">
-                        Proponemos una remuneración forfaitaria que brinda a usted certeza sobre el coste de nuestra intervención:
+                        Proponemos una remuneraciÃ³n forfaitaria que brinda a usted certeza sobre el coste de nuestra intervenciÃ³n:
                       </p>
 
                       {/* Box elegante para el precio */}
                       <div className="border-2 border-gray-400 p-6 my-5">
-                        <p className="text-center text-xs text-gray-600 mb-2">Revisión del Acuerdo de Confidencialidad</p>
-                        <p className="text-center text-3xl font-bold text-gray-900 mb-2">1.100 €</p>
+                        <p className="text-center text-xs text-gray-600 mb-2">RevisiÃ³n del Acuerdo de Confidencialidad</p>
+                        <p className="text-center text-3xl font-bold text-gray-900 mb-2">1.100 â¬</p>
                         <p className="text-center text-xs text-gray-500 italic">honorarios netos - IVA no aplicable (Art. 261 CGI)</p>
                       </div>
 
                       <p className="text-sm text-gray-900 leading-relaxed mb-3">
-                        Esta cantidad comprende el análisis integral del documento, la redacción del informe de síntesis, la preparación de la versión anotada y una consulta de seguimiento. El pago es exigible a la recepción de nuestra factura, emitida una vez formalizados los términos del encargo.
+                        Esta cantidad comprende el anÃ¡lisis integral del documento, la redacciÃ³n del informe de sÃ­ntesis, la preparaciÃ³n de la versiÃ³n anotada y una consulta de seguimiento. El pago es exigible a la recepciÃ³n de nuestra factura, emitida una vez formalizados los tÃ©rminos del encargo.
                       </p>
 
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        En el supuesto de que usted requiriera asistencia adicional —por ejemplo, para acompañarle en las negociaciones o revisar versiones sucesivas del acuerdo— estaríamos encantados de convenir una modalidad de honorarios adaptada a la naturaleza y extensión del trabajo, ya sea sobre base horaria o mediante un nuevo forfait.
+                        En el supuesto de que usted requiriera asistencia adicional âpor ejemplo, para acompaÃ±arle en las negociaciones o revisar versiones sucesivas del acuerdoâ estarÃ­amos encantados de convenir una modalidad de honorarios adaptada a la naturaleza y extensiÃ³n del trabajo, ya sea sobre base horaria o mediante un nuevo forfait.
                       </p>
                     </div>
 
@@ -4020,19 +4034,19 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-gray-400">* * *</p>
                     </div>
 
-                    {/* Sección IV */}
+                    {/* SecciÃ³n IV */}
                     <div className="mt-6">
-                      <h3 className="text-base font-bold text-gray-900 text-center mb-4">IV. CONDICIONES DE COLABORACIÓN</h3>
+                      <h3 className="text-base font-bold text-gray-900 text-center mb-4">IV. CONDICIONES DE COLABORACIÃN</h3>
                       <p className="text-sm text-gray-900 leading-relaxed mb-3">
-                        Nuestra relación profesional se regirá por las normas deontológicas aplicables a la profesión de abogado en Francia, en particular el secreto profesional absoluto que ampara toda comunicación entre usted y nuestro Cabinet.
+                        Nuestra relaciÃ³n profesional se regirÃ¡ por las normas deontolÃ³gicas aplicables a la profesiÃ³n de abogado en Francia, en particular el secreto profesional absoluto que ampara toda comunicaciÃ³n entre usted y nuestro Cabinet.
                       </p>
 
                       <p className="text-sm text-gray-900 leading-relaxed mb-3">
-                        De conformidad con la normativa vigente, el Cabinet Beaumont Lefèvre cuenta con un seguro de responsabilidad civil profesional suscrito ante un asegurador de primer rango. Los términos completos de nuestras condiciones generales de prestación de servicios se adjuntan a la presente propuesta.
+                        De conformidad con la normativa vigente, el Cabinet Beaumont LefÃ¨vre cuenta con un seguro de responsabilidad civil profesional suscrito ante un asegurador de primer rango. Los tÃ©rminos completos de nuestras condiciones generales de prestaciÃ³n de servicios se adjuntan a la presente propuesta.
                       </p>
 
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Esta propuesta mantiene su validez durante un plazo de treinta días naturales a contar desde la fecha indicada al inicio de este documento.
+                        Esta propuesta mantiene su validez durante un plazo de treinta dÃ­as naturales a contar desde la fecha indicada al inicio de este documento.
                       </p>
                     </div>
 
@@ -4044,37 +4058,37 @@ export default function CotizacionEstructuradaForm() {
                     {/* Cierre */}
                     <div className="mt-6">
                       <p className="text-sm text-gray-900 leading-relaxed mb-3">
-                        Quedamos a su disposición para cualquier aclaración que pudiera resultar útil. Será un honor poder asistirle en este asunto.
+                        Quedamos a su disposiciÃ³n para cualquier aclaraciÃ³n que pudiera resultar Ãºtil. SerÃ¡ un honor poder asistirle en este asunto.
                       </p>
 
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Le rogamos acepte, estimado(a) [Nombre], la expresión de nuestra más distinguida consideración.
+                        Le rogamos acepte, estimado(a) [Nombre], la expresiÃ³n de nuestra mÃ¡s distinguida consideraciÃ³n.
                       </p>
                     </div>
 
                     {/* Firma */}
                     <div className="mt-8 flex justify-end">
                       <div className="text-right">
-                        <p className="text-sm font-bold text-gray-900">Maître Élise Beaumont</p>
-                        <p className="text-sm italic text-gray-700">Avocate associée</p>
-                        <p className="text-xs text-gray-600 mt-1">Cabinet Beaumont Lefèvre</p>
+                        <p className="text-sm font-bold text-gray-900">MaÃ®tre Ãlise Beaumont</p>
+                        <p className="text-sm italic text-gray-700">Avocate associÃ©e</p>
+                        <p className="text-xs text-gray-600 mt-1">Cabinet Beaumont LefÃ¨vre</p>
                       </div>
                     </div>
 
-                    {/* Líneas decorativas */}
+                    {/* LÃ­neas decorativas */}
                     <div className="flex items-center justify-center gap-4 my-6">
                       <div className="flex-1 border-t border-gray-400"></div>
-                      <span className="text-gray-400">✦</span>
+                      <span className="text-gray-400">â¦</span>
                       <div className="flex-1 border-t border-gray-400"></div>
                     </div>
 
-                    {/* Box de aceptación */}
+                    {/* Box de aceptaciÃ³n */}
                     <div className="mt-8">
-                      <p className="text-center text-xs italic text-gray-600 mb-4">— Bon pour accord —</p>
+                      <p className="text-center text-xs italic text-gray-600 mb-4">â Bon pour accord â</p>
 
                       <div className="border-2 border-gray-400 p-4">
                         <p className="text-xs text-gray-900 mb-4">
-                          El/La suscrito(a) declara aceptar los términos de la presente propuesta y encarga al Cabinet Beaumont Lefèvre la realización de los servicios descritos.
+                          El/La suscrito(a) declara aceptar los tÃ©rminos de la presente propuesta y encarga al Cabinet Beaumont LefÃ¨vre la realizaciÃ³n de los servicios descritos.
                         </p>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -4099,9 +4113,9 @@ export default function CotizacionEstructuradaForm() {
                     {/* Footer */}
                     <div className="mt-8 pt-4 border-t border-gray-300">
                       <p className="text-center text-xs text-gray-500 leading-relaxed">
-                        Cabinet Beaumont Lefèvre · Avocats à la Cour<br />
-                        12, avenue Montaigne · 75008 Paris · Tél. +33 1 42 56 78 90 · contact@beaumont-lefevre.fr<br />
-                        <span className="italic">Barreau de Paris · SELARL au capital de 150.000 € · RCS Paris 812 345 678</span>
+                        Cabinet Beaumont LefÃ¨vre Â· Avocats Ã  la Cour<br />
+                        12, avenue Montaigne Â· 75008 Paris Â· TÃ©l. +33 1 42 56 78 90 Â· contact@beaumont-lefevre.fr<br />
+                        <span className="italic">Barreau de Paris Â· SELARL au capital de 150.000 â¬ Â· RCS Paris 812 345 678</span>
                       </p>
                     </div>
                   </div>
@@ -4113,28 +4127,28 @@ export default function CotizacionEstructuradaForm() {
                     {/* Header */}
                     <div className="flex justify-between items-start pb-3 border-b border-gray-400">
                       <div>
-                        <h1 className="text-lg font-bold text-red-900">ARÉVALO MONTERO</h1>
+                        <h1 className="text-lg font-bold text-red-900">ARÃVALO MONTERO</h1>
                         <p className="text-xs text-gray-700 mt-0.5">ABOGADOS</p>
                       </div>
                       <div className="text-right text-xs text-gray-700">
-                        <p>Calle Velázquez, 27 - 4° Dcha.</p>
+                        <p>Calle VelÃ¡zquez, 27 - 4Â° Dcha.</p>
                         <p>28001 Madrid</p>
                         <p>Tel. 91 435 67 89</p>
                         <p>info@arevalomontero.es</p>
                       </div>
                     </div>
 
-                    {/* Título centrado */}
+                    {/* TÃ­tulo centrado */}
                     <div className="text-center my-5">
                       <h2 className="text-base font-bold text-red-900">PROPUESTA DE SERVICIOS PROFESIONALES</h2>
-                      <p className="text-xs text-gray-600 italic mt-1">Revisión de Acuerdo de Confidencialidad (NDA)</p>
+                      <p className="text-xs text-gray-600 italic mt-1">RevisiÃ³n de Acuerdo de Confidencialidad (NDA)</p>
                     </div>
 
                     {/* Referencia y fecha */}
                     <div className="flex justify-between text-xs mb-4">
                       <div>
                         <p>Ref.: AM/2026/0147</p>
-                        <p>Cliente: [Nombre / Razón Social]</p>
+                        <p>Cliente: [Nombre / RazÃ³n Social]</p>
                       </div>
                       <div className="text-right">
                         <p>Madrid, 23 de enero de 2026</p>
@@ -4146,86 +4160,86 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-sm text-gray-900">Estimado/a cliente:</p>
                     </div>
 
-                    {/* Párrafo introductorio */}
+                    {/* PÃ¡rrafo introductorio */}
                     <div className="mb-4">
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        En atención a la consulta que nos ha formulado, tenemos el agrado de remitirle la presente propuesta de servicios profesionales para la revisión del acuerdo de confidencialidad que tiene previsto suscribir. Agradecemos la confianza depositada en nuestro Despacho.
+                        En atenciÃ³n a la consulta que nos ha formulado, tenemos el agrado de remitirle la presente propuesta de servicios profesionales para la revisiÃ³n del acuerdo de confidencialidad que tiene previsto suscribir. Agradecemos la confianza depositada en nuestro Despacho.
                       </p>
                     </div>
 
-                    {/* Sección I */}
+                    {/* SecciÃ³n I */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-red-900 mb-2">I. ANTECEDENTES</h3>
                       <p className="text-sm text-gray-900 leading-relaxed mb-2">
-                        Según nos ha indicado, su empresa se encuentra en conversaciones preliminares con un potencial socio comercial, habiéndose planteado la necesidad de formalizar un acuerdo de confidencialidad (NDA, por sus siglas en inglés) que proteja la información sensible que pueda intercambiarse durante dichas negociaciones.
+                        SegÃºn nos ha indicado, su empresa se encuentra en conversaciones preliminares con un potencial socio comercial, habiÃ©ndose planteado la necesidad de formalizar un acuerdo de confidencialidad (NDA, por sus siglas en inglÃ©s) que proteja la informaciÃ³n sensible que pueda intercambiarse durante dichas negociaciones.
                       </p>
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        La contraparte le ha remitido un borrador de NDA cuya extensión aproximada es de quinientas palabras, solicitando usted nuestro criterio profesional sobre el contenido del documento antes de proceder a su firma.
+                        La contraparte le ha remitido un borrador de NDA cuya extensiÃ³n aproximada es de quinientas palabras, solicitando usted nuestro criterio profesional sobre el contenido del documento antes de proceder a su firma.
                       </p>
                     </div>
 
-                    {/* Sección II */}
+                    {/* SecciÃ³n II */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-red-900 mb-2">II. ALCANCE DEL ENCARGO</h3>
-                      <p className="text-sm text-gray-900 mb-2">El presente encargo comprenderá las siguientes actuaciones:</p>
+                      <p className="text-sm text-gray-900 mb-2">El presente encargo comprenderÃ¡ las siguientes actuaciones:</p>
                       <div className="ml-4 space-y-1.5 text-sm text-gray-900">
-                        <p><span className="font-semibold">a)</span> Revisión íntegra del documento, verificando su estructura, completitud y coherencia interna.</p>
-                        <p><span className="font-semibold">b)</span> Identificación de cláusulas que pudieran resultar desequilibradas, ambiguas o perjudiciales para sus intereses.</p>
-                        <p><span className="font-semibold">c)</span> Análisis comparativo con las prácticas habituales de mercado en este tipo de acuerdos.</p>
-                        <p><span className="font-semibold">d)</span> Elaboración de un informe con nuestras observaciones y recomendaciones.</p>
-                        <p><span className="font-semibold">e)</span> Preparación de una versión anotada del acuerdo con propuestas de modificación, en su caso.</p>
+                        <p><span className="font-semibold">a)</span> RevisiÃ³n Ã­ntegra del documento, verificando su estructura, completitud y coherencia interna.</p>
+                        <p><span className="font-semibold">b)</span> IdentificaciÃ³n de clÃ¡usulas que pudieran resultar desequilibradas, ambiguas o perjudiciales para sus intereses.</p>
+                        <p><span className="font-semibold">c)</span> AnÃ¡lisis comparativo con las prÃ¡cticas habituales de mercado en este tipo de acuerdos.</p>
+                        <p><span className="font-semibold">d)</span> ElaboraciÃ³n de un informe con nuestras observaciones y recomendaciones.</p>
+                        <p><span className="font-semibold">e)</span> PreparaciÃ³n de una versiÃ³n anotada del acuerdo con propuestas de modificaciÃ³n, en su caso.</p>
                       </div>
                       <p className="text-sm text-gray-900 mt-3 leading-relaxed">
-                        Sin perjuicio de lo anterior, <span className="font-semibold">quedan expresamente excluidos del presente encargo:</span> el asesoramiento sobre la operación comercial subyacente, el análisis de implicaciones fiscales, la revisión conforme a ordenamientos jurídicos distintos al español y la intervención directa en las negociaciones con la contraparte.
+                        Sin perjuicio de lo anterior, <span className="font-semibold">quedan expresamente excluidos del presente encargo:</span> el asesoramiento sobre la operaciÃ³n comercial subyacente, el anÃ¡lisis de implicaciones fiscales, la revisiÃ³n conforme a ordenamientos jurÃ­dicos distintos al espaÃ±ol y la intervenciÃ³n directa en las negociaciones con la contraparte.
                       </p>
                     </div>
 
-                    {/* Sección III - Metodología */}
+                    {/* SecciÃ³n III - MetodologÃ­a */}
                     <div className="mt-4">
-                      <h3 className="text-sm font-bold text-red-900 mb-2">III. METODOLOGÍA DE TRABAJO</h3>
+                      <h3 className="text-sm font-bold text-red-900 mb-2">III. METODOLOGÃA DE TRABAJO</h3>
                       <p className="text-sm text-gray-900 mb-3 leading-relaxed">
-                        Una vez formalizado el encargo y recibida la documentación correspondiente, procederemos del siguiente modo:
+                        Una vez formalizado el encargo y recibida la documentaciÃ³n correspondiente, procederemos del siguiente modo:
                       </p>
 
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <tbody>
                           <tr className="bg-red-50">
                             <td className="border border-gray-400 px-3 py-2 font-bold text-gray-900 w-20">Fase 1</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Estudio preliminar del documento y verificación de completitud (Día 1)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Estudio preliminar del documento y verificaciÃ³n de completitud (DÃ­a 1)</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 font-bold text-gray-900">Fase 2</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Análisis sustantivo de las cláusulas e identificación de riesgos (Días 2-3)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">AnÃ¡lisis sustantivo de las clÃ¡usulas e identificaciÃ³n de riesgos (DÃ­as 2-3)</td>
                           </tr>
                           <tr className="bg-red-50">
                             <td className="border border-gray-400 px-3 py-2 font-bold text-gray-900">Fase 3</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Redacción del informe y preparación del documento anotado (Día 4)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">RedacciÃ³n del informe y preparaciÃ³n del documento anotado (DÃ­a 4)</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 font-bold text-gray-900">Fase 4</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Revisión interna de calidad y entrega de documentación (Día 5)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">RevisiÃ³n interna de calidad y entrega de documentaciÃ³n (DÃ­a 5)</td>
                           </tr>
                         </tbody>
                       </table>
 
                       <p className="text-sm text-gray-900 mt-3 leading-relaxed">
-                        El plazo estimado de ejecución es, por tanto, de cinco días hábiles desde la recepción del documento. No obstante, en supuestos de especial urgencia, podemos ofrecer un servicio acelerado de cuarenta y ocho horas, sujeto a disponibilidad y al correspondiente ajuste de honorarios.
+                        El plazo estimado de ejecuciÃ³n es, por tanto, de cinco dÃ­as hÃ¡biles desde la recepciÃ³n del documento. No obstante, en supuestos de especial urgencia, podemos ofrecer un servicio acelerado de cuarenta y ocho horas, sujeto a disponibilidad y al correspondiente ajuste de honorarios.
                       </p>
                     </div>
 
-                    {/* Sección IV */}
+                    {/* SecciÃ³n IV */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-red-900 mb-2">IV. EQUIPO RESPONSABLE</h3>
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        El encargo será supervisado por <span className="font-bold">D.ª Carmen Arévalo Díaz</span>, socia directora del Despacho y especialista en Derecho mercantil y de los negocios, con más de veinte años de experiencia en el asesoramiento a empresas. El trabajo de análisis será desarrollado por un abogado asociado del área de contratación mercantil, bajo la supervisión directa de la socia.
+                        El encargo serÃ¡ supervisado por <span className="font-bold">D.Âª Carmen ArÃ©valo DÃ­az</span>, socia directora del Despacho y especialista en Derecho mercantil y de los negocios, con mÃ¡s de veinte aÃ±os de experiencia en el asesoramiento a empresas. El trabajo de anÃ¡lisis serÃ¡ desarrollado por un abogado asociado del Ã¡rea de contrataciÃ³n mercantil, bajo la supervisiÃ³n directa de la socia.
                       </p>
                     </div>
 
-                    {/* Sección V - Honorarios */}
+                    {/* SecciÃ³n V - Honorarios */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-red-900 mb-2">V. HONORARIOS PROFESIONALES</h3>
                       <p className="text-sm text-gray-900 mb-3 leading-relaxed">
-                        Para la prestación de los servicios descritos, proponemos una minuta fija que proporciona a usted certeza sobre el coste total del encargo:
+                        Para la prestaciÃ³n de los servicios descritos, proponemos una minuta fija que proporciona a usted certeza sobre el coste total del encargo:
                       </p>
 
                       <table className="w-full text-sm border-collapse border border-gray-400">
@@ -4238,24 +4252,24 @@ export default function CotizacionEstructuradaForm() {
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Revisión de NDA (informe + documento anotado)</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">850,00 €</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">1.028,50 €</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">RevisiÃ³n de NDA (informe + documento anotado)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">850,00 â¬</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">1.028,50 â¬</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Conferencia de seguimiento (hasta 30 min.)</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900 italic">Incluido</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">â</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-900 italic">Suplemento servicio urgente (48 h)</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">+250,00 €</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">+302,50 €</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">+250,00 â¬</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">+302,50 â¬</td>
                           </tr>
                           <tr className="bg-red-900 text-white font-bold">
-                            <td className="border border-gray-400 px-3 py-2">TOTAL (servicio estándar)</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center">850,00 €</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center">1.028,50 €</td>
+                            <td className="border border-gray-400 px-3 py-2">TOTAL (servicio estÃ¡ndar)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center">850,00 â¬</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center">1.028,50 â¬</td>
                           </tr>
                         </tbody>
                       </table>
@@ -4263,37 +4277,37 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-xs text-gray-600 mt-2 italic">* IVA incluido (21%)</p>
 
                       <p className="text-sm text-gray-900 mt-3 leading-relaxed">
-                        En el supuesto de que, una vez emitido nuestro informe, requiriera asistencia adicional —ya sea para intervenir en las negociaciones con la contraparte o para revisar sucesivas versiones del documento—, los servicios complementarios se facturarían conforme a nuestras tarifas horarias habituales: 180 €/hora (socio) y 120 €/hora (abogado asociado), más el IVA correspondiente.
+                        En el supuesto de que, una vez emitido nuestro informe, requiriera asistencia adicional âya sea para intervenir en las negociaciones con la contraparte o para revisar sucesivas versiones del documentoâ, los servicios complementarios se facturarÃ­an conforme a nuestras tarifas horarias habituales: 180 â¬/hora (socio) y 120 â¬/hora (abogado asociado), mÃ¡s el IVA correspondiente.
                       </p>
                     </div>
 
-                    {/* Sección VI */}
+                    {/* SecciÃ³n VI */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-red-900 mb-2">VI. FORMA DE PAGO</h3>
                       <p className="text-sm text-gray-900 leading-relaxed mb-2">
-                        La provisión de fondos correspondiente al importe total de los honorarios (1.028,50 €, IVA incluido) deberá abonarse a la aceptación de la presente propuesta, mediante transferencia bancaria a la cuenta indicada en nuestra factura proforma. Los trabajos se iniciarán una vez confirmada la recepción del pago.
+                        La provisiÃ³n de fondos correspondiente al importe total de los honorarios (1.028,50 â¬, IVA incluido) deberÃ¡ abonarse a la aceptaciÃ³n de la presente propuesta, mediante transferencia bancaria a la cuenta indicada en nuestra factura proforma. Los trabajos se iniciarÃ¡n una vez confirmada la recepciÃ³n del pago.
                       </p>
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Para clientes con relación continuada, contemplamos la posibilidad de establecer un sistema de facturación mensual a término vencido, previa formalización de las condiciones de crédito oportunas.
+                        Para clientes con relaciÃ³n continuada, contemplamos la posibilidad de establecer un sistema de facturaciÃ³n mensual a tÃ©rmino vencido, previa formalizaciÃ³n de las condiciones de crÃ©dito oportunas.
                       </p>
                     </div>
 
-                    {/* Sección VII */}
+                    {/* SecciÃ³n VII */}
                     <div className="mt-4">
-                      <h3 className="text-sm font-bold text-red-900 mb-2">VII. CONFIDENCIALIDAD Y PROTECCIÓN DE DATOS</h3>
+                      <h3 className="text-sm font-bold text-red-900 mb-2">VII. CONFIDENCIALIDAD Y PROTECCIÃN DE DATOS</h3>
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        La información que nos proporcione será tratada con la más estricta confidencialidad, de conformidad con las obligaciones deontológicas inherentes a nuestra profesión y con lo dispuesto en el Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica 3/2018 de Protección de Datos Personales. Nuestro Despacho cuenta con las medidas técnicas y organizativas adecuadas para garantizar la seguridad de sus datos.
+                        La informaciÃ³n que nos proporcione serÃ¡ tratada con la mÃ¡s estricta confidencialidad, de conformidad con las obligaciones deontolÃ³gicas inherentes a nuestra profesiÃ³n y con lo dispuesto en el Reglamento General de ProtecciÃ³n de Datos (RGPD) y la Ley OrgÃ¡nica 3/2018 de ProtecciÃ³n de Datos Personales. Nuestro Despacho cuenta con las medidas tÃ©cnicas y organizativas adecuadas para garantizar la seguridad de sus datos.
                       </p>
                     </div>
 
-                    {/* Sección VIII */}
+                    {/* SecciÃ³n VIII */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-red-900 mb-2">VIII. VALIDEZ DE LA PROPUESTA</h3>
                       <p className="text-sm text-gray-900 leading-relaxed mb-3">
-                        La presente propuesta mantiene su validez durante un período de treinta días naturales contados desde su fecha de emisión. Transcurrido dicho plazo sin que hayamos recibido su aceptación, entenderemos que ha decidido su interés, sin perjuicio de que pueda contactarnos en cualquier momento para actualizar las condiciones.
+                        La presente propuesta mantiene su validez durante un perÃ­odo de treinta dÃ­as naturales contados desde su fecha de emisiÃ³n. Transcurrido dicho plazo sin que hayamos recibido su aceptaciÃ³n, entenderemos que ha decidido su interÃ©s, sin perjuicio de que pueda contactarnos en cualquier momento para actualizar las condiciones.
                       </p>
                       <p className="text-sm text-gray-900 leading-relaxed mb-2">
-                        Quedamos a su entera disposición para ampliar cualquier aspecto de esta propuesta o resolver las dudas que pudieran surgirle. Será un placer poder asistirle en este asunto.
+                        Quedamos a su entera disposiciÃ³n para ampliar cualquier aspecto de esta propuesta o resolver las dudas que pudieran surgirle. SerÃ¡ un placer poder asistirle en este asunto.
                       </p>
                       <p className="text-sm text-gray-900">
                         Reciba un cordial saludo,
@@ -4302,22 +4316,22 @@ export default function CotizacionEstructuradaForm() {
 
                     {/* Firma */}
                     <div className="mt-6">
-                      <p className="text-sm font-bold text-gray-900">Carmen Arévalo Díaz</p>
+                      <p className="text-sm font-bold text-gray-900">Carmen ArÃ©valo DÃ­az</p>
                       <p className="text-sm italic text-gray-700">Socia Directora</p>
-                      <p className="text-xs text-gray-600 mt-0.5">ARÉVALO MONTERO ABOGADOS</p>
+                      <p className="text-xs text-gray-600 mt-0.5">ARÃVALO MONTERO ABOGADOS</p>
                     </div>
 
-                    {/* Box de aceptación */}
+                    {/* Box de aceptaciÃ³n */}
                     <div className="mt-8 border-2 border-red-900 p-4">
-                      <p className="text-sm font-bold text-red-900 mb-3">ACEPTACIÓN DEL ENCARGO</p>
+                      <p className="text-sm font-bold text-red-900 mb-3">ACEPTACIÃN DEL ENCARGO</p>
                       <p className="text-xs text-gray-900 mb-4">
-                        El/La abajo firmante manifiesta su conformidad con los términos de la presente propuesta y encarga a ARÉVALO MONTERO ABOGADOS la prestación de los servicios descritos.
+                        El/La abajo firmante manifiesta su conformidad con los tÃ©rminos de la presente propuesta y encarga a ARÃVALO MONTERO ABOGADOS la prestaciÃ³n de los servicios descritos.
                       </p>
 
                       <div className="space-y-2">
                         <div className="flex gap-4">
                           <div className="flex-1">
-                            <p className="text-xs text-gray-700">D./D.ª: ______________________</p>
+                            <p className="text-xs text-gray-700">D./D.Âª: ______________________</p>
                           </div>
                           <div className="flex-1">
                             <p className="text-xs text-gray-700">Fecha: ______________________</p>
@@ -4335,8 +4349,8 @@ export default function CotizacionEstructuradaForm() {
                     {/* Footer */}
                     <div className="mt-6 pt-3 border-t border-gray-300">
                       <p className="text-center text-xs text-gray-500 leading-relaxed">
-                        ARÉVALO MONTERO ABOGADOS, S.L.P. · CIF: B-12345678 · ICAM n.º 12.345<br />
-                        Calle Velázquez, 27 - 4° Dcha. · 28001 Madrid · Tel. 91 435 67 89 · info@arevalomontero.es
+                        ARÃVALO MONTERO ABOGADOS, S.L.P. Â· CIF: B-12345678 Â· ICAM n.Âº 12.345<br />
+                        Calle VelÃ¡zquez, 27 - 4Â° Dcha. Â· 28001 Madrid Â· Tel. 91 435 67 89 Â· info@arevalomontero.es
                       </p>
                     </div>
                   </div>
@@ -4352,37 +4366,37 @@ export default function CotizacionEstructuradaForm() {
                         <h1 className="text-base font-bold text-gray-900">NAKAMURA LEGAL PARTNERS</h1>
                         <p className="text-xs text-gray-600 mt-0.5">Abogados</p>
                         <p className="text-xs text-gray-700 mt-3">23 de enero de 2026</p>
-                        <p className="text-xs text-gray-600">N.° NLP-2026-0147</p>
+                        <p className="text-xs text-gray-600">N.Â° NLP-2026-0147</p>
                       </div>
                     </div>
 
-                    {/* Dirección del cliente */}
+                    {/* DirecciÃ³n del cliente */}
                     <div className="mt-4 text-sm text-gray-900">
                       <p>[Nombre de la Empresa]</p>
                       <p>[Nombre del Representante]</p>
                     </div>
 
-                    {/* Título centrado */}
+                    {/* TÃ­tulo centrado */}
                     <div className="text-center my-5 border-t border-b border-gray-400 py-4">
                       <h2 className="text-base font-bold text-gray-900">PROPUESTA DE SERVICIOS</h2>
-                      <p className="text-xs text-gray-600 italic mt-1">Revisión de Acuerdo de Confidencialidad</p>
+                      <p className="text-xs text-gray-600 italic mt-1">RevisiÃ³n de Acuerdo de Confidencialidad</p>
                     </div>
 
-                    {/* Introducción */}
+                    {/* IntroducciÃ³n */}
                     <div className="mb-4">
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Agradecemos sinceramente su consulta. A continuación, presentamos nuestra propuesta para la revisión del acuerdo de confidencialidad solicitado.
+                        Agradecemos sinceramente su consulta. A continuaciÃ³n, presentamos nuestra propuesta para la revisiÃ³n del acuerdo de confidencialidad solicitado.
                       </p>
                     </div>
 
-                    {/* Sección 1 - Resumen */}
+                    {/* SecciÃ³n 1 - Resumen */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-3">1. Resumen del Servicio</h3>
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <tbody>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium w-40">Servicio</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Revisión de Acuerdo de Confidencialidad (NDA)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">RevisiÃ³n de Acuerdo de Confidencialidad (NDA)</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Documento objeto</td>
@@ -4390,7 +4404,7 @@ export default function CotizacionEstructuradaForm() {
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Plazo de entrega</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">5 días hábiles desde la recepción del documento</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">5 dÃ­as hÃ¡biles desde la recepciÃ³n del documento</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Responsable</td>
@@ -4398,13 +4412,13 @@ export default function CotizacionEstructuradaForm() {
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Honorarios</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">¥120,000 (impuestos no incluidos)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Â¥120,000 (impuestos no incluidos)</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 2 - Alcance del Trabajo */}
+                    {/* SecciÃ³n 2 - Alcance del Trabajo */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">2. Alcance del Trabajo</h3>
                       <p className="text-xs text-gray-900 mb-2">El presente encargo comprende las siguientes actividades:</p>
@@ -4412,72 +4426,72 @@ export default function CotizacionEstructuradaForm() {
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.°</th>
-                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">Descripción</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.Â°</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">DescripciÃ³n</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-24">Entregable</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">2.1</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Verificación de estructura y completitud del documento</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">VerificaciÃ³n de estructura y completitud del documento</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">2.2</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis de cláusulas de confidencialidad y su alcance</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis de clÃ¡usulas de confidencialidad y su alcance</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Informe</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">2.3</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión de excepciones y limitaciones</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n de excepciones y limitaciones</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Informe</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">2.4</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Evaluación de disposiciones de responsabilidad</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">EvaluaciÃ³n de disposiciones de responsabilidad</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Informe</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">2.5</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis de vigencia y terminación</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis de vigencia y terminaciÃ³n</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Informe</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">2.6</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión de ley aplicable y jurisdicción</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n de ley aplicable y jurisdicciÃ³n</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Informe</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">2.7</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Elaboración de propuestas de modificación</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">ElaboraciÃ³n de propuestas de modificaciÃ³n</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Documento anotado</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 3 - Exclusiones */}
+                    {/* SecciÃ³n 3 - Exclusiones */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">3. Exclusiones</h3>
-                      <p className="text-xs text-gray-900 mb-2">Los siguientes conceptos no están incluidos en el presente presupuesto:</p>
+                      <p className="text-xs text-gray-900 mb-2">Los siguientes conceptos no estÃ¡n incluidos en el presente presupuesto:</p>
                       <ul className="text-xs text-gray-900 ml-4 space-y-0.5">
-                        <li>× Asesoramiento sobre la transacción comercial subyacente</li>
-                        <li>× Análisis de implicaciones fiscales</li>
-                        <li>× Revisión conforme a legislación extranjera</li>
-                        <li>× Participación en negociaciones con la contraparte</li>
-                        <li>× Traducciones del documento</li>
+                        <li>Ã Asesoramiento sobre la transacciÃ³n comercial subyacente</li>
+                        <li>Ã AnÃ¡lisis de implicaciones fiscales</li>
+                        <li>Ã RevisiÃ³n conforme a legislaciÃ³n extranjera</li>
+                        <li>Ã ParticipaciÃ³n en negociaciones con la contraparte</li>
+                        <li>Ã Traducciones del documento</li>
                       </ul>
                     </div>
 
-                    {/* Sección 4 - Entregables */}
+                    {/* SecciÃ³n 4 - Entregables */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">4. Entregables</h3>
 
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.°</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.Â°</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">Documento</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-24">Formato</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-28">Idioma</th>
@@ -4486,13 +4500,13 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">D1</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Informe de revisión con observaciones y recomendaciones</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Informe de revisiÃ³n con observaciones y recomendaciones</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">PDF</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Español</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">EspaÃ±ol</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">D2</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Documento anotado con propuestas de modificación</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Documento anotado con propuestas de modificaciÃ³n</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Word</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Idioma original</td>
                           </tr>
@@ -4500,20 +4514,20 @@ export default function CotizacionEstructuradaForm() {
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">D3</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Tabla resumen de riesgos identificados</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Excel/PDF</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Español</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">EspaÃ±ol</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 5 - Cronograma */}
+                    {/* SecciÃ³n 5 - Cronograma */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">5. Cronograma</h3>
 
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-16">Día</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-16">DÃ­a</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">Actividad</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-20">Estado</th>
                           </tr>
@@ -4521,23 +4535,23 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">0</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Recepción del documento y confirmación</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RecepciÃ³n del documento y confirmaciÃ³n</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Inicio</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">1</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Revisión preliminar y verificación de completitud</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">RevisiÃ³n preliminar y verificaciÃ³n de completitud</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">2-3</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis sustantivo de cláusulas</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis sustantivo de clÃ¡usulas</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">4</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Elaboración de informe y documento anotado</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">ElaboraciÃ³n de informe y documento anotado</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">5</td>
@@ -4547,11 +4561,11 @@ export default function CotizacionEstructuradaForm() {
                         </tbody>
                       </table>
                       <p className="text-xs italic text-gray-600 mt-2">
-                        Nota: Servicio express (48 horas) disponible con cargo adicional de ¥40,000.
+                        Nota: Servicio express (48 horas) disponible con cargo adicional de Â¥40,000.
                       </p>
                     </div>
 
-                    {/* Sección 6 - Honorarios */}
+                    {/* SecciÃ³n 6 - Honorarios */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">6. Honorarios</h3>
 
@@ -4565,18 +4579,18 @@ export default function CotizacionEstructuradaForm() {
                         </thead>
                         <tbody>
                           <tr>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Revisión de NDA (servicio estándar)</td>
-                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">¥120,000</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">RevisiÃ³n de NDA (servicio estÃ¡ndar)</td>
+                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">Â¥120,000</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">â</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Impuesto al consumo (10%)</td>
-                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">¥12,000</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">Â¥12,000</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">â</td>
                           </tr>
                           <tr className="font-bold">
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Total</td>
-                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">¥132,000</td>
+                            <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">Â¥132,000</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">Impuestos incl.</td>
                           </tr>
                         </tbody>
@@ -4586,33 +4600,33 @@ export default function CotizacionEstructuradaForm() {
                       <div className="ml-4 text-xs text-gray-900 space-y-1">
                         <div className="flex justify-between">
                           <span>Apoyo en negociaciones (por hora)</span>
-                          <span>¥30,000/h</span>
+                          <span>Â¥30,000/h</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Revisión de versiones subsecuentes</span>
-                          <span>¥50,000/revisión</span>
+                          <span>RevisiÃ³n de versiones subsecuentes</span>
+                          <span>Â¥50,000/revisiÃ³n</span>
                         </div>
                         <div className="flex justify-between">
                           <span>Servicio express (entrega en 48h)</span>
-                          <span>+¥40,000</span>
+                          <span>+Â¥40,000</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Conferencia telefónica adicional (por hora)</span>
-                          <span>¥15,000/h</span>
+                          <span>Conferencia telefÃ³nica adicional (por hora)</span>
+                          <span>Â¥15,000/h</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Sección 7 - Puntos a Confirmar */}
+                    {/* SecciÃ³n 7 - Puntos a Confirmar */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">7. Puntos a Confirmar</h3>
-                      <p className="text-xs text-gray-900 mb-2">Solicitamos amablemente la confirmación de los siguientes puntos antes del inicio del trabajo:</p>
+                      <p className="text-xs text-gray-900 mb-2">Solicitamos amablemente la confirmaciÃ³n de los siguientes puntos antes del inicio del trabajo:</p>
 
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.°</th>
-                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">Punto de confirmación</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.Â°</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">Punto de confirmaciÃ³n</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-24">Confirmado</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-24">Pendiente</th>
                           </tr>
@@ -4620,39 +4634,39 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">C1</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Idioma del documento (español / inglés / otro)</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Idioma del documento (espaÃ±ol / inglÃ©s / otro)</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">C2</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Extensión del documento (confirmar aprox. 500 palabras)</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">ExtensiÃ³n del documento (confirmar aprox. 500 palabras)</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">C3</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Jurisdicción aplicable según el NDA</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">JurisdicciÃ³n aplicable segÃºn el NDA</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">C4</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Nivel de urgencia (estándar / express)</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Nivel de urgencia (estÃ¡ndar / express)</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">C5</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Persona de contacto para consultas</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 8 - Condiciones */}
+                    {/* SecciÃ³n 8 - Condiciones */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">8. Condiciones</h3>
 
@@ -4660,7 +4674,7 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium w-40">Validez</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">30 días naturales desde la fecha de emisión</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">30 dÃ­as naturales desde la fecha de emisiÃ³n</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Forma de pago</td>
@@ -4668,10 +4682,10 @@ export default function CotizacionEstructuradaForm() {
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Confidencialidad</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Toda información será tratada con estricta confidencialidad</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Toda informaciÃ³n serÃ¡ tratada con estricta confidencialidad</td>
                           </tr>
                           <tr>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Cancelación</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">CancelaciÃ³n</td>
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Sin cargo si se notifica antes del inicio. 50% si ya iniciado</td>
                           </tr>
                         </tbody>
@@ -4681,7 +4695,7 @@ export default function CotizacionEstructuradaForm() {
                     {/* Cierre */}
                     <div className="mt-5">
                       <p className="text-sm text-gray-900 leading-relaxed">
-                        Agradecemos nuevamente su confianza. Quedamos a su disposición para cualquier consulta.
+                        Agradecemos nuevamente su confianza. Quedamos a su disposiciÃ³n para cualquier consulta.
                       </p>
                       <p className="text-sm text-gray-900 mt-2">Atentamente,</p>
                     </div>
@@ -4696,11 +4710,11 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Box de aceptación */}
+                    {/* Box de aceptaciÃ³n */}
                     <div className="mt-8 border-2 border-gray-400 p-4">
-                      <p className="text-sm font-bold text-gray-900 mb-3">Aceptación</p>
+                      <p className="text-sm font-bold text-gray-900 mb-3">AceptaciÃ³n</p>
                       <p className="text-xs text-gray-900 mb-4">
-                        El abajo firmante acepta los términos de la presente propuesta y solicita el inicio del servicio.
+                        El abajo firmante acepta los tÃ©rminos de la presente propuesta y solicita el inicio del servicio.
                       </p>
 
                       <div className="grid grid-cols-2 gap-4">
@@ -4726,7 +4740,7 @@ export default function CotizacionEstructuradaForm() {
                       <p className="text-center text-xs text-gray-500 leading-relaxed">
                         NAKAMURA LEGAL PARTNERS<br />
                         Marunouchi Building 15F, 2-4-1 Marunouchi, Chiyoda-ku, Tokyo 100-6015<br />
-                        Tel: +81-3-1234-5678 · info@nakamura-legal.jp
+                        Tel: +81-3-1234-5678 Â· info@nakamura-legal.jp
                       </p>
                     </div>
                   </div>
@@ -4739,11 +4753,11 @@ export default function CotizacionEstructuradaForm() {
                     <div className="flex justify-between items-start pb-3 border-b border-gray-900">
                       <div>
                         <h1 className="text-sm font-bold text-gray-900">SCHREIBER WYSS</h1>
-                        <p className="text-xs text-gray-600">RECHTSANWÄLTE | AVOCATS</p>
+                        <p className="text-xs text-gray-600">RECHTSANWÃLTE | AVOCATS</p>
                       </div>
                       <div className="text-right text-xs text-gray-700">
                         <p>Bahnhofstrasse 42</p>
-                        <p>8001 Zürich, Suiza</p>
+                        <p>8001 ZÃ¼rich, Suiza</p>
                         <p>+41 44 123 45 67</p>
                       </div>
                     </div>
@@ -4760,7 +4774,7 @@ export default function CotizacionEstructuradaForm() {
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-700 font-medium w-24">FECHA</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900 w-32">23.01.2026</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-700 font-medium w-24">VALIDEZ</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900 w-20">30 días</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900 w-20">30 dÃ­as</td>
                           </tr>
                         </tbody>
                       </table>
@@ -4773,8 +4787,8 @@ export default function CotizacionEstructuradaForm() {
                           <tr className="bg-gray-100">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-700 font-medium w-32">CLIENTE</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">
-                              [Razón Social]<br />
-                              [Dirección]
+                              [RazÃ³n Social]<br />
+                              [DirecciÃ³n]
                             </td>
                           </tr>
                         </tbody>
@@ -4786,8 +4800,8 @@ export default function CotizacionEstructuradaForm() {
                       <div className="flex justify-between items-center">
                         <div>
                           <p className="text-xs text-gray-700 uppercase mb-1">SERVICIO</p>
-                          <p className="text-sm font-bold text-gray-900">Revisión de Acuerdo de Confidencialidad (NDA)</p>
-                          <p className="text-xs text-gray-600 mt-1">Documento de aprox. 500 palabras · Plazo 5 días hábiles</p>
+                          <p className="text-sm font-bold text-gray-900">RevisiÃ³n de Acuerdo de Confidencialidad (NDA)</p>
+                          <p className="text-xs text-gray-600 mt-1">Documento de aprox. 500 palabras Â· Plazo 5 dÃ­as hÃ¡biles</p>
                         </div>
                         <div className="text-right">
                           <p className="text-xs text-gray-700 uppercase mb-1">TOTAL</p>
@@ -4796,14 +4810,14 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Sección 1 - Desglose */}
+                    {/* SecciÃ³n 1 - Desglose */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">1. DESGLOSE DE HONORARIOS</h3>
 
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.°</th>
+                            <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900 w-12">N.Â°</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-left font-bold text-gray-900">CONCEPTO</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-24">UNIDAD</th>
                             <th className="border border-gray-400 px-2 py-1.5 text-center font-bold text-gray-900 w-20">TARIFA</th>
@@ -4813,38 +4827,38 @@ export default function CotizacionEstructuradaForm() {
                         <tbody>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">1.1</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Análisis jurídico del documento</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-gray-900">AnÃ¡lisis jurÃ­dico del documento</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Forfait</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">950.00</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">1.2</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Informe de riesgos y recomendaciones</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Incluido</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">â</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">1.3</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Documento anotado (markup)</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Incluido</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">â</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">1.4</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Control de calidad (4 ojos)</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Incluido</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">â</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">1.5</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Consulta de seguimiento (hasta 30 min)</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Incluido</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">â</td>
                           </tr>
                           <tr className="bg-gray-100">
                             <td colSpan={4} className="border border-gray-400 px-2 py-1.5 text-right font-medium text-gray-900">Subtotal</td>
@@ -4853,7 +4867,7 @@ export default function CotizacionEstructuradaForm() {
                           <tr>
                             <td colSpan={2} className="border border-gray-400 px-2 py-1.5 text-gray-900">Gastos administrativos</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">Forfait</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-right text-gray-900">50.00</td>
                           </tr>
                           <tr className="bg-gray-50">
@@ -4880,7 +4894,7 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 2 - Condiciones de pago */}
+                    {/* SecciÃ³n 2 - Condiciones de pago */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">2. CONDICIONES DE PAGO</h3>
 
@@ -4889,11 +4903,11 @@ export default function CotizacionEstructuradaForm() {
                           <tr className="bg-gray-100">
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-700 font-medium w-32">IMPORTE</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-700 font-medium w-32">PLAZO</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-700 font-medium">MÉTODO</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-700 font-medium">MÃTODO</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900 font-semibold">Franco Suizo (CHF)</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">15 días neto</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">15 dÃ­as neto</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">Transferencia bancaria</td>
                           </tr>
                         </tbody>
@@ -4905,11 +4919,11 @@ export default function CotizacionEstructuradaForm() {
                         <div className="space-y-1 text-xs">
                           <div className="flex">
                             <span className="w-24 text-gray-700">Beneficiario:</span>
-                            <span className="text-gray-900">Schreiber Wyss Rechtsanwälte AG</span>
+                            <span className="text-gray-900">Schreiber Wyss RechtsanwÃ¤lte AG</span>
                           </div>
                           <div className="flex">
                             <span className="w-24 text-gray-700">Banco:</span>
-                            <span className="text-gray-900">Credit Suisse AG, Zürich</span>
+                            <span className="text-gray-900">Credit Suisse AG, ZÃ¼rich</span>
                           </div>
                           <div className="flex">
                             <span className="w-24 text-gray-700">IBAN:</span>
@@ -4927,67 +4941,67 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Sección 3 - Supuestos */}
+                    {/* SecciÃ³n 3 - Supuestos */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">3. SUPUESTOS Y CONDICIONES</h3>
 
                       <div className="space-y-1.5">
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-900 font-mono">☑</span>
+                          <span className="text-gray-900 font-mono">â</span>
                           <p className="text-xs text-gray-900 flex-1">El documento no excede de 500 palabras</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-900 font-mono">☑</span>
-                          <p className="text-xs text-gray-900 flex-1">El documento está redactado en español, inglés, alemán o francés</p>
+                          <span className="text-gray-900 font-mono">â</span>
+                          <p className="text-xs text-gray-900 flex-1">El documento estÃ¡ redactado en espaÃ±ol, inglÃ©s, alemÃ¡n o francÃ©s</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-900 font-mono">☑</span>
-                          <p className="text-xs text-gray-900 flex-1">No se requiere análisis conforme a legislación extranjera</p>
+                          <span className="text-gray-900 font-mono">â</span>
+                          <p className="text-xs text-gray-900 flex-1">No se requiere anÃ¡lisis conforme a legislaciÃ³n extranjera</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-900 font-mono">☑</span>
-                          <p className="text-xs text-gray-900 flex-1">El cliente proporcionará el documento dentro de 48h desde la aceptación</p>
+                          <span className="text-gray-900 font-mono">â</span>
+                          <p className="text-xs text-gray-900 flex-1">El cliente proporcionarÃ¡ el documento dentro de 48h desde la aceptaciÃ³n</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-900 font-mono">☑</span>
-                          <p className="text-xs text-gray-900 flex-1">Los plazos se computan en días hábiles (lunes a viernes, excl. festivos ZH)</p>
+                          <span className="text-gray-900 font-mono">â</span>
+                          <p className="text-xs text-gray-900 flex-1">Los plazos se computan en dÃ­as hÃ¡biles (lunes a viernes, excl. festivos ZH)</p>
                         </div>
                       </div>
 
                       <p className="text-xs italic text-gray-600 mt-3">
-                        El incumplimiento de cualquier supuesto podrá resultar en ajuste de plazos y/o honorarios, previa comunicación.
+                        El incumplimiento de cualquier supuesto podrÃ¡ resultar en ajuste de plazos y/o honorarios, previa comunicaciÃ³n.
                       </p>
                     </div>
 
-                    {/* Sección 4 - Exclusiones */}
+                    {/* SecciÃ³n 4 - Exclusiones */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">4. EXCLUSIONES</h3>
 
                       <div className="space-y-1">
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-500">—</span>
-                          <p className="text-xs text-gray-900 flex-1">Asesoramiento sobre la transacción subyacente</p>
+                          <span className="text-gray-500">â</span>
+                          <p className="text-xs text-gray-900 flex-1">Asesoramiento sobre la transacciÃ³n subyacente</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-500">—</span>
-                          <p className="text-xs text-gray-900 flex-1">Análisis fiscal o tributario</p>
+                          <span className="text-gray-500">â</span>
+                          <p className="text-xs text-gray-900 flex-1">AnÃ¡lisis fiscal o tributario</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-500">—</span>
-                          <p className="text-xs text-gray-900 flex-1">Revisión conforme a derecho de terceros países</p>
+                          <span className="text-gray-500">â</span>
+                          <p className="text-xs text-gray-900 flex-1">RevisiÃ³n conforme a derecho de terceros paÃ­ses</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-500">—</span>
-                          <p className="text-xs text-gray-900 flex-1">Negociación con contraparte</p>
+                          <span className="text-gray-500">â</span>
+                          <p className="text-xs text-gray-900 flex-1">NegociaciÃ³n con contraparte</p>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="text-gray-500">—</span>
-                          <p className="text-xs text-gray-900 flex-1">Traducción de documentos</p>
+                          <span className="text-gray-500">â</span>
+                          <p className="text-xs text-gray-900 flex-1">TraducciÃ³n de documentos</p>
                         </div>
                       </div>
                     </div>
 
-                    {/* Sección 5 - Servicios opcionales */}
+                    {/* SecciÃ³n 5 - Servicios opcionales */}
                     <div className="mt-4">
                       <h3 className="text-sm font-bold text-gray-900 mb-2">5. SERVICIOS OPCIONALES</h3>
 
@@ -5006,14 +5020,14 @@ export default function CotizacionEstructuradaForm() {
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">Forfait</td>
                           </tr>
                           <tr className="bg-gray-50">
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Apoyo en negociación</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Apoyo en negociaciÃ³n</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">CHF 450.00</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">Por hora</td>
                           </tr>
                           <tr>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Revisión de versiones adicionales</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">RevisiÃ³n de versiones adicionales</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">CHF 350.00</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">Por versión</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">Por versiÃ³n</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Conferencia adicional</td>
@@ -5024,9 +5038,9 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 6 - Términos generales */}
+                    {/* SecciÃ³n 6 - TÃ©rminos generales */}
                     <div className="mt-4">
-                      <h3 className="text-sm font-bold text-gray-900 mb-2">6. TÉRMINOS GENERALES</h3>
+                      <h3 className="text-sm font-bold text-gray-900 mb-2">6. TÃRMINOS GENERALES</h3>
 
                       <table className="w-full text-xs border-collapse border border-gray-400">
                         <tbody>
@@ -5035,8 +5049,8 @@ export default function CotizacionEstructuradaForm() {
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Derecho suizo</td>
                           </tr>
                           <tr>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Jurisdicción</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Tribunales de Zürich, Suiza</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">JurisdicciÃ³n</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Tribunales de ZÃ¼rich, Suiza</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Confidencialidad</td>
@@ -5047,12 +5061,12 @@ export default function CotizacionEstructuradaForm() {
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Limitada a CHF 2&apos;000&apos;000 por mandato</td>
                           </tr>
                           <tr className="bg-gray-50">
-                            <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Cancelación</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">CancelaciÃ³n</td>
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">Sin cargo antes del inicio. 50% si ya iniciado</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Seguro RC</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">Póliza vigente con [Aseguradora], n.° [XXXX]</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">PÃ³liza vigente con [Aseguradora], n.Â° [XXXX]</td>
                           </tr>
                         </tbody>
                       </table>
@@ -5065,14 +5079,14 @@ export default function CotizacionEstructuradaForm() {
                           <tr>
                             <td className="w-1/2 pr-4 align-top">
                               <p className="text-xs font-bold text-gray-900 mb-2">POR EL DESPACHO</p>
-                              <p className="text-sm font-bold text-gray-900 mt-6">Schreiber Wyss Rechtsanwälte AG</p>
+                              <p className="text-sm font-bold text-gray-900 mt-6">Schreiber Wyss RechtsanwÃ¤lte AG</p>
                               <div className="border-b border-gray-400 w-48 mt-8 mb-1"></div>
                               <p className="text-xs text-gray-900">Dr. Thomas Schreiber, Socio</p>
                               <p className="text-xs text-gray-600 mt-2">Fecha: 23.01.2026</p>
                             </td>
                             <td className="w-1/2 pl-4 align-top border-l border-gray-400">
                               <p className="text-xs font-bold text-gray-900 mb-2">POR EL CLIENTE</p>
-                              <p className="text-sm text-gray-900 mt-6">[Razón Social]</p>
+                              <p className="text-sm text-gray-900 mt-6">[RazÃ³n Social]</p>
                               <div className="border-b border-gray-400 w-48 mt-8 mb-1"></div>
                               <p className="text-xs text-gray-700">Nombre: ______________________</p>
                               <p className="text-xs text-gray-700 mt-2">Fecha: ______________________</p>
@@ -5085,10 +5099,10 @@ export default function CotizacionEstructuradaForm() {
                     {/* Footer */}
                     <div className="mt-6 pt-3 border-t border-gray-400">
                       <p className="text-xs text-gray-500 text-center leading-relaxed">
-                        Schreiber Wyss Rechtsanwälte AG<br />
+                        Schreiber Wyss RechtsanwÃ¤lte AG<br />
                         CHE-123.456.789<br />
-                        Registro Mercantil Zürich · UID: CHF 150&apos;000<br />
-                        IVA: CHE-123.456.789 MWST · www.schreiberwyss.ch
+                        Registro Mercantil ZÃ¼rich Â· UID: CHF 150&apos;000<br />
+                        IVA: CHE-123.456.789 MWST Â· www.schreiberwyss.ch
                       </p>
                     </div>
                   </div>
@@ -5146,7 +5160,7 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Sección 1 - Service Summary */}
+                    {/* SecciÃ³n 1 - Service Summary */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">1. SERVICE SUMMARY</h3>
 
@@ -5180,41 +5194,41 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 2 - Scope Definition */}
+                    {/* SecciÃ³n 2 - Scope Definition */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">2. SCOPE DEFINITION</h3>
 
                       <div className="grid grid-cols-2 gap-3 mt-3">
                         <div className="bg-green-50 border border-green-300 p-3">
-                          <p className="text-xs font-bold text-green-800 mb-2">✓ INCLUDED IN SCOPE</p>
+                          <p className="text-xs font-bold text-green-800 mb-2">â INCLUDED IN SCOPE</p>
                           <ul className="space-y-1 text-xs text-gray-900">
-                            <li>✓ Complete legal review of NDA</li>
-                            <li>✓ Risk assessment and classification</li>
-                            <li>✓ Deviation analysis vs. market standard</li>
-                            <li>✓ Written findings report (PDF)</li>
-                            <li>✓ Annotated document with markup (Word)</li>
-                            <li>✓ Risk matrix summary (Excel)</li>
-                            <li>✓ One 30-minute follow-up call</li>
-                            <li>✓ Quality assurance review</li>
+                            <li>â Complete legal review of NDA</li>
+                            <li>â Risk assessment and classification</li>
+                            <li>â Deviation analysis vs. market standard</li>
+                            <li>â Written findings report (PDF)</li>
+                            <li>â Annotated document with markup (Word)</li>
+                            <li>â Risk matrix summary (Excel)</li>
+                            <li>â One 30-minute follow-up call</li>
+                            <li>â Quality assurance review</li>
                           </ul>
                         </div>
                         <div className="bg-red-50 border border-red-300 p-3">
-                          <p className="text-xs font-bold text-red-800 mb-2">✗ NOT INCLUDED IN SCOPE</p>
+                          <p className="text-xs font-bold text-red-800 mb-2">â NOT INCLUDED IN SCOPE</p>
                           <ul className="space-y-1 text-xs text-gray-900">
-                            <li>✗ Advice on underlying transaction</li>
-                            <li>✗ Tax or regulatory analysis</li>
-                            <li>✗ Foreign law review</li>
-                            <li>✗ Negotiation with counterparty</li>
-                            <li>✗ Document translations</li>
-                            <li>✗ Litigation support</li>
-                            <li>✗ Subsequent version reviews</li>
-                            <li>✗ On-site meetings</li>
+                            <li>â Advice on underlying transaction</li>
+                            <li>â Tax or regulatory analysis</li>
+                            <li>â Foreign law review</li>
+                            <li>â Negotiation with counterparty</li>
+                            <li>â Document translations</li>
+                            <li>â Litigation support</li>
+                            <li>â Subsequent version reviews</li>
+                            <li>â On-site meetings</li>
                           </ul>
                         </div>
                       </div>
                     </div>
 
-                    {/* Sección 3 - Deliverables */}
+                    {/* SecciÃ³n 3 - Deliverables */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">3. DELIVERABLES</h3>
 
@@ -5254,7 +5268,7 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 4 - Pricing */}
+                    {/* SecciÃ³n 4 - Pricing */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">4. PRICING</h3>
 
@@ -5271,7 +5285,7 @@ export default function CotizacionEstructuradaForm() {
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-900">NDA Review Service (Standard)</td>
                             <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">1</td>
-                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">—</td>
+                            <td className="border border-gray-400 px-3 py-2 text-center text-gray-900">â</td>
                             <td className="border border-gray-400 px-3 py-2 text-right text-gray-900">$1,200.00</td>
                           </tr>
                           <tr className="bg-gray-50">
@@ -5343,7 +5357,7 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 5 - SLA */}
+                    {/* SecciÃ³n 5 - SLA */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">5. SERVICE LEVEL AGREEMENT</h3>
 
@@ -5384,7 +5398,7 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Sección 6 - Security & Compliance */}
+                    {/* SecciÃ³n 6 - Security & Compliance */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">6. SECURITY & COMPLIANCE</h3>
 
@@ -5418,7 +5432,7 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 7 - Assumptions */}
+                    {/* SecciÃ³n 7 - Assumptions */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">7. ASSUMPTIONS & DEPENDENCIES</h3>
 
@@ -5456,7 +5470,7 @@ export default function CotizacionEstructuradaForm() {
                       </p>
                     </div>
 
-                    {/* Sección 8 - Payment Terms */}
+                    {/* SecciÃ³n 8 - Payment Terms */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">8. PAYMENT TERMS</h3>
 
@@ -5484,13 +5498,13 @@ export default function CotizacionEstructuradaForm() {
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-3 py-2 text-gray-700 font-medium">Purchase Order</td>
-                            <td className="border border-gray-400 px-3 py-2 text-gray-900">PO required: ☐ Yes ☐ No   PO#: ____________</td>
+                            <td className="border border-gray-400 px-3 py-2 text-gray-900">PO required: â Yes â No   PO#: ____________</td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    {/* Sección 9 - General Terms */}
+                    {/* SecciÃ³n 9 - General Terms */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">9. GENERAL TERMS</h3>
 
@@ -5528,7 +5542,7 @@ export default function CotizacionEstructuradaForm() {
                       </table>
                     </div>
 
-                    {/* Sección 10 - Contacts */}
+                    {/* SecciÃ³n 10 - Contacts */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">10. CONTACTS</h3>
 
@@ -5552,7 +5566,7 @@ export default function CotizacionEstructuradaForm() {
                       </div>
                     </div>
 
-                    {/* Sección 11 - Attachments */}
+                    {/* SecciÃ³n 11 - Attachments */}
                     <div className="mt-5">
                       <h3 className="text-sm font-bold text-gray-900 mb-2 pb-1 border-b-2 border-gray-900">11. ATTACHMENTS</h3>
 
@@ -5568,27 +5582,27 @@ export default function CotizacionEstructuradaForm() {
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Attachment A</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Mutual Non-Disclosure Agreement</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐ Attached ☐ Previously executed</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â Attached â Previously executed</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Attachment B</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Data Processing Agreement (DPA)</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐ Attached ☐ Not required</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â Attached â Not required</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Attachment C</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Certificate of Insurance</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐ Attached ☐ Available upon request</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â Attached â Available upon request</td>
                           </tr>
                           <tr className="bg-gray-50">
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Attachment D</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">SOC 2 Type II Report</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐ Attached ☐ Available under NDA</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â Attached â Available under NDA</td>
                           </tr>
                           <tr>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Attachment E</td>
                             <td className="border border-gray-400 px-2 py-1.5 text-gray-900">Master Services Agreement (if applicable)</td>
-                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">☐ Attached ☐ N/A</td>
+                            <td className="border border-gray-400 px-2 py-1.5 text-center text-gray-900">â Attached â N/A</td>
                           </tr>
                         </tbody>
                       </table>
@@ -5622,7 +5636,7 @@ export default function CotizacionEstructuradaForm() {
                     {/* Footer */}
                     <div className="mt-4 pt-3 border-t border-gray-400">
                       <p className="text-center text-[10px] text-gray-500 leading-relaxed">
-                        Meridian Legal Services, LLC · EIN: 12-3456789 · Illinois Licensed · meridianlegal.com<br />
+                        Meridian Legal Services, LLC Â· EIN: 12-3456789 Â· Illinois Licensed Â· meridianlegal.com<br />
                         This Service Order Form is subject to the Master Services Agreement (if executed) or Provider&apos;s Standard Terms of Service.
                       </p>
                     </div>
@@ -5650,28 +5664,28 @@ export default function CotizacionEstructuradaForm() {
                       </p>
                     </div>
 
-                    {/* Primer párrafo */}
+                    {/* Primer pÃ¡rrafo */}
                     <div className="mb-8">
                       <p className="text-sm text-gray-900 leading-loose">
                         Thank you for your enquiry. I would be pleased to review the proposed non-disclosure agreement on your behalf.
                       </p>
                     </div>
 
-                    {/* Segundo párrafo - scope */}
+                    {/* Segundo pÃ¡rrafo - scope */}
                     <div className="mb-8">
                       <p className="text-sm text-gray-900 leading-loose">
                         The engagement would include a full analysis of the document, a written memorandum setting out my observations and recommendations, and an annotated version with proposed amendments. I will be available to discuss the findings with you at your convenience.
                       </p>
                     </div>
 
-                    {/* Párrafo de precio - muy directo */}
+                    {/* PÃ¡rrafo de precio - muy directo */}
                     <div className="mb-8">
                       <p className="text-sm text-gray-900 leading-loose">
                         My fee for this work is $2,400, payable on engagement. I anticipate completing the review within five working days of receiving the document.
                       </p>
                     </div>
 
-                    {/* Opción express */}
+                    {/* OpciÃ³n express */}
                     <div className="mb-8">
                       <p className="text-sm text-gray-900 leading-loose">
                         Should you require an expedited review, I can accommodate a forty-eight hour turnaround for an additional $800.
@@ -5705,7 +5719,7 @@ export default function CotizacionEstructuradaForm() {
         </div>
       )}
 
-      {/* Modal de Selección y Creación de Método de Pago */}
+      {/* Modal de SelecciÃ³n y CreaciÃ³n de MÃ©todo de Pago */}
       {
         showPaymentModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] animate-in fade-in duration-200 p-4">
@@ -5713,10 +5727,10 @@ export default function CotizacionEstructuradaForm() {
               <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-white">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900">
-                    {!selectedPaymentMethodType ? 'Selecciona un Método de Pago' : 'Nuevo Método de Pago'}
+                    {!selectedPaymentMethodType ? 'Selecciona un MÃ©todo de Pago' : 'Nuevo MÃ©todo de Pago'}
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">
-                    {!selectedPaymentMethodType ? 'Elige la opción que deseas configurar' : 'Ingresa los detalles correspondientes'}
+                    {!selectedPaymentMethodType ? 'Elige la opciÃ³n que deseas configurar' : 'Ingresa los detalles correspondientes'}
                   </p>
                 </div>
                 <button
@@ -5762,7 +5776,7 @@ export default function CotizacionEstructuradaForm() {
                               value={paymentFormData.beneficiary}
                               onChange={(e) => setPaymentFormData({ ...paymentFormData, beneficiary: e.target.value })}
                               className="w-full h-12 px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-full focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-gray-300 transition-all outline-none text-sm font-medium text-gray-900"
-                              placeholder="Nombre completo o Razón Social"
+                              placeholder="Nombre completo o RazÃ³n Social"
                             />
                           </div>
                           <div className="space-y-2">
@@ -5776,13 +5790,13 @@ export default function CotizacionEstructuradaForm() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">CLABE / Número de Cuenta</label>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">CLABE / NÃºmero de Cuenta</label>
                             <input
                               type="text"
                               value={paymentFormData.clabe}
                               onChange={(e) => setPaymentFormData({ ...paymentFormData, clabe: e.target.value })}
                               className="w-full h-12 px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-full focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-gray-300 transition-all outline-none text-sm font-medium text-gray-900"
-                              placeholder="18 dígitos (opcional)"
+                              placeholder="18 dÃ­gitos (opcional)"
                               maxLength={18}
                             />
                           </div>
@@ -5801,13 +5815,13 @@ export default function CotizacionEstructuradaForm() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">Número de Tarjeta <span className="text-red-500">*</span></label>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">NÃºmero de Tarjeta <span className="text-red-500">*</span></label>
                             <input
                               type="text"
                               value={paymentFormData.cardNumber}
                               onChange={(e) => setPaymentFormData({ ...paymentFormData, cardNumber: e.target.value })}
                               className="w-full h-12 px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-full focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-gray-300 transition-all outline-none text-sm font-medium text-gray-900"
-                              placeholder="16 dígitos"
+                              placeholder="16 dÃ­gitos"
                               maxLength={16}
                             />
                           </div>
@@ -5843,7 +5857,7 @@ export default function CotizacionEstructuradaForm() {
                           onClick={() => setSelectedPaymentMethodType('')}
                           className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-gray-700 hover:bg-[#F9FAFB] hover:border-[#9CA3AF] transition-all text-sm font-bold active:scale-95"
                         >
-                          Atrás
+                          AtrÃ¡s
                         </button>
                         <button
                           onClick={handleSavePaymentMethod}
@@ -5855,7 +5869,7 @@ export default function CotizacionEstructuradaForm() {
                               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                               Guardando...
                             </>
-                          ) : 'Guardar Método'}
+                          ) : 'Guardar MÃ©todo'}
                         </button>
                       </div>
                     </div>
