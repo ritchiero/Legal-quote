@@ -257,4 +257,4 @@ export default function CortaView({ contenido, brandingInfo, firmName, onContent
                 </div>
           </div>
         );
-}</div>
+      }
