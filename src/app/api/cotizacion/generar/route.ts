@@ -325,10 +325,6 @@ Por los servicios descritos en la presente propuesta, nuestros honorarios ascien
 // ====== SUB-AGENTE 6: OBLIGACIONES Y CONFIDENCIALIDAD ======
 async function generarObligacionesYCierre(despachoInfo: any, userInfo: any, styleInstructions: string) {
   const despachoNombre = despachoInfo?.nombre || despachoInfo?.nombreDespacho || "Despacho Legal";
-  const telefono = despachoInfo?.telefono || despachoInfo?.phone || despachoInfo?.mobile || userInfo?.phone || userInfo?.mobile || userInfo?.telefono || "";
-  const direccion = despachoInfo?.direccion || despachoInfo?.address || userInfo?.location || userInfo?.address || "";
-  const email = userInfo?.email || `contacto@${despachoNombre.toLowerCase().replace(/\s/g, '')}.mx`;
-  const web = despachoInfo?.web || despachoInfo?.website || userInfo?.web || userInfo?.website || "";
 
   const prompt = `Genera las secciones finales (V a VIII) de una propuesta legal profesional.
 
@@ -336,9 +332,6 @@ ${styleInstructions}
 
 DATOS:
 Despacho: ${despachoNombre}
-Email: ${email}
-TelÃ©fono: ${telefono}
-DirecciÃ³n: ${direccion}
 
 INSTRUCCIONES:
 1. Generar 4 secciones:
@@ -348,7 +341,7 @@ INSTRUCCIONES:
    - VIII. ACEPTACIÃÂN (solicitud de confirmaciÃÂ³n por escrito)
 
 2. Formato profesional y conciso
-3. IMPORTANTE: Usa SOLO los datos de contacto proporcionados arriba. Si un dato esta vacio, NO lo incluyas. NUNCA inventes telefonos, direcciones o emails.
+3. PROHIBIDO: NO incluyas datos de contacto (telefono, email, web, direccion) en esta seccion. Los datos de contacto van en el footer.
 4. CRÃÂTICO: NO pidas "Estados Financieros" ni "Declaraciones Fiscales" (es excesivo e inseguro).
 5. LimÃÂ­tate a documentos de identidad, constitutivos y poderes.
 6. Usa letras a), b), c) para listar obligaciones.
@@ -370,11 +363,21 @@ Genera las 4 secciones completas (V, VI, VII, VIII):`;
     max_tokens: 1024,
   });
 
-  let footerContent = completion.choices[0]?.message?.content?.trim() || "";
-  const contactSuffix = buildContactSuffix({ telefono, email, direccion, web });
-  footerContent += contactSuffix;
+  const rawContent = completion.choices[0]?.message?.content?.trim() || "";
+  return sanitizeObligacionesContent(rawContent);
+}
 
-  return footerContent;
+function sanitizeObligacionesContent(content: string) {
+  if (!content?.trim()) return "";
+
+  const placeholderContactLineRegex = /^.*\[.*(?:contacto|tel[eé]fono|correo|direcci[oó]n|oficina|n[uú]mero).*\].*$/gim;
+  const explicitContactLineRegex = /^.*(?:\[N[uú]mero\s+de\s+contacto\]|\[Correo\s+de\s+contacto\]|\[Direcci[oó]n\s+de\s+la\s+oficina\]|contacto@despachoboutique|\(55\)\s*1234-5678).*$\n?/gim;
+
+  return content
+    .replace(placeholderContactLineRegex, '')
+    .replace(explicitContactLineRegex, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 // ====== SUB-AGENTE 7: FOOTER ======
