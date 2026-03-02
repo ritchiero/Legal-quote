@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase/firebase';
 import { collection, query, where, onSnapshot, orderBy, limit, doc } from 'firebase/firestore';
 import Link from 'next/link';
+import StaleQuotationsModal from '@/components/modals/StaleQuotationsModal';
 
 interface Quotation {
   id: string;
@@ -322,6 +323,9 @@ export default function Home() {
           <span className="text-primary">{I.arr}</span>
         </div>
       )}
+
+      {/* Stale quotations follow-up modal */}
+      <StaleQuotationsModal />
     </div>
   );
 }
