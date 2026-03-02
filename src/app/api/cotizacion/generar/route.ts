@@ -5,7 +5,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 
 
-// FunciÃ³n para generar folio y fecha
+// FunciÃÂ³n para generar folio y fecha
 const generarFolioYFecha = () => {
   const now = new Date();
   const fecha = new Intl.DateTimeFormat('es-MX', {
@@ -26,7 +26,7 @@ function generarEncabezado(userInfo: any, destinatario: any, despachoInfo: any, 
   const despachoNombre = despachoInfo?.nombre || despachoInfo?.nombreDespacho || "Despacho Legal";
   const despachoSlogan = despachoInfo?.slogan || "";
 
-  console.log('ð Generando encabezado con:', { despachoNombre, despachoSlogan, destinatario });
+  console.log('Ã°ÂÂÂ Generando encabezado con:', { despachoNombre, despachoSlogan, destinatario });
 
   return `${despachoNombre.toUpperCase()}
 ${despachoSlogan ? despachoSlogan : ""}
@@ -40,7 +40,7 @@ ${separador}
 **Referencia:**       ${folio}
 **Fecha:**            ${fecha}
 **Preparado para:**   ${destinatario?.nombre || "Cliente"}
-**Confidencial:**     Este documento contiene informaciÃ³n privilegiada
+**Confidencial:**     Este documento contiene informaciÃÂ³n privilegiada
 
 ${separador}`;
 }
@@ -50,87 +50,87 @@ const getStyleInstructions = (style: string) => {
   const styles: Record<string, string> = {
     'ny-biglaw': `ESTILO: NY BIGLAW (Engagement Letter Formal).
       - Estructura de carta formal con encabezado institucional
-      - Secciones numeradas en MAYÃSCULAS: 1. SCOPE OF ENGAGEMENT, 2. PROFESSIONAL FEES, etc.
+      - Secciones numeradas en MAYÃÂSCULAS: 1. SCOPE OF ENGAGEMENT, 2. PROFESSIONAL FEES, etc.
       - Lenguaje EXTREMADAMENTE FORMAL: "pursuant to", "hereinafter referred to as"
       - Tabla de fees con bordes completos para pricing
-      - PÃ¡rrafos narrativos densos para descripciones
+      - PÃÂ¡rrafos narrativos densos para descripciones
       - Cierre: "Very truly yours,"
-      - Incluir secciÃ³n de aceptaciÃ³n con firma`,
+      - Incluir secciÃÂ³n de aceptaciÃÂ³n con firma`,
 
     'silicon-valley': `ESTILO: SILICON VALLEY (Product-led, Founder-friendly).
       - Saludo casual: "Hi [First Name]," en lugar de "Dear..."
       - Lenguaje simple y directo, CERO legalese
       - Usa TABLAS limpias para pricing
       - Boxes destacados para features/beneficios
-      - Bullets con Ã­conos â para listas
+      - Bullets con ÃÂ­conos Ã¢ÂÂ para listas
       - Mencionar "founder-friendly", "no billable surprises"
       - Cierre: "Best," (casual)
       - Enfoque en VALOR y VELOCIDAD`,
 
-    'uk-magic-circle': `ESTILO: BRITÃNICA (Magic Circle, Solicitors).
-      - Formato de carta formal britÃ¡nica
+    'uk-magic-circle': `ESTILO: BRITÃÂNICA (Magic Circle, Solicitors).
+      - Formato de carta formal britÃÂ¡nica
       - Fecha en formato UK: "23 January 2026"
       - Referencia: "Our ref: AP/NDA/2026/0147"
       - Secciones numeradas tradicionales: 1. Background, 2. Our Understanding, 3. Scope of Work
-      - Lenguaje formal britÃ¡nico: "We are pleased to...", "We would be grateful if..."
+      - Lenguaje formal britÃÂ¡nico: "We are pleased to...", "We would be grateful if..."
       - Vocabulario UK: "whilst", "shall", "herewith", "pursuant"
-      - Tabla de fees con IVA/VAT explÃ­cito
+      - Tabla de fees con IVA/VAT explÃÂ­cito
       - Mencionar SRA number y regulatory compliance
-      - Cierre: "Yours sincerely" (britÃ¡nico)
+      - Cierre: "Yours sincerely" (britÃÂ¡nico)
       - Box de "Confirmation of Instructions" para firma`,
 
-    'german-engineering': `ESTILO: INGENIERÃA CONTRACTUAL (AlemÃ¡n, Ultra Estructurado).
-      - TÃ­tulo principal: "ACUERDO DE PRESTACIÃN DE SERVICIOS"
-      - InformaciÃ³n del expediente en tabla al inicio (NÂ° Expediente, Fecha, VersiÃ³n, etc.)
-      - SecciÃ³n 1. DEFINICIONES con tabla de tÃ©rminos clave
+    'german-engineering': `ESTILO: INGENIERÃÂA CONTRACTUAL (AlemÃÂ¡n, Ultra Estructurado).
+      - TÃÂ­tulo principal: "ACUERDO DE PRESTACIÃÂN DE SERVICIOS"
+      - InformaciÃÂ³n del expediente en tabla al inicio (NÃÂ° Expediente, Fecha, VersiÃÂ³n, etc.)
+      - SecciÃÂ³n 1. DEFINICIONES con tabla de tÃÂ©rminos clave
       - MUCHAS TABLAS: para servicios, cronograma, honorarios, supuestos
-      - NumeraciÃ³n exhaustiva: 2.1, 2.2, 3.1.1, 3.1.2, etc.
+      - NumeraciÃÂ³n exhaustiva: 2.1, 2.2, 3.1.1, 3.1.2, etc.
       - Cronograma con fases H-0, H-1, H-2 (Hitos)
-      - Tabla de honorarios con IVA desglosado lÃ­nea por lÃ­nea
-      - SecciÃ³n de SUPUESTOS Y PRERREQUISITOS con checkboxes
+      - Tabla de honorarios con IVA desglosado lÃÂ­nea por lÃÂ­nea
+      - SecciÃÂ³n de SUPUESTOS Y PRERREQUISITOS con checkboxes
       - Box de FIRMAS en formato tabla (Por el Despacho | Por el Cliente)
       - Lista de ANEXOS al final
-      - Lenguaje tÃ©cnico y preciso, CERO ambigÃ¼edad`,
+      - Lenguaje tÃÂ©cnico y preciso, CERO ambigÃÂ¼edad`,
 
-    'french-cabinet': `ESTILO: CABINET FRANCÃS (Refinado, Narrativo).
-      - Header elegante centrado con lÃ­neas decorativas: âââââ  â¦  âââââ
-      - Nombre del cabinet en mayÃºsculas con "â AVOCATS â"
-      - Secciones con nÃºmeros romanos centrados: I. NUESTRA PROPUESTA, II. MODALIDADES
+    'french-cabinet': `ESTILO: CABINET FRANCÃÂS (Refinado, Narrativo).
+      - Header elegante centrado con lÃÂ­neas decorativas: Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ  Ã¢ÂÂ¦  Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+      - Nombre del cabinet en mayÃÂºsculas con "Ã¢ÂÂ AVOCATS Ã¢ÂÂ"
+      - Secciones con nÃÂºmeros romanos centrados: I. NUESTRA PROPUESTA, II. MODALIDADES
       - Lenguaje extremadamente refinado: "Agradecemos sinceramente la confianza..."
-      - Uso de itÃ¡licas para Ã©nfasis: "Primero", "Segundo", "Tercero"
-      - PÃ¡rrafos largos y bien redactados (no bullets)
+      - Uso de itÃÂ¡licas para ÃÂ©nfasis: "Primero", "Segundo", "Tercero"
+      - PÃÂ¡rrafos largos y bien redactados (no bullets)
       - Separadores decorativos entre secciones: * * *
       - Box elegante con borde doble para el precio
-      - Cierre cortÃ©s: "Quedamos a su disposiciÃ³n..."
-      - "Le rogamos acepte... la expresiÃ³n de nuestra mÃ¡s distinguida consideraciÃ³n"
-      - Box de aceptaciÃ³n: "â Bon pour accord â"
-      - Footer con informaciÃ³n legal completa`,
+      - Cierre cortÃÂ©s: "Quedamos a su disposiciÃÂ³n..."
+      - "Le rogamos acepte... la expresiÃÂ³n de nuestra mÃÂ¡s distinguida consideraciÃÂ³n"
+      - Box de aceptaciÃÂ³n: "Ã¢ÂÂ Bon pour accord Ã¢ÂÂ"
+      - Footer con informaciÃÂ³n legal completa`,
 
     'spanish-boutique': `ESTILO: DESPACHO BOUTIQUE (Profesional Latinoamericano).
       - Header con nombre destacado
-      - TÃ­tulo centrado: "PROPUESTA DE SERVICIOS PROFESIONALES"
+      - TÃÂ­tulo centrado: "PROPUESTA DE SERVICIOS PROFESIONALES"
       - Secciones numeradas en romano: I. ANTECEDENTES, II. ALCANCE, etc.
-      - Lenguaje cercano: "tenemos el agrado de...", "quedamos a su disposiciÃ³n..."
-      - Equilibrio entre calidez y autoridad tÃ©cnica
-      - Tabla de metodologÃ­a con fases
-      - Tabla de honorarios con IVA 16% (MÃ©xico)
-      - Mencionar protecciÃ³n de datos (LFPDPPP si es MÃ©xico)
-      - Box de ACEPTACIÃN DEL ENCARGO
-      - Footer con informaciÃ³n de contacto completa
-      - Usar "Nos complace", "A su entera disposiciÃ³n"`,
+      - Lenguaje cercano: "tenemos el agrado de...", "quedamos a su disposiciÃÂ³n..."
+      - Equilibrio entre calidez y autoridad tÃÂ©cnica
+      - Tabla de metodologÃÂ­a con fases
+      - Tabla de honorarios con IVA 16% (MÃÂ©xico)
+      - Mencionar protecciÃÂ³n de datos (LFPDPPP si es MÃÂ©xico)
+      - Box de ACEPTACIÃÂN DEL ENCARGO
+      - Footer con informaciÃÂ³n de contacto completa
+      - Usar "Nos complace", "A su entera disposiciÃÂ³n"`,
 
-    'japanese-keigo': `ESTILO: KEIGO JAPONÃS (Ultra CortÃ©s, Estructurado).
+    'japanese-keigo': `ESTILO: KEIGO JAPONÃÂS (Ultra CortÃÂ©s, Estructurado).
       - Header minimalista alineado a la derecha
-      - TÃ­tulo en caja con bordes: "PROPUESTA DE SERVICIOS"
+      - TÃÂ­tulo en caja con bordes: "PROPUESTA DE SERVICIOS"
       - TODO en tablas limpias y estructuradas
       - Tabla 1: Resumen del Servicio (Servicio, Documento, Plazo, Responsable, Honorarios)
-      - Tabla 2: Alcance con numeraciÃ³n 2.1-2.7 (NÂ° | DescripciÃ³n | Entregable)
-      - Tabla 3: Cronograma por dÃ­as (DÃ­a 0, 1, 2-3, 4, 5)
+      - Tabla 2: Alcance con numeraciÃÂ³n 2.1-2.7 (NÃÂ° | DescripciÃÂ³n | Entregable)
+      - Tabla 3: Cronograma por dÃÂ­as (DÃÂ­a 0, 1, 2-3, 4, 5)
       - Tabla 4: Honorarios con impuesto al consumo
-      - Tabla 5: Puntos a Confirmar con checkboxes â
+      - Tabla 5: Puntos a Confirmar con checkboxes Ã¢ÂÂ
       - Tabla 6: Condiciones (Validez, Forma pago, Confidencialidad)
       - Lenguaje extremadamente respetuoso: "Agradecemos sinceramente..."
-      - Box de aceptaciÃ³n simple con grid 2x2
+      - Box de aceptaciÃÂ³n simple con grid 2x2
       - Footer limpio centrado`,
 
     'swiss-financial': `ESTILO: FINANCIAL-GRADE (Bancario Suizo, Ultra Preciso).
@@ -139,15 +139,15 @@ const getStyleInstructions = (style: string) => {
       - Servicio destacado en caja con TOTAL grande: CHF 1'450.00
       - Desglose exhaustivo numerado 1.1-1.5 con Subtotal, Gastos admin, IVA 8.1%, Tasa cantonal
       - Fila negra final: TOTAL A PAGAR
-      - Tabla de condiciones de pago: IMPORTE | PLAZO | MÃTODO
+      - Tabla de condiciones de pago: IMPORTE | PLAZO | MÃÂTODO
       - Box de datos bancarios completo (IBAN, BIC/SWIFT, etc.)
-      - Supuestos con checkboxes â
+      - Supuestos con checkboxes Ã¢ÂÂ
       - Servicios opcionales en tabla
-      - TÃ©rminos generales en tabla (Ley, JurisdicciÃ³n, Seguro RC)
+      - TÃÂ©rminos generales en tabla (Ley, JurisdicciÃÂ³n, Seguro RC)
       - Firmas en formato tabla 2 columnas
       - Footer con CHE, UID, IVA, Registro Mercantil
-      - NÃºmeros con separador suizo: 1'450.00
-      - Lenguaje bancario preciso y frÃ­o`,
+      - NÃÂºmeros con separador suizo: 1'450.00
+      - Lenguaje bancario preciso y frÃÂ­o`,
 
     'legal-ops': `ESTILO: LEGAL OPS (RFP Response, Procurement-friendly).
       - Header oscuro con "SERVICE ORDER FORM"
@@ -155,7 +155,7 @@ const getStyleInstructions = (style: string) => {
       - Boxes para SERVICE PROVIDER | CLIENT con info completa
       - Secciones numeradas: 1. SERVICE SUMMARY, 2. SCOPE DEFINITION, etc.
       - Tabla 1: Service Summary (sin bordes gruesos, limpia)
-      - SCOPE: Dos columnas con boxes verde (â INCLUDED) y rojo (â NOT INCLUDED)
+      - SCOPE: Dos columnas con boxes verde (Ã¢ÂÂ INCLUDED) y rojo (Ã¢ÂÂ NOT INCLUDED)
       - Tabla 2: DELIVERABLES con header negro (ID | DELIVERABLE | FORMAT | DELIVERY | ACCEPTANCE)
       - Tabla 3: PRICING con header negro y fila azul para TOTAL
       - SLA metrics en grid 3x2 con boxes
@@ -167,19 +167,19 @@ const getStyleInstructions = (style: string) => {
       - Lenguaje tipo formulario, muy estructurado`,
 
     'luxury-boutique': `ESTILO: LUXURY BOUTIQUE (Ultra Minimalista, Exclusivo).
-      - Header: Solo el nombre (ej. "Caldwell") sin tÃ­tulos
+      - Header: Solo el nombre (ej. "Caldwell") sin tÃÂ­tulos
       - Formato carta personal simple
       - Fecha y cliente sin formalidades
       - Re: line directa
       - TODO en primera persona: "I would be pleased to..."
       - Lenguaje premium pero directo (British spelling: "enquiry")
-      - Scope en un solo pÃ¡rrafo fluido (no bullets, no tablas)
+      - Scope en un solo pÃÂ¡rrafo fluido (no bullets, no tablas)
       - Precio mencionado casualmente: "My fee for this work is $2,400"
       - Sin secciones numeradas
       - MUCHO espacio en blanco
       - Cierre simple: "I look forward to hearing from you."
-      - Firma: solo el nombre, sin tÃ­tulo ni cargo
-      - MÃ¡xima simplicidad y elegancia`
+      - Firma: solo el nombre, sin tÃÂ­tulo ni cargo
+      - MÃÂ¡xima simplicidad y elegancia`
   };
   return styles[style] || styles['spanish-boutique'];
 };
@@ -188,7 +188,7 @@ const getStyleInstructions = (style: string) => {
 async function generarResumenEjecutivo(descripcionServicio: string, despachoInfo: any, tiempo: string, toneType: 'friendly' | 'formal', styleInstructions: string) {
   const toneInstruction = toneType === 'friendly'
     ? "Usa lenguaje amigable, cercano y accesible."
-    : "Usa lenguaje formal, tÃ©cnico y profesional.";
+    : "Usa lenguaje formal, tÃÂ©cnico y profesional.";
 
   const prompt = `Genera un RESUMEN EJECUTIVO profesional.
 ${styleInstructions}
@@ -199,18 +199,18 @@ Servicio: ${descripcionServicio}
 Tiempo: ${tiempo}
 
 INSTRUCCIONES:
-1. PÃ¡rrafo de introducciÃ³n.
-2. DescripciÃ³n del valor propuesta.
+1. PÃÂ¡rrafo de introducciÃÂ³n.
+2. DescripciÃÂ³n del valor propuesta.
 3. Mencionar plazo (${tiempo}).
 4. Tono: ${toneInstruction}
 5. ADAPTA LA ESTRUCTURA AL ESTILO INDICADO ARRIBA.
 6. PROHIBIDO: NO incluyas fechas, montos de dinero, direcciones ni nombres de socios.
-7. PROHIBIDO: NO inventes datos. Usa SOLO la informaciÃ³n proporcionada.
+7. PROHIBIDO: NO inventes datos. Usa SOLO la informaciÃÂ³n proporcionada.
 
-â ï¸ FORMATO OBLIGATORIO:
+Ã¢ÂÂ Ã¯Â¸Â FORMATO OBLIGATORIO:
 - USA SOLO MARKDOWN (## para headers, | para tablas, ** para negrita, - para listas)
 - NO USES HTML (<div>, <h3>, <table>, etc.)
-- Para tablas: usa formato markdown estÃ¡ndar con | y ---
+- Para tablas: usa formato markdown estÃÂ¡ndar con | y ---
 
 Genera el resumen:`;
 
@@ -227,26 +227,26 @@ Genera el resumen:`;
 async function generarAlcanceServicios(servicios: any[], styleInstructions: string) {
   const serviciosTexto = servicios.map((s: any) => `${s.nombre}: ${s.descripcion}`).join("\n");
 
-  const prompt = `Genera la secciÃ³n "ALCANCE DE LOS SERVICIOS".
+  const prompt = `Genera la secciÃÂ³n "ALCANCE DE LOS SERVICIOS".
 ${styleInstructions}
 
 SERVICIOS:
 ${serviciosTexto}
 
 INSTRUCCIONES:
-1. TÃ­tulo: "II. ALCANCE" (o el que corresponda al estilo).
+1. TÃÂ­tulo: "II. ALCANCE" (o el que corresponda al estilo).
 2. Desarrolla las fases del servicio.
-3. CRÃTICO: Sigue las instrucciones de estilo para el FORMATO.
-4. PROHIBIDO: NO incluyas tablas de honorarios/fees ni cronogramas aquÃ­ (eso va en otra secciÃ³n).
-5. PROHIBIDO: NO inventes entregables que no se deriven de la descripciÃ³n.
-6. PROHIBIDO: NO menciones precios ni fechas especÃ­ficas.
+3. CRÃÂTICO: Sigue las instrucciones de estilo para el FORMATO.
+4. PROHIBIDO: NO incluyas tablas de honorarios/fees ni cronogramas aquÃÂ­ (eso va en otra secciÃÂ³n).
+5. PROHIBIDO: NO inventes entregables que no se deriven de la descripciÃÂ³n.
+6. PROHIBIDO: NO menciones precios ni fechas especÃÂ­ficas.
 
-â ï¸ FORMATO OBLIGATORIO:
+Ã¢ÂÂ Ã¯Â¸Â FORMATO OBLIGATORIO:
 - USA SOLO MARKDOWN (## para headers, | para tablas, ** para negrita, - para listas)
 - NO USES HTML (<div>, <h3>, <table>, etc.)
-- Para tablas: usa formato markdown estÃ¡ndar con | y ---
+- Para tablas: usa formato markdown estÃÂ¡ndar con | y ---
 
-Genera SOLO la secciÃ³n de alcance:`;
+Genera SOLO la secciÃÂ³n de alcance:`;
 
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
@@ -259,7 +259,7 @@ Genera SOLO la secciÃ³n de alcance:`;
 
 // ====== SUB-AGENTE 4: CRONOGRAMA ======
 async function generarCronograma(tiempo: string, descripcionServicio: string, styleInstructions: string) {
-  const prompt = `Genera la secciÃ³n "CRONOGRAMA ESTIMADO".
+  const prompt = `Genera la secciÃÂ³n "CRONOGRAMA ESTIMADO".
 ${styleInstructions}
 
 DATOS:
@@ -268,21 +268,21 @@ Servicio: ${descripcionServicio}
 
 INSTRUCCIONES:
 1. Genera un plan de trabajo.
-2. CRÃTICO: Si el estilo pide tabla, USA UNA TABLA MARKDOWN STANDARD, NO ASCII.
-3. NO INVENTES FECHAS EXACTAS si no se proporcionaron. Usa tiempos relativos (Semana 1, Semana 2) o la duraciÃ³n total proporcionada.
+2. CRÃÂTICO: Si el estilo pide tabla, USA UNA TABLA MARKDOWN STANDARD, NO ASCII.
+3. NO INVENTES FECHAS EXACTAS si no se proporcionaron. Usa tiempos relativos (Semana 1, Semana 2) o la duraciÃÂ³n total proporcionada.
    Ejemplo Markdown:
    | Fase | Actividad | Tiempo |
    | --- | --- | --- |
-   | 1 | Inicio | DÃ­a 1 |
+   | 1 | Inicio | DÃÂ­a 1 |
 
-   NO uses caracteres como "â" o "â" ni bloques de cÃ³digo.
+   NO uses caracteres como "Ã¢ÂÂ" o "Ã¢ÂÂ" ni bloques de cÃÂ³digo.
 
-â ï¸ FORMATO OBLIGATORIO:
+Ã¢ÂÂ Ã¯Â¸Â FORMATO OBLIGATORIO:
 - USA SOLO MARKDOWN (## para headers, | para tablas, ** para negrita)
 - NO USES HTML (<div>, <table>, etc.)
 - Para negritas: ** no <strong>
 
-Genera la secciÃ³n:`;
+Genera la secciÃÂ³n:`;
 
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
@@ -317,14 +317,16 @@ Por los servicios descritos en la presente propuesta, nuestros honorarios ascien
 | IVA (16%) | ${simbolo}${fmt(iva)} ${moneda} |
 | **TOTAL** | **${simbolo}${fmt(precioNum)} ${moneda}** |
 
-**Condiciones de pago:** ${formaPago || "Pago Ãºnico al completar el servicio"}
+**Condiciones de pago:** ${formaPago || "Pago ÃÂºnico al completar el servicio"}
 
-> Los honorarios no incluyen derechos notariales, derechos registrales ni gastos ante autoridades, los cuales serÃ¡n cubiertos directamente por el cliente o facturados por separado a precio de costo.`;
+> Los honorarios no incluyen derechos notariales, derechos registrales ni gastos ante autoridades, los cuales serÃÂ¡n cubiertos directamente por el cliente o facturados por separado a precio de costo.`;
 }
 
 // ====== SUB-AGENTE 6: OBLIGACIONES Y CONFIDENCIALIDAD ======
 async function generarObligacionesYCierre(despachoInfo: any, userInfo: any, styleInstructions: string) {
   const despachoNombre = despachoInfo?.nombre || despachoInfo?.nombreDespacho || "Despacho Legal";
+    const telefono = despachoInfo?.telefono || despachoInfo?.phone || userInfo?.phone || userInfo?.telefono || "";
+  const direccion = despachoInfo?.direccion || despachoInfo?.address || userInfo?.location || userInfo?.address || "";
   const email = userInfo?.email || `contacto@${despachoNombre.toLowerCase().replace(/\s/g, '')}.mx`;
 
   const prompt = `Genera las secciones finales (V a VIII) de una propuesta legal profesional.
@@ -334,28 +336,28 @@ ${styleInstructions}
 DATOS:
 Despacho: ${despachoNombre}
 Email: ${email}
-Teléfono: ${telefono}
-Dirección: ${direccion}
+TelÃ©fono: ${telefono}
+DirecciÃ³n: ${direccion}
 
 INSTRUCCIONES:
 1. Generar 4 secciones:
-   - V. OBLIGACIONES DEL CLIENTE (lista de documentos/informaciÃ³n que debe proporcionar)
-   - VI. CONFIDENCIALIDAD (pÃ¡rrafo sobre protecciÃ³n de informaciÃ³n)
-   - VII. VIGENCIA (30 dÃ­as naturales)
-   - VIII. ACEPTACIÃN (solicitud de confirmaciÃ³n por escrito)
+   - V. OBLIGACIONES DEL CLIENTE (lista de documentos/informaciÃÂ³n que debe proporcionar)
+   - VI. CONFIDENCIALIDAD (pÃÂ¡rrafo sobre protecciÃÂ³n de informaciÃÂ³n)
+   - VII. VIGENCIA (30 dÃÂ­as naturales)
+   - VIII. ACEPTACIÃÂN (solicitud de confirmaciÃÂ³n por escrito)
 
 2. Formato profesional y conciso
 3. IMPORTANTE: Usa SOLO los datos de contacto proporcionados arriba. Si un dato esta vacio, NO lo incluyas. NUNCA inventes telefonos, direcciones o emails.
-4. CRÃTICO: NO pidas "Estados Financieros" ni "Declaraciones Fiscales" (es excesivo e inseguro).
-5. LimÃ­tate a documentos de identidad, constitutivos y poderes.
+4. CRÃÂTICO: NO pidas "Estados Financieros" ni "Declaraciones Fiscales" (es excesivo e inseguro).
+5. LimÃÂ­tate a documentos de identidad, constitutivos y poderes.
 6. Usa letras a), b), c) para listar obligaciones.
 
-â ï¸ FORMATO OBLIGATORIO:
+Ã¢ÂÂ Ã¯Â¸Â FORMATO OBLIGATORIO:
 - USA SOLO MARKDOWN.
 - NO HTML.
 
 Ejemplo OBLIGACIONES (CORRECTO):
-a) IdentificaciÃ³n oficial vigente
+a) IdentificaciÃÂ³n oficial vigente
 b) Acta constitutiva (si aplica)
 c) Comprobante de domicilio
 
@@ -378,10 +380,10 @@ function generarFooter(despachoInfo: any, userInfo: any) {
 
   // Datos reales del despacho con fallback a userInfo (Bug 4)
   // Prioridad: 1. Despacho (Branding), 2. User Profile, 3. Placeholder
-  const direccion = despachoInfo?.direccion || userInfo?.location || userInfo?.address || "DirecciÃ³n no disponible";
-  const telefono = despachoInfo?.telefono || userInfo?.telefono || userInfo?.phone || "TelÃ©fono no disponible";
+  const direccion = despachoInfo?.direccion || userInfo?.location || userInfo?.address || "DirecciÃÂ³n no disponible";
+  const telefono = despachoInfo?.telefono || userInfo?.telefono || userInfo?.phone || "TelÃÂ©fono no disponible";
 
-  // Bug 1: Formato de firma corregido con salto de lÃ­nea
+  // Bug 1: Formato de firma corregido con salto de lÃÂ­nea
   const firmaNombre = userInfo?.displayName || "Consultor Legal";
   const firmaCargo = despachoInfo?.cargo || "Socio";
 
@@ -426,13 +428,13 @@ export async function POST(req: Request) {
     } = body;
 
     // Debug: Log received branding data
-    console.log('ð Backend received despachoInfo:', despachoInfo);
-    console.log('ð Backend received userInfo:', userInfo);
+    console.log('Ã°ÂÂÂ Backend received despachoInfo:', despachoInfo);
+    console.log('Ã°ÂÂÂ Backend received userInfo:', userInfo);
 
     // Generar folio y fecha
     const { fecha, folio } = generarFolioYFecha();
 
-    console.log("ð Iniciando generaciÃ³n con sub-agentes profesionales (Anthropic Claude)...");
+    console.log("Ã°ÂÂÂ Iniciando generaciÃÂ³n con sub-agentes profesionales (Anthropic Claude)...");
 
         if (!process.env.OPENAI_API_KEY) {
                 throw new Error("OPENAI_API_KEY is missing");
@@ -450,7 +452,7 @@ export async function POST(req: Request) {
 
     // 1. Obtener Instrucciones de Estilo Profundo
     const styleInstructions = getStyleInstructions(styleType || 'spanish-boutique');
-    console.log(`ð¨ Estilo seleccionado: ${styleType || 'spanish-boutique'} -> Aplicando instrucciones profundas.`);
+    console.log(`Ã°ÂÂÂ¨ Estilo seleccionado: ${styleType || 'spanish-boutique'} -> Aplicando instrucciones profundas.`);
 
     // Ejecutar agentes en paralelo con instrucciones de estilo
     const [resumenEjecutivo, alcanceServicios, cronograma, obligacionesYCierre] = await Promise.all([
@@ -466,7 +468,7 @@ export async function POST(req: Request) {
     const footer = generarFooter(safeDespachoInfo, userInfo);
 
     // Ensamblar documento
-    console.log("ð¨ Ensamblando documento final...");
+    console.log("Ã°ÂÂÂ¨ Ensamblando documento final...");
 
     let contenidoFinal = '';
 
@@ -518,7 +520,7 @@ ${obligacionesYCierre.trim()}
 ${footer.trim()}`;
     }
 
-    console.log("â CotizaciÃ³n profesional generada con Ã©xito");
+    console.log("Ã¢ÂÂ CotizaciÃÂ³n profesional generada con ÃÂ©xito");
 
     return NextResponse.json({
       contenido: contenidoFinal,
@@ -526,9 +528,9 @@ ${footer.trim()}`;
     });
 
   } catch (error: any) {
-    console.error('â Error en orquestador:', error);
+    console.error('Ã¢ÂÂ Error en orquestador:', error);
     return NextResponse.json(
-      { error: `Error al generar la cotizaciÃ³n: ${error.message}` },
+      { error: `Error al generar la cotizaciÃÂ³n: ${error.message}` },
       { status: 500 }
     );
   }
