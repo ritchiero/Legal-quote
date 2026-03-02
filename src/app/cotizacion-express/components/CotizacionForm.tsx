@@ -15,6 +15,7 @@ import {
 import { toast } from "react-hot-toast";
 import SlateEditor from "./SlateEditor";
 import OnePagerView from "./OnePagerView";
+import CortaView from "./CortaView";
 import InputGroup, { AIButton } from "@/components/InputGroup";
 import RequirementsAIModal from "@/components/modals/RequirementsAIModal";
 import PaymentAIModal from "@/components/modals/PaymentAIModal";
@@ -1392,7 +1393,22 @@ export default function CotizacionForm({
               <div className="bg-red-50 p-4 rounded-lg border border-red-200 text-red-700">
                 {cotizacionGenerada.error}
               </div>
-            ) : (
+            ) : tipoCotizacion === "corta" && cotizacionGenerada?.contenido ? (
+                        <CortaView
+                                          contenido={cotizacionGenerada.contenido}
+                                          brandingInfo={brandingInfo}
+                                          firmName={senderInfo}
+                                          onContentChange={(content) => {
+                                                              setCotizacionGenerada(
+                                                                                    (prev) =>
+                                                                                                            prev && {
+                                                                                                                                      ...prev,
+                                                                                                                                      contenido: content,
+                                                                                                              },
+                                                                                  );
+                                          }}
+                                        />
+                      ) : (
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow text-gray-900">
                 <SlateEditor
                   value={cotizacionGenerada?.contenido || ""}
