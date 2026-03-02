@@ -278,35 +278,51 @@ export default function CotizacionEstructuradaForm() {
                                                 </div>
                                                     );
                                                       }
-  // Fetch Branding Info
+  // Fetch branding and contact data used in generated quotations
   useEffect(() => {
     if (!user?.uid) return;
 
-    // Subscribe to branding changes
-    const unsubBranding = onSnapshot(doc(db, 'brandingInfo', user.uid), (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        setBrandingData({
-          nombre: data.nombreDespacho, // Map to expected structure
-          slogan: data.slogan,
-          logo: data.logoURL,
-          direccion: data.direccion, // If we added this
-          telefono: data.telefono,
-          cargo: data.cargo // If exists
-        });
+    const unsubBranding = onSnapshot(doc(db, 'brandingInfo', user.uid), (docSnap) => {
+      if (!docSnap.exists()) {
+        setBrandingData(null);
+        return;
       }
+
+      const data = docSnap.data();
+      setBrandingData({
+        ...data,
+        nombreDespacho: data?.nombreDespacho || data?.nombre || user?.displayName || 'Despacho Legal',
+      });
     });
 
-    // Fetch DatosContacto for phone/address
-    const contactRef = doc(db, 'DatosContacto', user.uid);
-    getDoc(contactRef).then((snap: any) => {
-      if (snap.exists()) {
-        setContactData(snap.data());
+    const loadContactData = async () => {
+      try {
+        const contactRef = doc(db, 'DatosContacto', user.uid);
+        const snap = await getDoc(contactRef);
+
+        if (!snap.exists()) {
+          setContactData(null);
+          return;
+        }
+
+        const data = snap.data();
+        setContactData({
+          address: data?.address || '',
+          email: data?.email || '',
+          mobile: data?.mobile || '',
+          phone: data?.phone || '',
+          web: data?.web || '',
+        });
+      } catch (error) {
+        console.error('Error loading DatosContacto:', error);
+        setContactData(null);
       }
-    });
+    };
+
+    loadContactData();
 
     return () => unsubBranding();
-  }, [user?.uid]);
+  }, [user?.uid, user?.displayName]);
 
   const [uploadingFiles, setUploadingFiles] = useState(false);
 
@@ -327,13 +343,6 @@ export default function CotizacionEstructuradaForm() {
         contactEmail: prev.contactEmail || user.email || ''
       }));
 
-      // Fetch Branding Info
-      const brandingRef = doc(db, 'brandingInfo', user.uid);
-      const unsubscribeBranding = onSnapshot(brandingRef, (docSnap) => {
-        if (docSnap.exists()) {
-          setBrandingData(docSnap.data());
-        }
-      });
 
       // Fetch User Profile for language preference
       const loadUserLanguage = async () => {
@@ -352,7 +361,6 @@ export default function CotizacionEstructuradaForm() {
 
       loadUserLanguage();
 
-      return () => unsubscribeBranding();
     }
   }, [user]);
 
@@ -1685,22 +1693,28 @@ export default function CotizacionEstructuradaForm() {
         customLanguage: formData.customLanguage || null,
         customBlocks: formatType === 'custom' ? customBlocks : null,
 
-        // User context
+        // User context + DatosContacto real data
         userInfo: {
-          email: user?.email,
+          email: contactData?.email || user?.email || '',
           displayName: user?.displayName,
           uid: user?.uid,
-          phone: contactData?.phone || contactData?.mobile || "",
-          address: contactData?.address || "",
-          location: contactData?.address || ""
+          phone: contactData?.phone || contactData?.mobile || '',
+          mobile: contactData?.mobile || '',
+          address: contactData?.address || '',
+          location: contactData?.address || '',
+          web: contactData?.web || ''
         },
 
-        // Branding (Bug Fix: Use fetched data)
+        // Branding (nombreDespacho is the canonical firm name field)
         despachoInfo: {
           ...(brandingData || {}),
           ...(contactData || {}),
-          nombre: brandingData?.nombreDespacho || brandingData?.nombre || user?.displayName || "Despacho Legal",
-          slogan: brandingData?.slogan || ""
+          nombreDespacho: brandingData?.nombreDespacho || brandingData?.nombre || user?.displayName || 'Despacho Legal',
+          slogan: brandingData?.slogan || '',
+          direccion: brandingData?.direccion || contactData?.address || '',
+          telefono: brandingData?.telefono || contactData?.phone || contactData?.mobile || '',
+          email: brandingData?.email || contactData?.email || user?.email || '',
+          web: brandingData?.web || contactData?.web || ''
         },
 
         // Add-Ons
