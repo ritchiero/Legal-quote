@@ -618,6 +618,9 @@ export default function CotizacionForm({
   const [jurisdiccion, setJurisdiccion] = useState("");
   const [requerimientos, setRequerimientos] = useState("");
   const [formaPago, setFormaPago] = useState("");
+
+    // Estado para datos del perfil de usuario (email, telefono, web)
+      const [userProfileData, setUserProfileData] = useState<{email: string; telefono: string; sitioWeb: string; cargo: string}>({email: "", telefono: "", sitioWeb: "", cargo: ""});
   const cotizacionRef = useRef<HTMLDivElement>(null);
 
   // Estado para IA de requerimientos
@@ -662,6 +665,29 @@ export default function CotizacionForm({
 
     fetchBrandingInfo();
   }, [user?.uid]);
+
+    // Cargar datos del perfil de usuario (email, telefono, sitioWeb)
+      useEffect(() => {
+          const fetchUserProfile = async () => {
+                if (!user?.uid) return;
+                      try {
+                              const userRef = doc(db, "users", user.uid);
+                                      const userSnap = await getDoc(userRef);
+                                              if (userSnap.exists()) {
+                                                        const data = userSnap.data();
+                                                                  setUserProfileData({
+                                                                              email: data.email || user.email || "",
+                                                                                          telefono: data.telefono || "",
+                                                                                                      sitioWeb: data.sitioWeb || "",
+                                                                                                                  cargo: data.cargo || "",
+                                                                                                                            });
+                                                                                                                                    }
+                                                                                                                                          } catch (error) {
+                                                                                                                                                  console.error("Error fetching user profile:", error);
+                                                                                                                                                        }
+                                                                                                                                                            };
+                                                                                                                                                                fetchUserProfile();
+                                                                                                                                                                  }, [user?.uid, user?.email]);
 
   useEffect(() => {
     if (initialService) {
@@ -835,10 +861,15 @@ export default function CotizacionForm({
                   nombre: brandingInfo?.nombreDespacho || "",
                   slogan: brandingInfo?.slogan || "",
                   anoFundacion: brandingInfo?.anoFundacion || "",
+                                        web: userProfileData.sitioWeb || "",
+                                                              logoURL: brandingInfo?.logoURL || "",
                 },
                 userInfo: {
                   displayName: user?.displayName || "",
                   despacho: brandingInfo?.nombreDespacho || "",
+                                      email: userProfileData.email || user?.email || "",
+                                                          telefono: userProfileData.telefono || "",
+                                                                              cargo: userProfileData.cargo || "",
                 },
                 servicioInfo: servicioCompleto
                   ? {
@@ -867,10 +898,15 @@ export default function CotizacionForm({
                   nombre: brandingInfo?.nombreDespacho || "",
                   slogan: brandingInfo?.slogan || "",
                   anoFundacion: brandingInfo?.anoFundacion || "",
+                                        web: userProfileData.sitioWeb || "",
+                                                              logoURL: brandingInfo?.logoURL || "",
                 },
                 userInfo: {
                   displayName: user?.displayName || "",
                   despacho: brandingInfo?.nombreDespacho || "",
+                                      email: userProfileData.email || user?.email || "",
+                                                          telefono: userProfileData.telefono || "",
+                                                                              cargo: userProfileData.cargo || "",
                 },
                 servicioInfo: servicioCompleto
                   ? {
